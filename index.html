@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - IELTS MOCK EXAM Listening Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .welcome-screen {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            border: 3px solid #dc2626;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.1);
+            overflow: hidden;
+        }
+
+        .welcome-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 2px solid #991b1b;
+        }
+
+        .welcome-brand {
+            font-size: 42px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: normal;
+            opacity: 0.95;
+            letter-spacing: 1px;
+        }
+
+        .welcome-content {
+            padding: 40px;
+        }
+
+        .student-name-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+        }
+
+        .student-name-label {
+            display: block;
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .student-name-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .student-name-input:focus {
+            outline: none;
+            border-color: #991b1b;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .instructions-section {
+            margin-bottom: 30px;
+        }
+
+        .instructions-title {
+            font-size: 20px;
+            color: #991b1b;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid #dc2626;
+            padding-bottom: 10px;
+        }
+
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            padding: 12px 0 12px 30px;
+            position: relative;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .instructions-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .start-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border: 3px solid #dc2626;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.1);
+            overflow: hidden;
+            display: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 30px 40px;
+            border-bottom: 2px solid #991b1b;
+        }
+
+        .brand {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .exam-title {
+            font-size: 24px;
+            font-weight: normal;
+            opacity: 0.95;
+            letter-spacing: 1px;
+        }
+
+        .student-info {
+            padding: 20px 40px;
+            background: #fef2f2;
+            border-bottom: 2px solid #dc2626;
+            text-align: center;
+        }
+
+        .student-info-text {
+            font-size: 18px;
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #fee2e2;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #991b1b;
+        }
+
+        .question-range {
+            font-size: 18px;
+            font-style: italic;
+            color: #dc2626;
+        }
+
+        .instruction {
+            font-style: italic;
+            color: #4b5563;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border-left: 4px solid #dc2626;
+        }
+
+        .question-group {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            border-color: #dc2626;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #dc2626;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .question-text {
+            display: inline;
+            line-height: 1.6;
+        }
+
+        .answer-input {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .options {
+            margin-top: 15px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            background: #fef2f2;
+            border-color: #dc2626;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 2px solid #dc2626;
+        }
+
+        th, td {
+            border: 1px solid #dc2626;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #fef2f2;
+            font-weight: bold;
+            color: #991b1b;
+        }
+
+        .highlight-yellow {
+            background-color: #fef08a;
+        }
+
+        .highlighted-word {
+            background-color: #ffff00;
+            cursor: pointer;
+            padding: 2px 0;
+            border-radius: 2px;
+            transition: background-color 0.2s ease;
+        }
+
+        .highlighted-word:hover {
+            background-color: #ffdb4d;
+        }
+
+        .selecting-word {
+            background-color: #ffd700;
+            padding: 2px 0;
+            border-radius: 2px;
+        }
+
+        .word-wrapper {
+            display: inline;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            padding: 30px 40px;
+            background: #fef2f2;
+            border-top: 2px solid #dc2626;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-copy {
+            background: white;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+        }
+
+        .btn-copy:hover {
+            background: #fef2f2;
+        }
+
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .results-content {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            border: 3px solid #dc2626;
+            border-radius: 8px;
+            padding: 40px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .results-title {
+            font-size: 28px;
+            color: #991b1b;
+            margin-bottom: 10px;
+        }
+
+        .answer-sheet {
+            background: #f9fafb;
+            padding: 20px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .proctoring-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 3px solid #dc2626;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: none;
+            max-width: 500px;
+        }
+
+        .warning-title {
+            color: #dc2626;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .warning-message {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .close-warning {
+            background: #dc2626;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media print {
+            .button-container,
+            .timer-container,
+            .student-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="proctoring-warning" id="proctoringWarning">
+        <div class="warning-title">⚠️ Warning</div>
+        <div class="warning-message">Please return to the exam window. Tab switching is not allowed during the test.</div>
+        <button class="close-warning" onclick="closeWarning()">Return to Exam</button>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-header">
+            <div class="welcome-brand">EDUNEST</div>
+            <div class="welcome-title">IELTS MOCK EXAM - Listening Test</div>
+        </div>
+
+        <div class="welcome-content">
+            <div class="student-name-section">
+                <label class="student-name-label" for="welcomeStudentName">Enter Your Full Name:</label>
+                <input type="text" id="welcomeStudentName" class="student-name-input" placeholder="Full Name" required>
+            </div>
+
+            <div class="instructions-section">
+                <h2 class="instructions-title">Exam Instructions</h2>
+                <ul class="instructions-list">
+                    <li>This is an IELTS Listening Test with 40 questions divided into 4 sections</li>
+                    <li>You can highlight text by clicking on individual words or clicking and dragging to select multiple words</li>
+                    <li>Answer all questions in the provided answer fields</li>
+                    <li>Follow the specific instructions for each section carefully</li>
+                    <li>Pay attention to word limits (ONE WORD, THREE WORDS, etc.)</li>
+                    <li>Do not switch tabs or leave the exam window - the proctoring system is active</li>
+                    <li>Click the "Submit Exam" button when you have completed all questions</li>
+                    <li>Your answers will be automatically saved as a PDF and sent to administrators</li>
+                </ul>
+            </div>
+
+            <button class="start-button" id="startButton" disabled onclick="startExam()">
+                Start Exam
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Exam Container -->
+    <div class="container" id="examContainer">
+        <div class="header">
+            <div class="brand">EDUNEST</div>
+            <div class="exam-title">IELTS MOCK EXAM - Listening Test</div>
+        </div>
+
+        <div class="student-info">
+            <div class="student-info-text">Student: <span id="displayStudentName"></span></div>
+        </div>
+
+        <div class="content">
+                        <!-- SECTION 1 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">SECTION 1</div>
+                    <div class="question-range">Questions 1-10</div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 1-7</strong><br>
+                    Complete the notes below.<br>
+                    Write <strong>ONE WORD ONLY</strong> for each answer.
+                </div>
+
+                <h3 style="text-align: center; margin: 20px 0; color: #991b1b;">Opportunities for voluntary work in Southoe village</h3>
+
+                <div style="background: white; padding: 20px; border: 2px solid #dc2626; border-radius: 4px; margin-bottom: 20px;">
+                    <strong>Library</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• Help with 1 <input type="text" class="answer-input" data-question="1" placeholder="Answer 1" style="display: inline-block; width: 200px;"> books (times to be arranged)</li>
+                        <li style="margin-bottom: 10px;">• Help needed to keep 2 <input type="text" class="answer-input" data-question="2" placeholder="Answer 2" style="display: inline-block; width: 200px;"> of books up to date</li>
+                        <li style="margin-bottom: 10px;">• Library is in the 3 <input type="text" class="answer-input" data-question="3" placeholder="Answer 3" style="display: inline-block; width: 200px;"> Room in the village hall</li>
+                    </ul>
+
+                    <strong style="display: block; margin-top: 20px;">Lunch club</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• Help by providing 4 <input type="text" class="answer-input" data-question="4" placeholder="Answer 4" style="display: inline-block; width: 200px;"></li>
+                        <li style="margin-bottom: 10px;">• Help with hobbies such as 5 <input type="text" class="answer-input" data-question="5" placeholder="Answer 5" style="display: inline-block; width: 200px;"></li>
+                    </ul>
+
+                    <strong style="display: block; margin-top: 20px;">Help for individuals needed next week</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• Taking Mrs Carroll to 6 <input type="text" class="answer-input" data-question="6" placeholder="Answer 6" style="display: inline-block; width: 200px;"></li>
+                        <li style="margin-bottom: 10px;">• Work in the 7 <input type="text" class="answer-input" data-question="7" placeholder="Answer 7" style="display: inline-block; width: 200px;"> at Mr Selsbury's house</li>
+                    </ul>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 8-10</strong><br>
+                    Complete the table below.<br>
+                    Write <strong>ONE WORD ONLY</strong> for each answer.
+                </div>
+
+                <h3 style="text-align: center; margin: 20px 0; color: #991b1b;">Village social events</h3>
+
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Event</th>
+                        <th>Location</th>
+                        <th>Help needed</th>
+                    </tr>
+                    <tr>
+                        <td>19 Oct</td>
+                        <td>8 <input type="text" class="answer-input" data-question="8" placeholder="Answer 8"></td>
+                        <td>Village hall</td>
+                        <td>providing refreshments</td>
+                    </tr>
+                    <tr>
+                        <td>18 Nov</td>
+                        <td>dance</td>
+                        <td>Village hall</td>
+                        <td>checking 9 <input type="text" class="answer-input" data-question="9" placeholder="Answer 9"></td>
+                    </tr>
+                    <tr>
+                        <td>31 Dec</td>
+                        <td>New Year's Eve party</td>
+                        <td>Mountfort Hotel</td>
+                        <td>designing the 10 <input type="text" class="answer-input" data-question="10" placeholder="Answer 10"></td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <!-- SECTION 2 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">SECTION 2</div>
+                    <div class="question-range">Questions 11-20</div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 11-14</strong><br>
+                    Choose the correct letter, <strong>A, B or C</strong>.
+                </div>
+
+                <h3 style="text-align: center; margin: 20px 0; color: #991b1b;">Oniton Hall</h3>
+
+                <div class="question-group">
+                    <div class="question">
+                        <div class="question-number">11.</div>
+                        <div class="question-text">Many past owners made changes to</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q11" value="A" data-question="11">
+                                <span>A. the gardens.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q11" value="B" data-question="11">
+                                <span>B. the house.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q11" value="C" data-question="11">
+                                <span>C. the farm.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-number">12.</div>
+                        <div class="question-text">Sir Edward Downes built Oniton Hall because he wanted</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q12" value="A" data-question="12">
+                                <span>A. a place for discussing politics.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q12" value="B" data-question="12">
+                                <span>B. a place to display his wealth.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q12" value="C" data-question="12">
+                                <span>C. a place for artists and writers.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-number">13.</div>
+                        <div class="question-text">Visitors can learn about the work of servants in the past from</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q13" value="A" data-question="13">
+                                <span>A. audio guides.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q13" value="B" data-question="13">
+                                <span>B. photographs.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q13" value="C" data-question="13">
+                                <span>C. people in costume.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-number">14.</div>
+                        <div class="question-text">What is new for children at Oniton Hall?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q14" value="A" data-question="14">
+                                <span>A. clothes for dressing up</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q14" value="B" data-question="14">
+                                <span>B. mini tractors</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q14" value="C" data-question="14">
+                                <span>C. the adventure playground</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 15-20</strong><br>
+                    Which activity is offered at each of the following locations on the farm?<br>
+                    Choose <strong>SIX</strong> answers from the box and write the correct letter, <strong>A-H</strong>, next to Questions 15-20.
+                </div>
+
+                <div style="background: #fef2f2; padding: 20px; border: 2px solid #dc2626; border-radius: 4px; margin: 20px 0;">
+                    <strong>Activities</strong>
+                    <div style="margin-top: 10px; line-height: 1.8;">
+                        <strong>A</strong> shopping<br>
+                        <strong>B</strong> watching cows being milked<br>
+                        <strong>C</strong> seeing old farming equipment<br>
+                        <strong>D</strong> eating and drinking<br>
+                        <strong>E</strong> starting a trip<br>
+                        <strong>F</strong> seeing rare breeds of animals<br>
+                        <strong>G</strong> helping to look after animals<br>
+                        <strong>H</strong> using farming tools
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <h4 style="margin: 20px 0; color: #991b1b;">Locations on the farm</h4>
+                    
+                    <div class="question">
+                        <span class="question-number">15.</span>
+                        <span class="question-text">dairy <input type="text" class="answer-input" data-question="15" placeholder="Answer 15" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">16.</span>
+                        <span class="question-text">large barn <input type="text" class="answer-input" data-question="16" placeholder="Answer 16" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">17.</span>
+                        <span class="question-text">small barn <input type="text" class="answer-input" data-question="17" placeholder="Answer 17" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">18.</span>
+                        <span class="question-text">stables <input type="text" class="answer-input" data-question="18" placeholder="Answer 18" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">19.</span>
+                        <span class="question-text">shed <input type="text" class="answer-input" data-question="19" placeholder="Answer 19" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">20.</span>
+                        <span class="question-text">parkland <input type="text" class="answer-input" data-question="20" placeholder="Answer 20" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- SECTION 3 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">SECTION 3</div>
+                    <div class="question-range">Questions 21-30</div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 21 and 22</strong><br>
+                    Choose <strong>TWO</strong> letters, <strong>A-E</strong>.
+                </div>
+
+                <div class="question-group">
+                    <div class="question">
+                        <div class="question-text" style="margin-bottom: 15px;">Which <strong>TWO</strong> things do the students agree they need to include in their reviews of <em>Romeo and Juliet</em>?</div>
+                        <div class="checkbox-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="q21_22" value="A" data-question="21-22">
+                                <span><strong>A</strong> analysis of the text</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="q21_22" value="B" data-question="21-22">
+                                <span><strong>B</strong> a summary of the plot</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="q21_22" value="C" data-question="21-22">
+                                <span><strong>C</strong> a description of the theatre</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="q21_22" value="D" data-question="21-22">
+                                <span><strong>D</strong> a personal reaction</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="q21_22" value="E" data-question="21-22">
+                                <span><strong>E</strong> a reference to particular scenes</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 23-27</strong><br>
+                    Which opinion do the speakers give about each of the following aspects of The Emporium's production of <em>Romeo and Juliet</em>?<br>
+                    Choose <strong>FIVE</strong> answers from the box and write the correct letter, <strong>A-G</strong>, next to Questions 23-27.
+                </div>
+
+                <div style="background: #fef2f2; padding: 20px; border: 2px solid #dc2626; border-radius: 4px; margin: 20px 0;">
+                    <strong>Opinions</strong>
+                    <div style="margin-top: 10px; line-height: 1.8;">
+                        <strong>A</strong> They both expected this to be more traditional.<br>
+                        <strong>B</strong> They both thought this was original.<br>
+                        <strong>C</strong> They agree this created the right atmosphere.<br>
+                        <strong>D</strong> They agree this was a major strength.<br>
+                        <strong>E</strong> They were both disappointed by this.<br>
+                        <strong>F</strong> They disagree about why this was an issue.<br>
+                        <strong>G</strong> They disagree about how this could be improved.
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <h4 style="margin: 20px 0; color: #991b1b;">Aspects of the production</h4>
+                    
+                    <div class="question">
+                        <span class="question-number">23.</span>
+                        <span class="question-text">the set <input type="text" class="answer-input" data-question="23" placeholder="Answer 23" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">24.</span>
+                        <span class="question-text">the lighting <input type="text" class="answer-input" data-question="24" placeholder="Answer 24" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">25.</span>
+                        <span class="question-text">the costume design <input type="text" class="answer-input" data-question="25" placeholder="Answer 25" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">26.</span>
+                        <span class="question-text">the music <input type="text" class="answer-input" data-question="26" placeholder="Answer 26" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+
+                    <div class="question">
+                        <span class="question-number">27.</span>
+                        <span class="question-text">the actors' delivery <input type="text" class="answer-input" data-question="27" placeholder="Answer 27" style="display: inline-block; width: 100px; text-transform: uppercase;"></span>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 28-30</strong><br>
+                    Choose the correct letter, <strong>A, B or C</strong>.
+                </div>
+
+                <div class="question-group">
+                    <div class="question">
+                        <div class="question-number">28.</div>
+                        <div class="question-text">The students think the story of <em>Romeo and Juliet</em> is still relevant for young people today because</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q28" value="A" data-question="28">
+                                <span>A. it illustrates how easily conflict can start.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q28" value="B" data-question="28">
+                                <span>B. it deals with problems that families experience.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q28" value="C" data-question="28">
+                                <span>C. it teaches them about relationships.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-number">29.</div>
+                        <div class="question-text">The students found watching <em>Romeo and Juliet</em> in another language</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q29" value="A" data-question="29">
+                                <span>A. frustrating.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q29" value="B" data-question="29">
+                                <span>B. demanding.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q29" value="C" data-question="29">
+                                <span>C. moving.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-number">30.</div>
+                        <div class="question-text">Why do the students think Shakespeare's plays have such international appeal?</div>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q30" value="A" data-question="30">
+                                <span>A. The stories are exciting.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q30" value="B" data-question="30">
+                                <span>B. There are recognisable characters.</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q30" value="C" data-question="30">
+                                <span>C. They can be interpreted in many ways.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- SECTION 4 -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">SECTION 4</div>
+                    <div class="question-range">Questions 31-40</div>
+                </div>
+
+                <div class="instruction">
+                    <strong>Questions 31-40</strong><br>
+                    Complete the notes below.<br>
+                    Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.
+                </div>
+
+                <h3 style="text-align: center; margin: 20px 0; color: #991b1b;">The impact of digital technology on the Icelandic language</h3>
+
+                <div style="background: white; padding: 20px; border: 2px solid #dc2626; border-radius: 4px; margin-bottom: 20px;">
+                    <strong>The Icelandic language</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• has approximately 31 <input type="text" class="answer-input" data-question="31" placeholder="Answer 31" style="display: inline-block; width: 200px;"> speakers</li>
+                        <li style="margin-bottom: 10px;">• has a 32 <input type="text" class="answer-input" data-question="32" placeholder="Answer 32" style="display: inline-block; width: 200px;"> that is still growing</li>
+                        <li style="margin-bottom: 10px;">• has not changed a lot over the last thousand years</li>
+                        <li style="margin-bottom: 10px;">• has its own words for computer-based concepts, such as web browser and 33 <input type="text" class="answer-input" data-question="33" placeholder="Answer 33" style="display: inline-block; width: 200px;"></li>
+                    </ul>
+
+                    <strong style="display: block; margin-top: 20px;">Young speakers</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• are big users of digital technology, such as 34 <input type="text" class="answer-input" data-question="34" placeholder="Answer 34" style="display: inline-block; width: 200px;"></li>
+                        <li style="margin-bottom: 10px;">• are becoming 35 <input type="text" class="answer-input" data-question="35" placeholder="Answer 35" style="display: inline-block; width: 200px;"> very quickly</li>
+                        <li style="margin-bottom: 10px;">• are having discussions using only English while they are in the 36 <input type="text" class="answer-input" data-question="36" placeholder="Answer 36" style="display: inline-block; width: 200px;"> at school</li>
+                        <li style="margin-bottom: 10px;">• are better able to identify the content of a 37 <input type="text" class="answer-input" data-question="37" placeholder="Answer 37" style="display: inline-block; width: 200px;"> in English than Icelandic</li>
+                    </ul>
+
+                    <strong style="display: block; margin-top: 20px;">Technology and internet companies</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• write very little in Icelandic because of the small number of speakers and because of how complicated its 38 <input type="text" class="answer-input" data-question="38" placeholder="Answer 38" style="display: inline-block; width: 200px;"> is</li>
+                    </ul>
+
+                    <strong style="display: block; margin-top: 20px;">The Icelandic government</strong>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px;">• has set up a fund to support the production of more digital content in the language</li>
+                        <li style="margin-bottom: 10px;">• believes that Icelandic has a secure future</li>
+                        <li style="margin-bottom: 10px;">• is worried that young Icelanders may lose their 39 <input type="text" class="answer-input" data-question="39" placeholder="Answer 39" style="display: inline-block; width: 200px;"> as Icelanders</li>
+                        <li style="margin-bottom: 10px;">• is worried about the consequences of children not being 40 <input type="text" class="answer-input" data-question="40" placeholder="Answer 40" style="display: inline-block; width: 200px;"> in either Icelandic or English</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="btn btn-submit" onclick="submitExam()">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <div class="results-header">
+                <div class="results-title">Your Answer Sheet</div>
+                <p style="color: #6b7280;">EDUNEST - IELTS MOCK EXAM Listening Test</p>
+            </div>
+            <div class="answer-sheet" id="answerSheet"></div>
+            <div class="button-container" style="border-top: none;">
+                <button class="btn btn-copy" onclick="copyAnswers()">Copy Answers</button>
+                <button class="btn btn-submit" onclick="closeResults()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let studentName = '';
+        const REACTIVATION_CODE = 'C17T1L'; // Hidden from students
+        let isExamLocked = false;
+        let violationCount = 0;
+
+        // Enable start button when name is entered
+        document.getElementById('welcomeStudentName').addEventListener('input', function() {
+            const startButton = document.getElementById('startButton');
+            if (this.value.trim().length > 0) {
+                startButton.disabled = false;
+            } else {
+                startButton.disabled = true;
+            }
+        });
+
+        // Start exam function
+        async function startExam() {
+            studentName = document.getElementById('welcomeStudentName').value.trim();
+            if (!studentName) {
+                return;
+            }
+
+            // Request fullscreen
+            try {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    await elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    await elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    await elem.msRequestFullscreen();
+                }
+            } catch (err) {
+                console.log('Fullscreen request failed:', err);
+            }
+
+            // Hide welcome screen, show exam
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('examContainer').style.display = 'block';
+            document.getElementById('displayStudentName').textContent = studentName;
+
+            // Initialize proctoring and highlighting
+            initProctoring();
+            initHighlighting();
+        }
+
+        // Proctoring system - fullscreen based
+        function initProctoring() {
+            // Monitor fullscreen changes
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            // Prevent right-click
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            // Detect visibility changes (tab switching)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && !isExamLocked) {
+                    violationCount++;
+                    lockExam();
+                }
+            });
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement);
+            
+            if (!isFullscreen && !isExamLocked && document.getElementById('examContainer').style.display === 'block') {
+                violationCount++;
+                lockExam();
+            }
+        }
+
+        function closeWarning() {
+            document.getElementById('proctoringWarning').style.display = 'none';
+        }
+
+        function lockExam() {
+            isExamLocked = true;
+            const examContainer = document.getElementById('examContainer');
+            examContainer.style.opacity = '0.3';
+            examContainer.style.pointerEvents = 'none';
+            
+            // Create unlock overlay with timer
+            const unlockOverlay = document.createElement('div');
+            unlockOverlay.id = 'unlockOverlay';
+            unlockOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 3000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            
+            unlockOverlay.innerHTML = `
+                <div style="background: white; padding: 40px; border-radius: 8px; border: 3px solid #dc2626; max-width: 500px; text-align: center;">
+                    <div style="color: #dc2626; font-size: 32px; font-weight: bold; margin-bottom: 20px;">🔒 EXAM LOCKED</div>
+                    <div style="color: #4b5563; font-size: 18px; margin-bottom: 20px;">
+                        A violation was detected.<br>
+                        Instructor code required to continue.
+                    </div>
+                    <div id="reactivationTimer" style="font-size: 48px; font-weight: bold; color: #dc2626; margin-bottom: 20px; font-family: 'Courier New', monospace;">01:00</div>
+                    <div style="color: #dc2626; font-size: 14px; margin-bottom: 20px;">Exam will terminate if code not entered in time</div>
+                    <input type="password" id="unlockCode" placeholder="Enter reactivation code" 
+                           style="width: 100%; padding: 15px; border: 2px solid #dc2626; border-radius: 4px; font-size: 16px; margin-bottom: 20px;">
+                    <button onclick="checkUnlockCode()" 
+                            style="width: 100%; padding: 15px; background: #dc2626; color: white; border: none; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                        UNLOCK EXAM
+                    </button>
+                    <div id="unlockError" style="color: #dc2626; margin-top: 15px; font-weight: bold;"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(unlockOverlay);
+            
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('unlockCode').focus();
+                
+                // Add Enter key support
+                document.getElementById('unlockCode').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkUnlockCode();
+                    }
+                });
+            }, 100);
+            
+            // Start 1-minute countdown timer
+            let timeLeft = 60; // 60 seconds
+            const timerDisplay = document.getElementById('reactivationTimer');
+            
+            const reactivationTimer = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Change color when time is running out
+                if (timeLeft <= 10) {
+                    timerDisplay.style.color = '#dc2626';
+                    timerDisplay.style.animation = 'pulse 1s infinite';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(reactivationTimer);
+                    terminateExam();
+                }
+            }, 1000);
+            
+            // Store timer ID so we can clear it if code is entered
+            unlockOverlay.dataset.timerId = reactivationTimer;
+        }
+
+        function terminateExam() {
+            // Clear the unlock overlay
+            const overlay = document.getElementById('unlockOverlay');
+            if (overlay) {
+                const timerId = overlay.dataset.timerId;
+                if (timerId) {
+                    clearInterval(parseInt(timerId));
+                }
+                overlay.remove();
+            }
+            
+            // Show termination message
+            const terminationOverlay = document.createElement('div');
+            terminationOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 4000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            
+            terminationOverlay.innerHTML = `
+                <div style="background: white; padding: 50px; border-radius: 8px; border: 3px solid #dc2626; max-width: 600px; text-align: center;">
+                    <div style="color: #dc2626; font-size: 48px; margin-bottom: 30px;">⏰</div>
+                    <div style="color: #dc2626; font-size: 32px; font-weight: bold; margin-bottom: 20px;">EXAM TERMINATED</div>
+                    <div style="color: #4b5563; font-size: 18px; line-height: 1.6;">
+                        The reactivation code was not entered within the allowed time.<br>
+                        The exam has been terminated.<br><br>
+                        Please contact your instructor.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(terminationOverlay);
+            
+            // Disable all exam interactions permanently
+            const examContainer = document.getElementById('examContainer');
+            examContainer.style.display = 'none';
+        }
+
+        function checkUnlockCode() {
+            const code = document.getElementById('unlockCode').value;
+            
+            if (code === REACTIVATION_CODE) {
+                isExamLocked = false;
+                const examContainer = document.getElementById('examContainer');
+                examContainer.style.opacity = '1';
+                examContainer.style.pointerEvents = 'auto';
+                
+                const overlay = document.getElementById('unlockOverlay');
+                if (overlay) {
+                    // Clear the timer
+                    const timerId = overlay.dataset.timerId;
+                    if (timerId) {
+                        clearInterval(parseInt(timerId));
+                    }
+                    overlay.remove();
+                }
+                
+                // Return to fullscreen
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(() => {});
+                }
+            } else {
+                document.getElementById('unlockError').textContent = '❌ Invalid code. Try again.';
+                document.getElementById('unlockCode').value = '';
+                document.getElementById('unlockCode').focus();
+            }
+        }
+
+        // Word Highlighting System
+        function initHighlighting() {
+            const config = {
+                highlightClass: 'highlighted-word',
+                selectingClass: 'selecting-word',
+                excludeTags: ['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'INPUT', 'TEXTAREA', 'BUTTON']
+            };
+
+            const state = {
+                isSelecting: false,
+                startWord: null,
+                selectedWords: new Set()
+            };
+
+            function shouldProcessElement(element) {
+                return !config.excludeTags.includes(element.tagName) &&
+                       !element.classList.contains('word-wrapper') &&
+                       !element.closest('.welcome-screen') &&
+                       !element.closest('.button-container') &&
+                       !element.closest('.results-modal') &&
+                       !element.closest('.proctoring-warning') &&
+                       !element.closest('.student-info') &&
+                       !element.closest('.header');
+            }
+
+            function getAllWordWrappers() {
+                return Array.from(document.querySelectorAll('.word-wrapper'));
+            }
+
+            function clearSelectingState() {
+                state.selectedWords.forEach(word => {
+                    word.classList.remove(config.selectingClass);
+                });
+                state.selectedWords.clear();
+            }
+
+            function applyHighlights() {
+                state.selectedWords.forEach(word => {
+                    word.classList.remove(config.selectingClass);
+                    word.classList.toggle(config.highlightClass);
+                });
+            }
+
+            function getWordsBetween(startWord, endWord) {
+                const allWords = getAllWordWrappers();
+                const startIndex = allWords.indexOf(startWord);
+                const endIndex = allWords.indexOf(endWord);
+                
+                if (startIndex === -1 || endIndex === -1) return [];
+                
+                const minIndex = Math.min(startIndex, endIndex);
+                const maxIndex = Math.max(startIndex, endIndex);
+                
+                return allWords.slice(minIndex, maxIndex + 1);
+            }
+
+            function handleMouseDown(e) {
+                if (e.button !== 0) return;
+                
+                state.isSelecting = true;
+                state.startWord = this;
+                state.selectedWords.clear();
+                state.selectedWords.add(this);
+                this.classList.add(config.selectingClass);
+                
+                e.preventDefault();
+            }
+
+            function handleMouseEnter(e) {
+                if (!state.isSelecting || !state.startWord) return;
+                
+                clearSelectingState();
+                const wordsBetween = getWordsBetween(state.startWord, this);
+                
+                wordsBetween.forEach(word => {
+                    state.selectedWords.add(word);
+                    word.classList.add(config.selectingClass);
+                });
+            }
+
+            function handleMouseUp(e) {
+                if (!state.isSelecting) return;
+                
+                state.isSelecting = false;
+                
+                if (state.selectedWords.size > 0) {
+                    applyHighlights();
+                }
+                
+                state.startWord = null;
+                state.selectedWords.clear();
+            }
+
+            function wrapWords(textNode) {
+                const text = textNode.textContent;
+                const words = text.split(/(\s+)/);
+                
+                if (words.length <= 1 && text.trim() === '') {
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+                
+                words.forEach((word) => {
+                    if (word.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'word-wrapper';
+                        span.textContent = word;
+                        
+                        span.addEventListener('mousedown', handleMouseDown);
+                        span.addEventListener('mouseenter', handleMouseEnter);
+                        
+                        fragment.appendChild(span);
+                    } else if (word) {
+                        fragment.appendChild(document.createTextNode(word));
+                    }
+                });
+
+                textNode.parentNode.replaceChild(fragment, textNode);
+            }
+
+            function processNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent.trim();
+                    if (text.length > 0 && node.parentNode) {
+                        wrapWords(node);
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE && shouldProcessElement(node)) {
+                    Array.from(node.childNodes).forEach(child => processNode(child));
+                }
+            }
+
+            // Process the exam content
+            const content = document.querySelector('.content');
+            if (content) {
+                processNode(content);
+            }
+
+            // Global mouse up listener
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Prevent text selection during drag
+            document.addEventListener('selectstart', function(e) {
+                if (state.isSelecting) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // Option selection handler
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const input = this.querySelector('input[type="radio"]');
+                if (input) {
+                    input.checked = true;
+                    // Remove selected class from all options in this group
+                    const name = input.name;
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                        radio.closest('.option').classList.remove('selected');
+                    });
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                }
+            });
+        });
+
+        function collectAnswers() {
+            const answers = {};
+            
+            // Collect all text input answers
+            document.querySelectorAll('.answer-input').forEach(input => {
+                const questionNum = input.getAttribute('data-question');
+                if (questionNum) {
+                    answers[questionNum] = input.value.trim() || '(not answered)';
+                }
+            });
+            
+            // Collect radio button answers
+            document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                const questionNum = radio.getAttribute('data-question');
+                if (questionNum) {
+                    answers[questionNum] = radio.value;
+                }
+            });
+            
+            // Collect checkbox answers (Questions 18-20)
+            const checkboxAnswers = [];
+            document.querySelectorAll('input[name="q18-20"]:checked').forEach(checkbox => {
+                checkboxAnswers.push(checkbox.value);
+            });
+            if (checkboxAnswers.length > 0) {
+                answers['18-20'] = checkboxAnswers.join(', ');
+            }
+            
+            return { studentName, answers };
+        }
+
+        function formatAnswerSheet(data) {
+            let sheet = `EDUNEST - IELTS MOCK EXAM
+Listening Test Answer Sheet
+═══════════════════════════════════════
+
+Student Name: ${data.studentName}
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+
+═══════════════════════════════════════
+
+SECTION 1 (Questions 1-10)
+───────────────────────────────────────
+1.  ${data.answers['1'] || '(not answered)'}
+2.  ${data.answers['2'] || '(not answered)'}
+3.  ${data.answers['3'] || '(not answered)'}
+4.  ${data.answers['4'] || '(not answered)'}
+5.  ${data.answers['5'] || '(not answered)'}
+6.  ${data.answers['6'] || '(not answered)'}
+7.  ${data.answers['7'] || '(not answered)'}
+8.  ${data.answers['8'] || '(not answered)'}
+9.  ${data.answers['9'] || '(not answered)'}
+10. ${data.answers['10'] || '(not answered)'}
+
+SECTION 2 (Questions 11-20)
+───────────────────────────────────────
+11. ${data.answers['11'] || '(not answered)'}
+12. ${data.answers['12'] || '(not answered)'}
+13. ${data.answers['13'] || '(not answered)'}
+14. ${data.answers['14'] || '(not answered)'}
+15. ${data.answers['15'] || '(not answered)'}
+16. ${data.answers['16'] || '(not answered)'}
+17. ${data.answers['17'] || '(not answered)'}
+18-20. ${data.answers['18-20'] || '(not answered)'}
+
+SECTION 3 (Questions 21-30)
+───────────────────────────────────────
+21. ${data.answers['21'] || '(not answered)'}
+22. ${data.answers['22'] || '(not answered)'}
+23. ${data.answers['23'] || '(not answered)'}
+24. ${data.answers['24'] || '(not answered)'}
+25. ${data.answers['25'] || '(not answered)'}
+26. ${data.answers['26'] || '(not answered)'}
+27. ${data.answers['27'] || '(not answered)'}
+28. ${data.answers['28'] || '(not answered)'}
+29. ${data.answers['29'] || '(not answered)'}
+30. ${data.answers['30'] || '(not answered)'}
+
+SECTION 4 (Questions 31-40)
+───────────────────────────────────────
+31. ${data.answers['31'] || '(not answered)'}
+32. ${data.answers['32'] || '(not answered)'}
+33. ${data.answers['33'] || '(not answered)'}
+34. ${data.answers['34'] || '(not answered)'}
+35. ${data.answers['35'] || '(not answered)'}
+36. ${data.answers['36'] || '(not answered)'}
+37. ${data.answers['37'] || '(not answered)'}
+38. ${data.answers['38'] || '(not answered)'}
+39. ${data.answers['39'] || '(not answered)'}
+40. ${data.answers['40'] || '(not answered)'}
+
+═══════════════════════════════════════
+End of Answer Sheet
+`;
+            return sheet;
+        }
+
+        async function generatePDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Title
+            doc.setFontSize(20);
+            doc.setTextColor(220, 38, 38);
+            doc.text('EDUNEST', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text('IELTS MOCK EXAM - Listening Test', 105, 30, { align: 'center' });
+            doc.text('Answer Sheet', 105, 38, { align: 'center' });
+            
+            // Student info
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Student Name: ${data.studentName}`, 20, 50);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 56);
+            doc.text(`Time: ${new Date().toLocaleTimeString()}`, 20, 62);
+            
+            let y = 80;
+            
+            // Section 1
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('SECTION 1 (Questions 1-10)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 1; i <= 10; i++) {
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Section 2
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('SECTION 2 (Questions 11-20)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 11; i <= 17; i++) {
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            doc.text(`18-20.  ${data.answers['18-20'] || '(not answered)'}`, 25, y);
+            y += 11;
+            
+            // Section 3
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('SECTION 3 (Questions 21-30)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 21; i <= 30; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Section 4
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+            
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('SECTION 4 (Questions 31-40)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 31; i <= 40; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            // Save PDF
+            doc.save(`EDUNEST_Listening_Exam_${data.studentName.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`);
+        }
+
+        async function submitExam() {
+            const data = collectAnswers();
+            
+            if (!data.studentName) {
+                alert('Error: Student name not found.');
+                return;
+            }
+            
+            // Format answer sheet
+            const answerSheet = formatAnswerSheet(data);
+            
+            // Show results modal
+            document.getElementById('answerSheet').textContent = answerSheet;
+            document.getElementById('resultsModal').style.display = 'block';
+            
+            // Generate PDF automatically
+            await generatePDF(data);
+            
+            // Send to Telegram
+            const telegramText = `🎓 EDUNEST - IELTS MOCK EXAM
+📝 Listening Test Results
+
+👤 Name: ${data.studentName}
+📅 Date: ${new Date().toLocaleDateString()}
+⏰ Time: ${new Date().toLocaleTimeString()}
+
+━━━━━━━━━━━━━━━━━━━━
+ANSWERS:
+
+SECTION 1:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 1 && parseInt(k) <= 10).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+SECTION 2:
+${Object.keys(data.answers).filter(k => (parseInt(k) >= 11 && parseInt(k) <= 17) || k === '18-20').map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+SECTION 3:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 21 && parseInt(k) <= 30).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+SECTION 4:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 31 && parseInt(k) <= 40).map(k => `${k}. ${data.answers[k]}`).join('\n')}`;
+
+            try {
+                await fetch('https://mdrx18.pythonanywhere.com/api/telegram/send/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: telegramText,
+                        send_to_all_admins: true,
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+            }
+        }
+
+        function copyAnswers() {
+            const answerSheet = document.getElementById('answerSheet').textContent;
+            navigator.clipboard.writeText(answerSheet).then(() => {
+                alert('Answers copied to clipboard!');
+            });
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
