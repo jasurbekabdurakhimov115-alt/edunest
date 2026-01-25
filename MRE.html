@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - IELTS MOCK EXAM Reading Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .welcome-screen {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            border: 3px solid #dc2626;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.1);
+            overflow: hidden;
+        }
+
+        .welcome-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 2px solid #991b1b;
+        }
+
+        .welcome-brand {
+            font-size: 42px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: normal;
+            opacity: 0.95;
+            letter-spacing: 1px;
+        }
+
+        .welcome-content {
+            padding: 40px;
+        }
+
+        .student-name-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+        }
+
+        .student-name-label {
+            display: block;
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .student-name-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .student-name-input:focus {
+            outline: none;
+            border-color: #991b1b;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .instructions-section {
+            margin-bottom: 30px;
+        }
+
+        .instructions-title {
+            font-size: 20px;
+            color: #991b1b;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid #dc2626;
+            padding-bottom: 10px;
+        }
+
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            padding: 12px 0 12px 30px;
+            position: relative;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .instructions-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .start-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .exam-container {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 15px 30px;
+            border-bottom: 2px solid #991b1b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .exam-title {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .timer-display {
+            font-size: 28px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .navigation-bar {
+            background: #fef2f2;
+            padding: 15px 30px;
+            border-bottom: 2px solid #dc2626;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .passage-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .passage-btn {
+            padding: 10px 25px;
+            background: white;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .passage-btn:hover {
+            background: #fef2f2;
+        }
+
+        .passage-btn.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .student-info {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .passage-panel {
+            width: 50%;
+            overflow-y: auto;
+            padding: 30px;
+            border-right: 3px solid #dc2626;
+            background: white;
+        }
+
+        .questions-panel {
+            width: 50%;
+            overflow-y: auto;
+            padding: 30px;
+            background: #f9fafb;
+        }
+
+        .passage-content {
+            display: none;
+        }
+
+        .passage-content.active {
+            display: block;
+        }
+
+        .passage-title {
+            font-size: 24px;
+            color: #000;
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .passage-text {
+            line-height: 1.8;
+            font-size: 15px;
+            color: #000;
+        }
+
+        .passage-text p {
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+
+        .passage-text p strong {
+            font-weight: bold;
+        }
+
+        .highlighted {
+            background-color: #fef08a !important;
+            cursor: pointer;
+        }
+
+        .questions-content {
+            display: none;
+        }
+
+        .questions-content.active {
+            display: block;
+        }
+
+        .question-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .question-header {
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .question-instruction {
+            margin-bottom: 15px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .answer-format {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f9fafb;
+            border-left: 3px solid #dc2626;
+        }
+
+        .answer-format div {
+            margin: 5px 0;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fefefe;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 8px 12px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #991b1b;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .tf-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .tf-option {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .tf-option:hover {
+            background: #fef2f2;
+        }
+
+        .tf-option.selected {
+            background: #dc2626;
+            color: white;
+        }
+
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mcq-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mcq-option:hover {
+            background: #fef2f2;
+        }
+
+        .mcq-option.selected {
+            background: #dc2626;
+            color: white;
+        }
+
+        .heading-bank {
+            background: #f9fafb;
+            padding: 20px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .heading-bank-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .draggable-heading {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .draggable-heading:hover {
+            background: #fef2f2;
+        }
+
+        .draggable-heading.selected {
+            background: #dc2626;
+            color: white;
+        }
+
+        .draggable-heading.used {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .drop-zone {
+            min-height: 50px;
+            padding: 12px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            background: white;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .drop-zone.filled {
+            background: #fef2f2;
+        }
+
+        .drop-zone-content {
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        .drop-zone.filled .drop-zone-content {
+            color: #000;
+            font-style: normal;
+        }
+
+        .summary-box {
+            background: #f9fafb;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .word-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .word-item {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .footer {
+            background: #fef2f2;
+            padding: 20px 30px;
+            border-top: 2px solid #dc2626;
+            text-align: center;
+        }
+
+        .submit-button {
+            padding: 15px 50px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid #dc2626;
+        }
+
+        .modal-header {
+            font-size: 28px;
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .answer-sheet {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 4px;
+            border: 2px solid #dc2626;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            padding: 12px 30px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            background: #b91c1c;
+        }
+
+        .proctoring-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            border: 3px solid #dc2626;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+
+        .proctoring-alert.active {
+            display: block;
+        }
+
+        .proctoring-alert h2 {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+
+        .proctoring-alert p {
+            margin-bottom: 20px;
+            color: #374151;
+        }
+
+        .proctoring-alert input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .proctoring-alert button {
+            padding: 12px 30px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .violation-log {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1500;
+            display: none;
+        }
+
+        .violation-log.active {
+            display: block;
+        }
+
+        .blackout-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1999;
+            display: none;
+        }
+
+        .blackout-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-header">
+            <div class="welcome-brand">EDUNEST</div>
+            <div class="welcome-title">IELTS Mock Exam - Reading Test</div>
+        </div>
+        <div class="welcome-content">
+            <div class="student-name-section">
+                <label class="student-name-label">Enter Your Full Name:</label>
+                <input type="text" id="studentName" class="student-name-input" placeholder="John Doe">
+                <div class="error-message" id="nameError">Please enter your name.</div>
+            </div>
+            <div class="instructions-section">
+                <div class="instructions-title">Test Instructions</div>
+                <ul class="instructions-list">
+                    <li>The test consists of 3 reading passages with 40 questions total</li>
+                    <li>You have 60 minutes to complete all questions</li>
+                    <li>You can highlight text by selecting it (click to remove)</li>
+                    <li>You can navigate between passages at any time</li>
+                    <li>The test must be taken in fullscreen mode</li>
+                    <li>Do not switch tabs, minimize the window, or exit fullscreen</li>
+                    <li>If you violate proctoring rules, you must re-enter the code</li>
+                    <li>Your answers will be automatically saved and submitted</li>
+                </ul>
+            </div>
+            <button class="start-button" onclick="startExam()">Start Exam</button>
+        </div>
+    </div>
+
+    <div class="exam-container" id="examContainer">
+        <div class="header">
+            <div class="header-left">
+                <div class="brand">EDUNEST</div>
+                <div class="exam-title">IELTS Reading Test</div>
+            </div>
+            <div class="timer-display" id="timer">60:00</div>
+        </div>
+
+        <div class="navigation-bar">
+            <div class="passage-buttons">
+                <button class="passage-btn active" onclick="showPassage(1)">Passage 1</button>
+                <button class="passage-btn" onclick="showPassage(2)">Passage 2</button>
+                <button class="passage-btn" onclick="showPassage(3)">Passage 3</button>
+            </div>
+            <div class="student-info" id="studentInfo">Student: </div>
+        </div>
+
+        <div class="main-content">
+            <div class="passage-panel">
+                <!-- Passage 1 -->
+                <div class="passage-content active" id="passage1">
+                    <div class="passage-title">Why we need to protect polar bears</div>
+                    <div class="passage-text" id="passageText1">
+                        <p>Polar bears are being increasingly threatened by the effects of climate change, but their disappearance could have far-reaching consequences. They are uniquely adapted to the extreme conditions of the Arctic Circle, where temperatures can reach −40°C. One reason for this is that they have up to 11 centimetres of fat underneath their skin. Humans with comparative levels of adipose tissue would be considered obese and would be likely to suffer from diabetes and heart disease. Yet the polar bear experiences no such consequences.</p>
+
+                        <p>A 2014 study by Shi Ping Liu and colleagues sheds light on this mystery. They compared the genetic structure of polar bears with that of their closest relatives from a warmer climate, the brown bears. This allowed them to determine the genes that have allowed polar bears to survive in one of the toughest environments on Earth. Liu and his colleagues found that polar bears had a gene known as APoB, which reduces levels of low-density lipoproteins (LDLs) – a form of 'bad' cholesterol. In humans, mutations of this gene are associated with increased risk of heart disease. Polar bears may therefore be an important study model to understand heart disease in humans.</p>
+
+                        <p>The genome of the polar bear may also provide the solution for another condition, one that particularly affects our older generation: osteoporosis. This is a disease where bones show reduced density, usually caused by insufficient exercise, reduced calcium intake or food starvation. Bone tissue is constantly being remodelled, meaning that bone is added or removed, depending on nutrient availability and the stress that the bone is under. Female polar bears, however, undergo extreme conditions during every pregnancy. Once autumn comes around, these females will dig maternity dens in the snow and will remain there throughout the winter, both before and after the birth of their cubs. This process results in about six months of fasting, where the female bears have to keep themselves and their cubs alive, depleting their own calcium and calorie reserves. Despite this, their bones remain strong and dense.</p>
+
+                        <p>Physiologists Alanda Lennox and Allen Goodship found an explanation for this paradox in 2008. They discovered that pregnant bears were able to increase the density of their bones before they started to build their dens. In addition, six months later, when they finally emerged from the den with their cubs, there was no evidence of significant loss of bone density. Hibernating brown bears do not have this capacity and must therefore resort to major bone reformation in the following spring. If the mechanism of bone remodelling in polar bears can be understood, many bedridden humans, and even astronauts, could potentially benefit.</p>
+
+                        <p>The medical benefits of the polar bear for humanity certainly have their importance in our conservation efforts, but these should not be the only factors taken into consideration. We tend to want to protect animals we think are intelligent and possess emotions, such as elephants and primates. Bears, on the other hand, seem to be perceived as stupid and in many cases violent. And yet anecdotal evidence from the field challenges those assumptions, suggesting for example that polar bears have good problem-solving abilities. A male bear called GoGo in Tennoji Zoo, Osaka, has even been observed making use of a tool to manipulate his environment. The bear used a tree branch on multiple occasions to dislodge a piece of meat hung out of his reach. Problem-solving ability has also been witnessed in wild polar bears, although not as obviously as with GoGo. A calculated move by a male bear involved running and jumping onto barrels in an attempt to get to a photographer standing on a platform four metres high.</p>
+
+                        <p>In other studies, such as one by Alison Ames in 2008, polar bears showed deliberate and focussed manipulation. For example, Ames observed bears putting objects in piles and then knocking them over in what appeared to be a game. The study demonstrates that bears are capable of agile and thought-out behaviours. These examples suggest bears have greater creativity and problem-solving abilities than previously thought.</p>
+
+                        <p>As for emotions, while the evidence is once again anecdotal, many bears have been seen to hit out at ice and snow – seemingly out of frustration – when they have just missed out on a kill. Moreover, polar bears can form unusual relationships with other species, including playing with the dogs used to pull sleds in the Arctic. Remarkably, one hand-raised polar bear called Agee has formed a close relationship with her owner Mark Dumas to the point where they even swim together. This is even more astonishing since polar bears are known to actively hunt humans in the wild.</p>
+
+                        <p>If climate change were to lead to their extinction, this would mean not only the loss of potential breakthroughs in human medicine, but more importantly, the disappearance of an intelligent, majestic animal.</p>
+                    </div>
+                </div>
+
+                <!-- Passage 2 -->
+                <div class="passage-content" id="passage2">
+                    <div class="passage-title">The Step Pyramid of Djoser</div>
+                    <div class="passage-text" id="passageText2">
+                        <p><strong>A</strong> The pyramids are the most famous monuments of ancient Egypt and still hold enormous interest for people in the present day. These grand, impressive tributes to the memory of the Egyptian kings have become linked with the country even though other cultures, such as the Chinese and Mayan, also built pyramids. The evolution of the pyramid form has been written and argued about for centuries. However, there is no question that, as far as Egypt is concerned, it began with one monument to one king designed by one brilliant architect: the Step Pyramid of Djoser at Saqqara.</p>
+
+                        <p><strong>B</strong> Djoser was the first king of the Third Dynasty of Egypt and the first to build in stone. Prior to Djoser's reign, tombs were rectangular monuments made of dried clay brick, which covered underground passages where the deceased person was buried. For reasons which remain unclear, Djoser's main official, whose name was Imhotep, conceived of building a taller, more impressive tomb for his king by stacking stone slabs on top of one another, progressively making them smaller, to form the shape now known as the Step Pyramid. Djoser is thought to have reigned for 19 years, but some historians and scholars attribute a much longer time for his rule, owing to the number and size of the monuments he built.</p>
+
+                        <p><strong>C</strong> The Step Pyramid has been thoroughly examined and investigated over the last century, and it is now known that the building process went through many different stages. Historian Marc Van de Mieroop comments on this, writing 'Much experimentation was involved, which is especially clear in the construction of the pyramid in the center of the complex. It had several plans … before it became the first Step Pyramid in history, piling six levels on top of one another … The weight of the enormous mass was a challenge for the builders, who placed the stones at an inward incline in order to prevent the monument breaking up.'</p>
+
+                        <p><strong>D</strong> When finally completed, the Step Pyramid rose 62 meters high and was the tallest structure of its time. The complex in which it was built was the size of a city in ancient Egypt and included a temple, courtyards, shrines, and living quarters for the priests. It covered a region of 16 hectares and was surrounded by a wall 10.5 meters high. The wall had 13 false doors cut into it with only one true entrance cut into the south-east corner; the entire wall was then ringed by a trench 750 meters long and 40 meters wide. The false doors and the trench were incorporated into the complex to discourage unwanted visitors. If someone wished to enter, he or she would have needed to know in advance how to find the location of the true opening in the wall. Djoser was so proud of his accomplishment that he broke the tradition of having only his own name on the monument and had Imhotep's name carved on it as well.</p>
+
+                        <p><strong>E</strong> The burial chamber of the tomb, where the king's body was laid to rest, was dug beneath the base of the pyramid, surrounded by a vast maze of long tunnels that had rooms off them to discourage robbers. One of the most mysterious discoveries found inside the pyramid was a large number of stone vessels. Over 40,000 of these vessels, of various forms and shapes, were discovered in storerooms off the pyramid's underground passages. They are inscribed with the names of rulers from the First and Second Dynasties of Egypt and made from different kinds of stone. There is no agreement among scholars and archaeologists on why the vessels were placed in the tomb of Djoser or what they were supposed to represent. The archaeologist Jean-Philippe Lauer, who excavated most of the pyramid and complex, believes they were originally stored and then given a 'proper burial' by Djoser in his pyramid to honor his predecessors. There are other historians, however, who claim the vessels were dumped into the shafts as yet another attempt to prevent grave robbers from getting to the king's burial chamber.</p>
+
+                        <p><strong>F</strong> Unfortunately, all of the precautions and intricate design of the underground network did not prevent ancient robbers from finding a way in. Djoser's grave goods, and even his body, were stolen at some point in the past and all archaeologists found were a small number of his valuables overlooked by the thieves. There was enough left throughout the pyramid and its complex, however, to astonish and amaze the archaeologists who excavated it.</p>
+
+                        <p><strong>G</strong> Egyptologist Miroslav Verner writes, 'Few monuments hold a place in human history as significant as that of the Step Pyramid in Saqqara … It can be said without exaggeration that this pyramid complex constitutes a milestone in the evolution of monumental stone architecture in Egypt and in the world as a whole.' The Step Pyramid was a revolutionary advance in architecture and became the archetype which all the other great pyramid builders of Egypt would follow.</p>
+                    </div>
+                </div>
+
+                <!-- Passage 3 -->
+                <div class="passage-content" id="passage3">
+                    <div class="passage-title">The future of work</div>
+                    <div class="passage-text" id="passageText3">
+                        <p>According to a leading business consultancy, 3–14% of the global workforce will need to switch to a different occupation within the next 10–15 years, and all workers will need to adapt as their occupations evolve alongside increasingly capable machines. Automation – or 'embodied artificial intelligence' (AI) – is one aspect of the disruptive effects of technology on the labour market. 'Disembodied AI', like the algorithms running in our smartphones, is another.</p>
+
+                        <p>Dr Stella Pachidi from Cambridge Judge Business School believes that some of the most fundamental changes are happening as a result of the 'algorithmication' of jobs that are dependent on data rather than on production – the so-called knowledge economy. Algorithms are capable of learning from data to undertake tasks that previously needed human judgement, such as reading legal contracts, analysing medical scans and gathering market intelligence.</p>
+
+                        <p>'In many cases, they can outperform humans,' says Pachidi. 'Organisations are attracted to using algorithms because they want to make choices based on what they consider is "perfect information", as well as to reduce costs and enhance productivity.'</p>
+
+                        <p>'But these enhancements are not without consequences,' says Pachidi. 'If routine cognitive tasks are taken over by AI, how do professions develop their future experts?' she asks. 'One way of learning about a job is "legitimate peripheral participation" – a novice stands next to experts and learns by observation. If this isn't happening, then you need to find new ways to learn.'</p>
+
+                        <p>Another issue is the extent to which the technology influences or even controls the workforce. For over two years, Pachidi monitored a telecommunications company. 'The way telecoms salespeople work is through personal and frequent contact with clients, using the benefit of experience to assess a situation and reach a decision. However, the company had started using a[n] … algorithm that defined when account managers should contact certain customers about which kinds of campaigns and what to offer them.'</p>
+
+                        <p>The algorithm – usually built by external designers – often becomes the keeper of knowledge, she explains. In cases like this, Pachidi believes, a short-sighted view begins to creep into working practices whereby workers learn through the 'algorithm's eyes' and become dependent on its instructions. Alternative explorations – where experimentation and human instinct lead to progress and new ideas – are effectively discouraged.</p>
+
+                        <p>Pachidi and colleagues even observed people developing strategies to make the algorithm work to their own advantage. 'We are seeing cases where workers feed the algorithm with false data to reach their targets,' she reports.</p>
+
+                        <p>It's scenarios like these that many researchers are working to avoid. Their objective is to make AI technologies more trustworthy and transparent, so that organisations and individuals understand how AI decisions are made. In the meantime, says Pachidi, 'We need to make sure we fully understand the dilemmas that this new world raises regarding expertise, occupational boundaries and control.'</p>
+
+                        <p>Economist Professor Hamish Low believes that the future of work will involve major transitions across the whole life course for everyone: 'The traditional trajectory of full-time education followed by full-time work followed by a pensioned retirement is a thing of the past,' says Low. Instead, he envisages a multistage employment life: one where retraining happens across the life course, and where multiple jobs and no job happen by choice at different stages.</p>
+
+                        <p>On the subject of job losses, Low believes the predictions are founded on a fallacy: 'It assumes that the number of jobs is fixed. If in 30 years, half of 100 jobs are being carried out by robots, that doesn't mean we are left with just 50 jobs for humans. The number of jobs will increase: we would expect there to be 150 jobs.'</p>
+
+                        <p>Dr Ewan McGaughey, at Cambridge's Centre for Business Research and King's College London, agrees that 'apocalyptic' views about the future of work are misguided. 'It's the laws that restrict the supply of capital to the job market, not the advent of new technologies that causes unemployment.'</p>
+
+                        <p>His recently published research answers the question of whether automation, AI and robotics will mean a 'jobless future' by looking at the causes of unemployment. 'History is clear that change can mean redundancies. But social policies can tackle this through retraining and redeployment.'</p>
+
+                        <p>He adds: 'If there is going to be change to jobs as a result of AI and robotics then I'd like to see governments seizing the opportunity to improve policy to enforce good job security. We can "reprogramme" the law to prepare for a fairer future of work and leisure.' McGaughey's findings are a call to arms to leaders of organisations, governments and banks to pre-empt the coming changes with bold new policies that guarantee full employment, fair incomes and a thriving economic democracy.</p>
+
+                        <p>'The promises of these new technologies are astounding. They deliver humankind the capacity to live in a way that nobody could have once imagined,' he adds. 'Just as the industrial revolution brought people past subsistence agriculture, and the corporate revolution enabled mass production, a third revolution has been pronounced. But it will not only be one of technology. The next revolution will be social.'</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="questions-panel">
+                <!-- Questions for Passage 1 -->
+                <div class="questions-content active" id="questions1">
+                    <div class="question-section">
+                        <div class="question-header">Questions 1–7</div>
+                        <div class="question-instruction">
+                            Do the following statements agree with the information given in Reading Passage 1?<br><br>
+                            In boxes 1–7 on your answer sheet, write
+                        </div>
+                        <div class="answer-format">
+                            <div><strong>TRUE</strong> if the statement agrees with the information</div>
+                            <div><strong>FALSE</strong> if the statement contradicts the information</div>
+                            <div><strong>NOT GIVEN</strong> if there is no information on this</div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">1</div>
+                            <div class="question-text">Polar bears suffer from various health problems due to the build-up of fat under their skin.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(1, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(1, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(1, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">2</div>
+                            <div class="question-text">The study done by Liu and his colleagues compared different groups of polar bears.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(2, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(2, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(2, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">3</div>
+                            <div class="question-text">Liu and colleagues were the first researchers to compare polar bears and brown bears genetically.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(3, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(3, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(3, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">4</div>
+                            <div class="question-text">Polar bears are able to control their levels of 'bad' cholesterol by genetic means.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(4, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(4, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(4, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">5</div>
+                            <div class="question-text">Female polar bears are able to survive for about six months without food.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(5, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(5, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(5, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">6</div>
+                            <div class="question-text">It was found that the bones of female polar bears were very weak when they came out of their dens in spring.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(6, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(6, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(6, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">7</div>
+                            <div class="question-text">The polar bear's mechanism for increasing bone density could also be used by people one day.</div>
+                            <div class="tf-options">
+                                <div class="tf-option" onclick="selectTF(7, 'TRUE')">TRUE</div>
+                                <div class="tf-option" onclick="selectTF(7, 'FALSE')">FALSE</div>
+                                <div class="tf-option" onclick="selectTF(7, 'NOT GIVEN')">NOT GIVEN</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 8–13</div>
+                        <div class="question-instruction">
+                            Complete the table below.<br><br>
+                            Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.<br><br>
+                            Write your answers in boxes 8–13 on your answer sheet.
+                        </div>
+
+                        <div class="summary-box">
+                            <strong>Reasons why polar bears should be protected</strong><br><br>
+                            People think of bears as unintelligent and <strong>8</strong> <input type="text" class="answer-input" data-question="8" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> .<br><br>
+                            However, this may not be correct. For example:
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>In Tennoji Zoo, a bear has been seen using a branch as a <strong>9</strong> <input type="text" class="answer-input" data-question="9" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> . This allowed him to knock down some <strong>10</strong> <input type="text" class="answer-input" data-question="10" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> .</li>
+                                <li>A wild polar bear worked out a method of reaching a platform where a <strong>11</strong> <input type="text" class="answer-input" data-question="11" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> was located.</li>
+                                <li>Polar bears have displayed behaviour such as conscious manipulation of objects and activity similar to a <strong>12</strong> <input type="text" class="answer-input" data-question="12" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> .</li>
+                            </ul>
+                            <br>
+                            Bears may also display emotions. For example:
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>They may make movements suggesting <strong>13</strong> <input type="text" class="answer-input" data-question="13" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> if disappointed when hunting.</li>
+                                <li>They may form relationships with other species.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions for Passage 2 -->
+                <div class="questions-content" id="questions2">
+                    <div class="question-section">
+                        <div class="question-header">Questions 14–20</div>
+                        <div class="question-instruction">
+                            Reading Passage 2 has seven paragraphs, <strong>A–G</strong>.<br><br>
+                            Choose the correct heading for each paragraph from the list of headings below.<br><br>
+                            Write the correct number, <strong>i–ix</strong>, in boxes 14–20 on your answer sheet.
+                        </div>
+
+                        <div class="heading-bank">
+                            <div class="heading-bank-title"><strong>List of Headings</strong></div>
+                            <div class="draggable-heading" data-heading="i" onclick="selectHeading(this, 'i')">
+                                <strong>i</strong> The areas and artefacts within the pyramid itself
+                            </div>
+                            <div class="draggable-heading" data-heading="ii" onclick="selectHeading(this, 'ii')">
+                                <strong>ii</strong> A difficult task for those involved
+                            </div>
+                            <div class="draggable-heading" data-heading="iii" onclick="selectHeading(this, 'iii')">
+                                <strong>iii</strong> A king who saved his people
+                            </div>
+                            <div class="draggable-heading" data-heading="iv" onclick="selectHeading(this, 'iv')">
+                                <strong>iv</strong> A single certainty among other less definite facts
+                            </div>
+                            <div class="draggable-heading" data-heading="v" onclick="selectHeading(this, 'v')">
+                                <strong>v</strong> An overview of the external buildings and areas
+                            </div>
+                            <div class="draggable-heading" data-heading="vi" onclick="selectHeading(this, 'vi')">
+                                <strong>vi</strong> A pyramid design that others copied
+                            </div>
+                            <div class="draggable-heading" data-heading="vii" onclick="selectHeading(this, 'vii')">
+                                <strong>vii</strong> An idea for changing the design of burial structures
+                            </div>
+                            <div class="draggable-heading" data-heading="viii" onclick="selectHeading(this, 'viii')">
+                                <strong>viii</strong> An incredible experience despite the few remains
+                            </div>
+                            <div class="draggable-heading" data-heading="ix" onclick="selectHeading(this, 'ix')">
+                                <strong>ix</strong> The answers to some unexpected questions
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">14 Paragraph A</div>
+                            <div class="drop-zone" data-question="14" onclick="showHeadingSelection(14)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">15 Paragraph B</div>
+                            <div class="drop-zone" data-question="15" onclick="showHeadingSelection(15)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">16 Paragraph C</div>
+                            <div class="drop-zone" data-question="16" onclick="showHeadingSelection(16)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">17 Paragraph D</div>
+                            <div class="drop-zone" data-question="17" onclick="showHeadingSelection(17)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">18 Paragraph E</div>
+                            <div class="drop-zone" data-question="18" onclick="showHeadingSelection(18)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">19 Paragraph F</div>
+                            <div class="drop-zone" data-question="19" onclick="showHeadingSelection(19)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">20 Paragraph G</div>
+                            <div class="drop-zone" data-question="20" onclick="showHeadingSelection(20)">
+                                <div class="drop-zone-content">Click to select heading</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 21–24</div>
+                        <div class="question-instruction">
+                            Complete the notes below.<br><br>
+                            Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.<br><br>
+                            Write your answers in boxes 21–24 on your answer sheet.
+                        </div>
+
+                        <div class="summary-box">
+                            <strong>The Step Pyramid of Djoser</strong><br><br>
+                            The complex that includes the Step Pyramid and its surroundings is considered to be as big as an Egyptian <strong>21</strong> <input type="text" class="answer-input" data-question="21" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> of the past. The area outside the pyramid included accommodation that was occupied by <strong>22</strong> <input type="text" class="answer-input" data-question="22" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> , along with many other buildings and features.<br><br>
+                            A wall ran around the outside of the complex and a number of false entrances were built into this. In addition, a long <strong>23</strong> <input type="text" class="answer-input" data-question="23" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> encircled the wall. As a result, any visitors who had not been invited were cleverly prevented from entering the pyramid grounds unless they knew the <strong>24</strong> <input type="text" class="answer-input" data-question="24" placeholder="......." style="display: inline-block; width: 150px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> of the real entrance.
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 25–26</div>
+                        <div class="question-instruction">
+                            Choose <strong>TWO</strong> letters, <strong>A–E</strong>.<br><br>
+                            Write the correct letters in boxes 25 and 26 on your answer sheet.<br><br>
+                            Which <strong>TWO</strong> of the following points does the writer make about King Djoser?
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">25–26</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 25, 'A')">
+                                    <strong>A</strong> Initially he had to be persuaded to build in stone rather than clay.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 25, 'B')">
+                                    <strong>B</strong> There is disagreement concerning the length of his reign.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 25, 'C')">
+                                    <strong>C</strong> He failed to appreciate Imhotep's part in the design of the Step Pyramid.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 25, 'D')">
+                                    <strong>D</strong> A few of his possessions were still in his tomb when archaeologists found it.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 25, 'E')">
+                                    <strong>E</strong> He criticised the design and construction of other pyramids in Egypt.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions for Passage 3 -->
+                <div class="questions-content" id="questions3">
+                    <div class="question-section">
+                        <div class="question-header">Questions 27–30</div>
+                        <div class="question-instruction">
+                            Choose the correct letter, <strong>A, B, C or D</strong>.<br><br>
+                            Write the correct letter in boxes 27–30 on your answer sheet.
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">27 The first paragraph tells us about</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 27, 'A')">
+                                    <strong>A</strong> the kinds of jobs that will be most affected by the growth of AI.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 27, 'B')">
+                                    <strong>B</strong> the extent to which AI will alter the nature of the work that people do.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 27, 'C')">
+                                    <strong>C</strong> the proportion of the world's labour force who will have jobs in AI in the future.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 27, 'D')">
+                                    <strong>D</strong> the difference between ways that embodied and disembodied AI will impact on workers.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">28 According to the second paragraph, what is Stella Pachidi's view of the 'knowledge economy'?</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 28, 'A')">
+                                    <strong>A</strong> It is having an influence on the number of jobs available.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 28, 'B')">
+                                    <strong>B</strong> It is changing people's attitudes towards their occupations.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 28, 'C')">
+                                    <strong>C</strong> It is the main reason why the production sector is declining.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 28, 'D')">
+                                    <strong>D</strong> It is a key factor driving current developments in the workplace.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">29 What did Pachidi observe at the telecommunications company?</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 29, 'A')">
+                                    <strong>A</strong> staff disagreeing with the recommendations of AI
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 29, 'B')">
+                                    <strong>B</strong> staff feeling resentful about the intrusion of AI in their work
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 29, 'C')">
+                                    <strong>C</strong> staff making sure that AI produces the results that they want
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 29, 'D')">
+                                    <strong>D</strong> staff allowing AI to carry out tasks they ought to do themselves
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">30 In his recently published research, Ewan McGaughey</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 30, 'A')">
+                                    <strong>A</strong> challenges the idea that redundancy is a negative thing.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 30, 'B')">
+                                    <strong>B</strong> shows the profound effect of mass unemployment on society.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 30, 'C')">
+                                    <strong>C</strong> highlights some differences between past and future job losses.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 30, 'D')">
+                                    <strong>D</strong> illustrates how changes in the job market can be successfully handled.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 31–34</div>
+                        <div class="question-instruction">
+                            Complete the summary using the list of words, <strong>A–G</strong>, below.<br><br>
+                            Write the correct letter, <strong>A–G</strong>, in boxes 31–34 on your answer sheet.
+                        </div>
+
+                        <div class="summary-box">
+                            <strong>The 'algorithmication' of jobs</strong><br><br>
+                            Stella Pachidi of Cambridge Judge Business School has been focusing on the 'algorithmication' of jobs which rely not on production but on <strong>31</strong> <input type="text" class="answer-input" data-question="31" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> .<br><br>
+                            While monitoring a telecommunications company, Pachidi observed a growing <strong>32</strong> <input type="text" class="answer-input" data-question="32" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> on the recommendations made by AI, as workers begin to learn through the 'algorithm's eyes'. Meanwhile, staff are deterred from experimenting and using their own <strong>33</strong> <input type="text" class="answer-input" data-question="33" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> , and are therefore prevented from achieving innovation.<br><br>
+                            To avoid the kind of situations which Pachidi observed, researchers are trying to make AI's decision-making process easier to comprehend, and to increase users' <strong>34</strong> <input type="text" class="answer-input" data-question="34" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"> with regard to the technology.
+                        </div>
+
+                        <div class="word-list">
+                            <div class="word-item"><strong>A</strong> pressure</div>
+                            <div class="word-item"><strong>B</strong> satisfaction</div>
+                            <div class="word-item"><strong>C</strong> intuition</div>
+                            <div class="word-item"><strong>D</strong> promotion</div>
+                            <div class="word-item"><strong>E</strong> reliance</div>
+                            <div class="word-item"><strong>F</strong> confidence</div>
+                            <div class="word-item"><strong>G</strong> information</div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 35–40</div>
+                        <div class="question-instruction">
+                            Look at the following statements (Questions 35–40) and the list of people below.<br><br>
+                            Match each statement with the correct person, <strong>A, B or C</strong>.<br><br>
+                            Write the correct letter, <strong>A, B or C</strong>, in boxes 35–40 on your answer sheet.<br><br>
+                            <strong>NB</strong> You may use any letter more than once.
+                        </div>
+
+                        <div class="summary-box">
+                            <strong>List of people</strong><br>
+                            <strong>A</strong> Stella Pachidi<br>
+                            <strong>B</strong> Hamish Low<br>
+                            <strong>C</strong> Ewan McGaughey
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">35</div>
+                            <div class="question-text">Greater levels of automation will not result in lower employment.</div>
+                            <div class="question-text" style="margin-top: 10px;"><strong>35</strong> <input type="text" class="answer-input" data-question="35" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">36</div>
+                            <div class="question-text">There are several reasons why AI is appealing to businesses.</div>
+                            <div class="question-text" style="margin-top: 10px;"><strong>36</strong> <input type="text" class="answer-input" data-question="36" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">37</div>
+                            <div class="question-text">AI's potential to transform people's lives has parallels with major cultural shifts which occurred in previous eras.</div>
+                            <div class="question-text" style="margin-top: 10px;"><strong>37</strong> <input type="text" class="answer-input" data-question="37" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">38</div>
+                            <div class="question-text">It is important to be aware of the range of problems that AI causes.</div>
+                            <div class="question-text" style="margin-top: 10px;"><strong>38</strong> <input type="text" class="answer-input" data-question="38" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">39</div>
+                            <div class="question-text">People are going to follow a less conventional career path than in the past.</div>
+                            <div class="question-text" style="margin-top: 10px;"><strong>39</strong> <input type="text" class="answer-input" data-question="39" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">40</div>
+                            <div class="question-text">Authorities should take measures to ensure that there will be adequately paid work for everyone.</div>
+                            <div class="question-text" style="margin-top: 10px;"><strong>40</strong> <input type="text" class="answer-input" data-question="40" placeholder="......." style="display: inline-block; width: 100px; border: none; border-bottom: 2px solid #dc2626; padding: 4px 8px; background: transparent;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="submit-button" onclick="submitExam()">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-header">Exam Submitted Successfully!</div>
+            <div class="answer-sheet" id="answerSheet"></div>
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="copyAnswers()">Copy Answers</button>
+                <button class="modal-button" onclick="closeResults()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="proctoring-alert" id="proctoringAlert">
+        <h2>⚠️ Proctoring Violation Detected</h2>
+        <p id="violationMessage">You have switched tabs or lost focus. Enter the reactivation code to continue.</p>
+        <input type="text" id="reactivationInput" placeholder="Enter Reactivation Code">
+        <div class="error-message" id="reactivationError" style="display: none;">Invalid code. Try again.</div>
+        <div style="margin: 10px 0; font-weight: bold;">Time remaining: <span id="reactivationTimer">60</span> seconds</div>
+        <button onclick="verifyReactivation()">Continue Exam</button>
+    </div>
+
+    <div class="violation-log" id="violationLog">
+        Violations: <span id="violationCount">0</span>
+    </div>
+
+    <div class="blackout-overlay" id="blackoutOverlay"></div>
+
+    <script>
+        let timerInterval;
+        let reactivationTimerInterval;
+        let studentName = '';
+        let violationCount = 0;
+        let examStarted = false;
+        let reactivationTimeLeft = 60;
+        let currentHeadingSelection = null;
+        let headingAnswers = {};
+        let mcqAnswers = {};
+        const CORRECT_CODE = 'C16T1R';
+
+        function startExam() {
+            const nameInput = document.getElementById('studentName');
+            const name = nameInput.value.trim();
+            const nameError = document.getElementById('nameError');
+            
+            if (!name) {
+                nameError.style.display = 'block';
+                return;
+            }
+            
+            nameError.style.display = 'none';
+            studentName = name;
+            
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('examContainer').style.display = 'flex';
+            document.getElementById('studentInfo').textContent = 'Student: ' + studentName;
+            
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen request failed:', err);
+                });
+            }
+            
+            examStarted = true;
+            startTimer();
+            initializeProctoring();
+            initializeHighlighting();
+        }
+
+        function initializeProctoring() {
+            window.addEventListener('blur', handleViolation);
+            
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('fullscreenchange', function() {
+                if (!document.fullscreenElement && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('webkitfullscreenchange', function() {
+                if (!document.webkitFullscreenElement && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('mozfullscreenchange', function() {
+                if (!document.mozFullScreenElement && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (examStarted) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (examStarted) {
+                    if (e.altKey || e.metaKey || (e.ctrlKey && e.key === 'Tab')) {
+                        handleViolation();
+                    }
+                    if (e.key === 'F11') {
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+
+        function handleViolation() {
+            if (!examStarted) return;
+            
+            violationCount++;
+            document.getElementById('violationCount').textContent = violationCount;
+            document.getElementById('violationLog').classList.add('active');
+            
+            const alert = document.getElementById('proctoringAlert');
+            const message = document.getElementById('violationMessage');
+            const blackout = document.getElementById('blackoutOverlay');
+            
+            message.textContent = 'Violation detected! Enter the reactivation code to continue. You have 60 seconds.';
+            
+            blackout.classList.add('active');
+            alert.classList.add('active');
+            document.getElementById('reactivationInput').value = '';
+            document.getElementById('reactivationInput').focus();
+            
+            startReactivationTimer();
+        }
+
+        function startReactivationTimer() {
+            reactivationTimeLeft = 60;
+            document.getElementById('reactivationTimer').textContent = reactivationTimeLeft;
+            
+            if (reactivationTimerInterval) {
+                clearInterval(reactivationTimerInterval);
+            }
+            
+            reactivationTimerInterval = setInterval(() => {
+                reactivationTimeLeft--;
+                document.getElementById('reactivationTimer').textContent = reactivationTimeLeft;
+                
+                if (reactivationTimeLeft <= 0) {
+                    clearInterval(reactivationTimerInterval);
+                    terminateExam();
+                }
+            }, 1000);
+        }
+
+        function verifyReactivation() {
+            const input = document.getElementById('reactivationInput').value.trim();
+            const errorDiv = document.getElementById('reactivationError');
+            
+            if (input.toUpperCase() === CORRECT_CODE) {
+                clearInterval(reactivationTimerInterval);
+                errorDiv.style.display = 'none';
+                document.getElementById('proctoringAlert').classList.remove('active');
+                document.getElementById('blackoutOverlay').classList.remove('active');
+                
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log('Cannot re-enter fullscreen:', err);
+                    });
+                }
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('reactivationInput').value = '';
+                document.getElementById('reactivationInput').focus();
+            }
+        }
+
+        function terminateExam() {
+            examStarted = false;
+            clearInterval(timerInterval);
+            clearInterval(reactivationTimerInterval);
+            
+            alert('Test terminated due to failure to enter reactivation code in time.');
+            
+            const data = collectAnswers();
+            data.terminated = true;
+            data.terminationReason = 'Failed to enter reactivation code';
+            
+            submitExamData(data);
+        }
+
+        function startTimer() {
+            let timeLeft = 3600;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitExam();
+                }
+            }, 1000);
+        }
+
+        function showPassage(passageNum) {
+            document.querySelectorAll('.passage-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.questions-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.passage-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById('passage' + passageNum).classList.add('active');
+            document.getElementById('questions' + passageNum).classList.add('active');
+            document.querySelectorAll('.passage-btn')[passageNum - 1].classList.add('active');
+        }
+
+        function initializeHighlighting() {
+            // Highlight passages
+            document.querySelectorAll('.passage-text').forEach(passage => {
+                makeHighlightable(passage);
+            });
+            
+            // Highlight question panels
+            document.querySelectorAll('.questions-panel').forEach(panel => {
+                makeHighlightable(panel);
+            });
+        }
+
+        function makeHighlightable(element) {
+            element.addEventListener('mouseup', function(e) {
+                // Don't highlight if clicking on input or button
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || 
+                    e.target.classList.contains('tf-option') || e.target.classList.contains('mcq-option') ||
+                    e.target.classList.contains('draggable-heading') || e.target.classList.contains('drop-zone')) {
+                    return;
+                }
+                
+                const selection = window.getSelection();
+                const selectedText = selection.toString().trim();
+                
+                if (selectedText.length > 0) {
+                    try {
+                        const range = selection.getRangeAt(0);
+                        
+                        // Create a span for highlighting
+                        const span = document.createElement('span');
+                        span.className = 'highlighted';
+                        
+                        // Check if we're clicking on already highlighted text
+                        if (range.startContainer.parentElement && 
+                            range.startContainer.parentElement.classList.contains('highlighted')) {
+                            // Remove highlight
+                            const highlightedElement = range.startContainer.parentElement;
+                            const parent = highlightedElement.parentNode;
+                            parent.replaceChild(document.createTextNode(highlightedElement.textContent), highlightedElement);
+                            parent.normalize();
+                        } else {
+                            // Add highlight
+                            range.surroundContents(span);
+                        }
+                        
+                        selection.removeAllRanges();
+                    } catch (e) {
+                        console.log('Highlight error:', e);
+                    }
+                }
+            });
+            
+            // Click to remove highlight
+            element.addEventListener('click', function(e) {
+                if (e.target.classList.contains('highlighted')) {
+                    const parent = e.target.parentNode;
+                    parent.replaceChild(document.createTextNode(e.target.textContent), e.target);
+                    parent.normalize();
+                }
+            });
+        }
+
+        function selectTF(questionNum, value) {
+            // Remove selection from all options for this question
+            const allOptions = document.querySelectorAll(`[onclick*="selectTF(${questionNum}"]`);
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            event.target.classList.add('selected');
+            
+            // Store answer
+            const questionKey = questionNum.toString();
+            if (!window.tfAnswers) window.tfAnswers = {};
+            window.tfAnswers[questionKey] = value;
+        }
+
+        function selectHeading(element, heading) {
+            if (currentHeadingSelection === null) return;
+            
+            // Find the drop zone
+            const dropZone = document.querySelector(`[data-question="${currentHeadingSelection}"]`);
+            if (!dropZone) return;
+            
+            // Store the answer
+            headingAnswers[currentHeadingSelection] = heading;
+            
+            // Update the drop zone content
+            const content = dropZone.querySelector('.drop-zone-content');
+            content.textContent = element.textContent;
+            dropZone.classList.add('filled');
+            
+            // Mark heading as used
+            document.querySelectorAll('.draggable-heading').forEach(h => {
+                h.classList.remove('selected');
+                if (Object.values(headingAnswers).includes(h.getAttribute('data-heading'))) {
+                    h.classList.add('used');
+                } else {
+                    h.classList.remove('used');
+                }
+            });
+            
+            currentHeadingSelection = null;
+        }
+
+        function showHeadingSelection(questionNum) {
+            // Highlight this drop zone
+            document.querySelectorAll('.drop-zone').forEach(dz => {
+                dz.style.borderColor = '#dc2626';
+            });
+            event.target.closest('.drop-zone').style.borderColor = '#991b1b';
+            event.target.closest('.drop-zone').style.borderWidth = '3px';
+            
+            currentHeadingSelection = questionNum;
+            
+            // Highlight all headings for selection
+            document.querySelectorAll('.draggable-heading').forEach(h => {
+                if (!h.classList.contains('used')) {
+                    h.style.cursor = 'pointer';
+                }
+            });
+        }
+
+        function selectMCQ(element, questionNum, value) {
+            const parentGroup = element.closest('.question-item');
+            
+            // For questions 25-26 (TWO answers), allow unlimited selections
+            if (questionNum === 25) {
+                if (!mcqAnswers[25]) mcqAnswers[25] = [];
+                
+                if (element.classList.contains('selected')) {
+                    // Deselect
+                    element.classList.remove('selected');
+                    mcqAnswers[25] = mcqAnswers[25].filter(a => a !== value);
+                } else {
+                    // Add to selection (no limit)
+                    element.classList.add('selected');
+                    mcqAnswers[25].push(value);
+                }
+            } else {
+                // Single selection for other MCQs
+                parentGroup.querySelectorAll('.mcq-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                element.classList.add('selected');
+                mcqAnswers[questionNum] = value;
+            }
+        }
+
+        function collectAnswers() {
+            const answers = {};
+            
+            // Collect TRUE/FALSE/NOT GIVEN answers
+            if (window.tfAnswers) {
+                Object.assign(answers, window.tfAnswers);
+            }
+            
+            // Collect text input answers
+            document.querySelectorAll('.answer-input').forEach(input => {
+                const questionNum = input.getAttribute('data-question');
+                if (questionNum) {
+                    answers[questionNum] = input.value.trim() || '(not answered)';
+                }
+            });
+            
+            // Collect heading answers
+            Object.assign(answers, headingAnswers);
+            
+            // Collect MCQ answers
+            Object.keys(mcqAnswers).forEach(key => {
+                if (key === '25' && Array.isArray(mcqAnswers[25])) {
+                    // Take only first 2 selections
+                    answers['25'] = mcqAnswers[25][0] || '(not answered)';
+                    answers['26'] = mcqAnswers[25][1] || '(not answered)';
+                } else {
+                    answers[key] = mcqAnswers[key] || '(not answered)';
+                }
+            });
+            
+            return { studentName, answers, violationCount };
+        }
+
+        function formatAnswerSheet(data) {
+            let sheet = `EDUNEST - IELTS MOCK EXAM
+Reading Test Answer Sheet
+═══════════════════════════════════════
+
+Student Name: ${data.studentName}
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+Test Code: ${CORRECT_CODE}
+Proctoring Violations: ${data.violationCount}
+${data.terminated ? 'Status: TERMINATED - ' + data.terminationReason : 'Status: Completed'}
+
+═══════════════════════════════════════
+
+PASSAGE 1 (Questions 1-13)
+───────────────────────────────────────`;
+            
+            for (let i = 1; i <= 13; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\nPASSAGE 2 (Questions 14-26)
+───────────────────────────────────────`;
+            
+            for (let i = 14; i <= 26; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\nPASSAGE 3 (Questions 27-40)
+───────────────────────────────────────`;
+            
+            for (let i = 27; i <= 40; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\n═══════════════════════════════════════\nEnd of Answer Sheet`;
+            
+            return sheet;
+        }
+
+        async function generatePDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(220, 38, 38);
+            doc.text('EDUNEST', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text('IELTS MOCK EXAM - Reading Test', 105, 30, { align: 'center' });
+            doc.text('Answer Sheet', 105, 38, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Student Name: ${data.studentName}`, 20, 50);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 56);
+            doc.text(`Time: ${new Date().toLocaleTimeString()}`, 20, 62);
+            doc.text(`Code: ${CORRECT_CODE}`, 20, 68);
+            doc.text(`Violations: ${data.violationCount}`, 20, 74);
+            if (data.terminated) {
+                doc.setTextColor(220, 38, 38);
+                doc.text(`Status: TERMINATED - ${data.terminationReason}`, 20, 80);
+                doc.setTextColor(0, 0, 0);
+            }
+            
+            let y = data.terminated ? 90 : 85;
+            
+            // Passage 1
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PASSAGE 1 (Questions 1-13)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 1; i <= 13; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Passage 2
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+            
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PASSAGE 2 (Questions 14-26)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 14; i <= 26; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Passage 3
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+            
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PASSAGE 3 (Questions 27-40)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 27; i <= 40; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            doc.save(`EDUNEST_Reading_${CORRECT_CODE}_${data.studentName.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`);
+        }
+
+        async function submitExamData(data) {
+            const answerSheet = formatAnswerSheet(data);
+            
+            document.getElementById('answerSheet').textContent = answerSheet;
+            document.getElementById('resultsModal').style.display = 'flex';
+            
+            await generatePDF(data);
+            
+            const telegramText = `🎓 EDUNEST - IELTS MOCK EXAM
+📝 Reading Test Results
+
+👤 Name: ${data.studentName}
+📅 Date: ${new Date().toLocaleDateString()}
+⏰ Time: ${new Date().toLocaleTimeString()}
+🔑 Code: ${CORRECT_CODE}
+⚠️ Violations: ${data.violationCount}
+${data.terminated ? '🚫 Status: TERMINATED - ' + data.terminationReason : '✅ Status: Completed'}
+
+━━━━━━━━━━━━━━━━━━━━
+ANSWERS:
+
+PASSAGE 1:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 1 && parseInt(k) <= 13).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+PASSAGE 2:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 14 && parseInt(k) <= 26).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+PASSAGE 3:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 27 && parseInt(k) <= 40).map(k => `${k}. ${data.answers[k]}`).join('\n')}`;
+
+            try {
+                await fetch('https://mdrx18.pythonanywhere.com/api/telegram/send/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: telegramText,
+                        send_to_all_admins: true,
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+            }
+            
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => {
+                    console.log('Cannot exit fullscreen:', err);
+                });
+            }
+        }
+
+        async function submitExam() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            examStarted = false;
+            
+            const data = collectAnswers();
+            
+            if (!data.studentName) {
+                return;
+            }
+            
+            await submitExamData(data);
+        }
+
+        async function autoSubmitExam() {
+            await submitExam();
+        }
+
+        function copyAnswers() {
+            const answerSheet = document.getElementById('answerSheet').textContent;
+            navigator.clipboard.writeText(answerSheet).then(() => {
+                alert('Answers copied to clipboard!');
+            });
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
