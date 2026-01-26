@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - IELTS MOCK EXAM Listening Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .welcome-screen {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            border: 3px solid #dc2626;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.1);
+            overflow: hidden;
+        }
+
+        .welcome-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 2px solid #991b1b;
+        }
+
+        .welcome-brand {
+            font-size: 42px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: normal;
+            opacity: 0.95;
+            letter-spacing: 1px;
+        }
+
+        .welcome-content {
+            padding: 40px;
+        }
+
+        .student-name-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+        }
+
+        .student-name-label {
+            display: block;
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .student-name-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .student-name-input:focus {
+            outline: none;
+            border-color: #991b1b;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .instructions-section {
+            margin-bottom: 30px;
+        }
+
+        .instructions-title {
+            font-size: 20px;
+            color: #991b1b;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid #dc2626;
+            padding-bottom: 10px;
+        }
+
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            padding: 12px 0 12px 30px;
+            position: relative;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .instructions-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .start-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .exam-container {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 15px 30px;
+            border-bottom: 2px solid #991b1b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .exam-title {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .navigation-bar {
+            background: #fef2f2;
+            padding: 15px 30px;
+            border-bottom: 2px solid #dc2626;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .part-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .part-btn {
+            padding: 10px 25px;
+            background: white;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .part-btn:hover {
+            background: #fef2f2;
+        }
+
+        .part-btn.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .student-info {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 30px;
+            background: #f9fafb;
+        }
+
+        .questions-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            border: 2px solid #dc2626;
+        }
+
+        .part-content {
+            display: none;
+        }
+
+        .part-content.active {
+            display: block;
+        }
+
+        .part-header {
+            font-size: 28px;
+            color: #000;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background: #333;
+            color: white;
+        }
+
+        .part-title {
+            font-size: 24px;
+            color: #000;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .instructions {
+            margin-bottom: 25px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .question-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .question-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .summary-box {
+            background: #f9fafb;
+            padding: 20px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .summary-box strong {
+            font-weight: bold;
+        }
+
+        .summary-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .summary-box li {
+            margin-bottom: 10px;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fefefe;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .answer-input {
+            width: 150px;
+            padding: 6px 10px;
+            border: none;
+            border-bottom: 2px solid #dc2626;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+            background: transparent;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-bottom-color: #991b1b;
+        }
+
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mcq-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mcq-option:hover {
+            background: #fef2f2;
+        }
+
+        .mcq-option.selected {
+            background: #dc2626;
+            color: white;
+        }
+
+        .comments-box {
+            background: white;
+            padding: 15px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .comments-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .flowchart {
+            margin: 20px 0;
+        }
+
+        .flowchart-box {
+            background: white;
+            padding: 20px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .footer {
+            background: #fef2f2;
+            padding: 20px 30px;
+            border-top: 2px solid #dc2626;
+            text-align: center;
+        }
+
+        .submit-button {
+            padding: 15px 50px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid #dc2626;
+        }
+
+        .modal-header {
+            font-size: 28px;
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .answer-sheet {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 4px;
+            border: 2px solid #dc2626;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            padding: 12px 30px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            background: #b91c1c;
+        }
+
+        .proctoring-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            border: 3px solid #dc2626;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+
+        .proctoring-alert.active {
+            display: block;
+        }
+
+        .proctoring-alert h2 {
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+
+        .proctoring-alert p {
+            margin-bottom: 20px;
+            color: #374151;
+        }
+
+        .proctoring-alert input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dc2626;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .proctoring-alert button {
+            padding: 12px 30px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .violation-log {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1500;
+            display: none;
+        }
+
+        .violation-log.active {
+            display: block;
+        }
+
+        .blackout-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1999;
+            display: none;
+        }
+
+        .blackout-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-header">
+            <div class="welcome-brand">EDUNEST</div>
+            <div class="welcome-title">IELTS Mock Exam - Listening Test</div>
+        </div>
+        <div class="welcome-content">
+            <div class="student-name-section">
+                <label class="student-name-label">Enter Your Full Name:</label>
+                <input type="text" id="studentName" class="student-name-input" placeholder="John Doe">
+                <div class="error-message" id="nameError">Please enter your name.</div>
+            </div>
+            <div class="instructions-section">
+                <div class="instructions-title">Test Instructions</div>
+                <ul class="instructions-list">
+                    <li>The test consists of 4 parts with 40 questions total</li>
+                    <li>You can navigate between parts at any time</li>
+                    <li>The test must be taken in fullscreen mode</li>
+                    <li>Do not switch tabs, minimize the window, or exit fullscreen</li>
+                    <li>If you violate proctoring rules, you must re-enter the code</li>
+                    <li>Your answers will be automatically saved and submitted</li>
+                </ul>
+            </div>
+            <button class="start-button" onclick="startExam()">Start Exam</button>
+        </div>
+    </div>
+
+    <div class="exam-container" id="examContainer">
+        <div class="header">
+            <div class="header-left">
+                <div class="brand">EDUNEST</div>
+                <div class="exam-title">IELTS Listening Test</div>
+            </div>
+        </div>
+
+        <div class="navigation-bar">
+            <div class="part-buttons">
+                <button class="part-btn active" onclick="showPart(1)">Part 1</button>
+                <button class="part-btn" onclick="showPart(2)">Part 2</button>
+                <button class="part-btn" onclick="showPart(3)">Part 3</button>
+                <button class="part-btn" onclick="showPart(4)">Part 4</button>
+            </div>
+            <div class="student-info" id="studentInfo">Student: </div>
+        </div>
+
+        <div class="main-content">
+            <div class="questions-container">
+                <!-- Part 1 -->
+                <div class="part-content active" id="part1">
+                    <div class="part-header">LISTENING</div>
+                    <div class="part-title">PART 1 Questions 1–10</div>
+                    <div class="instructions">
+                        <em>Complete the notes below.</em><br><br>
+                        Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.
+                    </div>
+
+                    <div class="summary-box">
+                        <strong style="font-size: 18px;">Copying photos to digital format</strong><br><br>
+                        <strong>Name of company: Picturerep</strong><br><br>
+                        
+                        <strong>Requirements</strong>
+                        <ul>
+                            <li>Maximum size of photos is 30 cm, minimum size 4 cm.</li>
+                            <li>Photos must not be in a <strong>1</strong> <input type="text" class="answer-input" data-question="1" placeholder="......."> or an album.</li>
+                        </ul>
+                        
+                        <strong>Cost</strong>
+                        <ul>
+                            <li>The cost for 360 photos is <strong>2</strong> <input type="text" class="answer-input" data-question="2" placeholder="......."> £ (including one disk).</li>
+                            <li>Before the completed order is sent, <strong>3</strong> <input type="text" class="answer-input" data-question="3" placeholder="......."> is required.</li>
+                        </ul>
+                        
+                        <strong>Services included in the price</strong>
+                        <ul>
+                            <li>Photos can be placed in a folder, e.g. with the name <strong>4</strong> <input type="text" class="answer-input" data-question="4" placeholder="......."> .</li>
+                            <li>The <strong>5</strong> <input type="text" class="answer-input" data-question="5" placeholder="......."> and contrast can be improved if necessary.</li>
+                            <li>Photos which are very fragile will be scanned by <strong>6</strong> <input type="text" class="answer-input" data-question="6" placeholder="......."> .</li>
+                        </ul>
+                        
+                        <strong>Special restore service (costs extra)</strong>
+                        <ul>
+                            <li>It may be possible to remove an object from a photo, or change the <strong>7</strong> <input type="text" class="answer-input" data-question="7" placeholder="......."> .</li>
+                            <li>A photo which is not correctly in <strong>8</strong> <input type="text" class="answer-input" data-question="8" placeholder="......."> cannot be fixed.</li>
+                        </ul>
+                        
+                        <strong>Other information</strong>
+                        <ul>
+                            <li>Orders are completed within <strong>9</strong> <input type="text" class="answer-input" data-question="9" placeholder="......."> .</li>
+                            <li>Send the photos in a box (not <strong>10</strong> <input type="text" class="answer-input" data-question="10" placeholder=".......">).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Part 2 -->
+                <div class="part-content" id="part2">
+                    <div class="part-header">LISTENING</div>
+                    <div class="part-title">PART 2 Questions 11–20</div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 11–15</div>
+                        <div class="instructions">
+                            <em>Choose the correct letter, <strong>A, B</strong> or <strong>C</strong>.</em>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">11 Dartfield House school used to be</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 11, 'A')">
+                                    <strong>A</strong> a tourist information centre.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 11, 'B')">
+                                    <strong>B</strong> a private home.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 11, 'C')">
+                                    <strong>C</strong> a local council building.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">12 What is planned with regard to the lower school?</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 12, 'A')">
+                                    <strong>A</strong> All buildings on the main site will be improved.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 12, 'B')">
+                                    <strong>B</strong> The lower school site will be used for new homes.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 12, 'C')">
+                                    <strong>C</strong> Additional school buildings will be constructed on the lower school site.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">13 The catering has been changed because of</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 13, 'A')">
+                                    <strong>A</strong> long queuing times.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 13, 'B')">
+                                    <strong>B</strong> changes to the school timetable.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 13, 'C')">
+                                    <strong>C</strong> dissatisfaction with the menus.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">14 Parents are asked to</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 14, 'A')">
+                                    <strong>A</strong> help their children to decide in advance which serving point to use.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 14, 'B')">
+                                    <strong>B</strong> make sure their children have enough money for food.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 14, 'C')">
+                                    <strong>C</strong> advise their children on healthy food to eat.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">15 What does the speaker say about the existing canteen?</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 15, 'A')">
+                                    <strong>A</strong> Food will still be served there.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 15, 'B')">
+                                    <strong>B</strong> Only staff will have access to it.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 15, 'C')">
+                                    <strong>C</strong> Pupils can take their food into it.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 16–18</div>
+                        <div class="instructions">
+                            What comment does the speaker make about each of the following serving points in the Food Hall?<br><br>
+                            <em>Choose <strong>THREE</strong> answers from the box and write the correct letter, <strong>A–D</strong>, next to Questions 16–18.</em>
+                        </div>
+
+                        <div class="comments-box">
+                            <div class="comments-title"><strong>Comments</strong></div>
+                            <strong>A</strong> pupils help to plan menus<br>
+                            <strong>B</strong> only vegetarian food<br>
+                            <strong>C</strong> different food every week<br>
+                            <strong>D</strong> daily change in menu
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <strong>Food available at serving points in Food Hall</strong>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">16 World Adventures <input type="text" class="answer-input" data-question="16" placeholder="......." style="margin-left: 20px;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">17 Street Life <input type="text" class="answer-input" data-question="17" placeholder="......." style="margin-left: 20px;"></div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">18 Speedy Italian <input type="text" class="answer-input" data-question="18" placeholder="......." style="margin-left: 20px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 19 and 20</div>
+                        <div class="instructions">
+                            <em>Choose <strong>TWO</strong> letters, <strong>A–E</strong>.</em><br><br>
+                            Which <strong>TWO</strong> optional after-school lessons are new?
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">19–20</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 19, 'A')">
+                                    <strong>A</strong> swimming
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 19, 'B')">
+                                    <strong>B</strong> piano
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 19, 'C')">
+                                    <strong>C</strong> acting
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 19, 'D')">
+                                    <strong>D</strong> cycling
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 19, 'E')">
+                                    <strong>E</strong> theatre sound and lighting
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 3 -->
+                <div class="part-content" id="part3">
+                    <div class="part-header">LISTENING</div>
+                    <div class="part-title">PART 3 Questions 21–30</div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 21–24</div>
+                        <div class="instructions">
+                            <em>Choose the correct letter, <strong>A, B</strong> or <strong>C</strong>.</em>
+                        </div>
+
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin: 20px 0;">
+                            Assignment on sleep and dreams
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">21 Luke read that one reason why we often forget dreams is that</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 21, 'A')">
+                                    <strong>A</strong> our memories cannot cope with too much information.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 21, 'B')">
+                                    <strong>B</strong> we might otherwise be confused about what is real.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 21, 'C')">
+                                    <strong>C</strong> we do not think they are important.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">22 What do Luke and Susie agree about dreams predicting the future?</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 22, 'A')">
+                                    <strong>A</strong> It may just be due to chance.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 22, 'B')">
+                                    <strong>B</strong> It only happens with certain types of event.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 22, 'C')">
+                                    <strong>C</strong> It happens more often than some people think.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">23 Susie says that a study on pre-school children having a short nap in the day</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 23, 'A')">
+                                    <strong>A</strong> had controversial results.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 23, 'B')">
+                                    <strong>B</strong> used faulty research methodology.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 23, 'C')">
+                                    <strong>C</strong> failed to reach any clear conclusions.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-number">24 In their last assignment, both students had problems with</div>
+                            <div class="mcq-options">
+                                <div class="mcq-option" onclick="selectMCQ(this, 24, 'A')">
+                                    <strong>A</strong> statistical analysis.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 24, 'B')">
+                                    <strong>B</strong> making an action plan.
+                                </div>
+                                <div class="mcq-option" onclick="selectMCQ(this, 24, 'C')">
+                                    <strong>C</strong> self-assessment.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-header">Questions 25–30</div>
+                        <div class="instructions">
+                            <em>Complete the flow chart below.</em><br><br>
+                            Write <strong>ONE WORD ONLY</strong> for each answer.
+                        </div>
+
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin: 20px 0;">
+                            Assignment plan
+                        </div>
+
+                        <div class="flowchart">
+                            <div class="flowchart-box">
+                                Decide on research question:<br><br>
+                                Is there a relationship between hours of sleep and number of dreams?
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="flowchart-box">
+                                Decide on sample:<br><br>
+                                Twelve students from the <strong>25</strong> <input type="text" class="answer-input" data-question="25" placeholder="......."> department
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="flowchart-box">
+                                Decide on methodology:<br><br>
+                                Self-reporting
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="flowchart-box">
+                                Decide on procedure:<br><br>
+                                Answers on <strong>26</strong> <input type="text" class="answer-input" data-question="26" placeholder=".......">
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="flowchart-box">
+                                Check ethical guidelines for working with <strong>27</strong> <input type="text" class="answer-input" data-question="27" placeholder="......."><br><br>
+                                Ensure that risk is assessed and <strong>28</strong> <input type="text" class="answer-input" data-question="28" placeholder="......."> is kept to a minimum
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="flowchart-box">
+                                Analyse the results<br><br>
+                                Calculate the correlation and make a <strong>29</strong> <input type="text" class="answer-input" data-question="29" placeholder=".......">
+                            </div>
+                            <div class="arrow">↓</div>
+                            <div class="flowchart-box">
+                                <strong>30</strong> <input type="text" class="answer-input" data-question="30" placeholder="......."> the research
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 4 -->
+                <div class="part-content" id="part4">
+                    <div class="part-header">LISTENING</div>
+                    <div class="part-title">PART 4 Questions 31–40</div>
+                    <div class="instructions">
+                        <em>Complete the notes below.</em><br><br>
+                        Write <strong>ONE WORD ONLY</strong> for each answer.
+                    </div>
+
+                    <div class="summary-box">
+                        <strong style="font-size: 18px;">Health benefits of dance</strong><br><br>
+                        
+                        <strong>Recent findings:</strong>
+                        <ul>
+                            <li>All forms of dance produce various hormones associated with feelings of happiness.</li>
+                            <li>Dancing with others has a more positive impact than dancing alone.</li>
+                            <li>An experiment on university students suggested that dance increases <strong>31</strong> <input type="text" class="answer-input" data-question="31" placeholder="......."> .</li>
+                            <li>For those with mental illness, dance could be used as a form of <strong>32</strong> <input type="text" class="answer-input" data-question="32" placeholder="......."> .</li>
+                        </ul>
+                        
+                        <strong>Benefits of dance for older people:</strong>
+                        <ul>
+                            <li>accessible for people with low levels of <strong>33</strong> <input type="text" class="answer-input" data-question="33" placeholder="......."></li>
+                            <li>reduces the risk of heart disease</li>
+                            <li>better <strong>34</strong> <input type="text" class="answer-input" data-question="34" placeholder="......."> reduces the risk of accidents</li>
+                            <li>improves <strong>35</strong> <input type="text" class="answer-input" data-question="35" placeholder="......."> function by making it work faster</li>
+                            <li>improves participants' general well-being</li>
+                            <li>gives people more <strong>36</strong> <input type="text" class="answer-input" data-question="36" placeholder="......."> to take exercise</li>
+                            <li>can lessen the feeling of <strong>37</strong> <input type="text" class="answer-input" data-question="37" placeholder="......."> , very common in older people</li>
+                        </ul>
+                        
+                        <strong>Benefits of Zumba:</strong>
+                        <ul>
+                            <li>A study at The University of Wisconsin showed that doing Zumba for 40 minutes uses up as many <strong>38</strong> <input type="text" class="answer-input" data-question="38" placeholder="......."> as other quite intense forms of exercise.</li>
+                            <li>The <em>American Journal of Health Behavior</em> study showed that:
+                                <ul style="margin-left: 20px;">
+                                    <li>– women suffering from <strong>39</strong> <input type="text" class="answer-input" data-question="39" placeholder="......."> benefited from doing Zumba.</li>
+                                    <li>– Zumba became a <strong>40</strong> <input type="text" class="answer-input" data-question="40" placeholder="......."> for the participants.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="submit-button" onclick="submitExam()">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-header">Exam Submitted Successfully!</div>
+            <div class="answer-sheet" id="answerSheet"></div>
+            <div class="modal-buttons">
+                <button class="modal-button" onclick="copyAnswers()">Copy Answers</button>
+                <button class="modal-button" onclick="closeResults()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="proctoring-alert" id="proctoringAlert">
+        <h2>⚠️ Proctoring Violation Detected</h2>
+        <p id="violationMessage">You have switched tabs or lost focus. Enter the reactivation code to continue.</p>
+        <input type="text" id="reactivationInput" placeholder="Enter Reactivation Code">
+        <div class="error-message" id="reactivationError" style="display: none;">Invalid code. Try again.</div>
+        <div style="margin: 10px 0; font-weight: bold;">Time remaining: <span id="reactivationTimer">60</span> seconds</div>
+        <button onclick="verifyReactivation()">Continue Exam</button>
+    </div>
+
+    <div class="violation-log" id="violationLog">
+        Violations: <span id="violationCount">0</span>
+    </div>
+
+    <div class="blackout-overlay" id="blackoutOverlay"></div>
+
+    <script>
+        let reactivationTimerInterval;
+        let studentName = '';
+        let violationCount = 0;
+        let examStarted = false;
+        let reactivationTimeLeft = 60;
+        let mcqAnswers = {};
+        const CORRECT_CODE = '1601';
+
+        function startExam() {
+            const nameInput = document.getElementById('studentName');
+            const name = nameInput.value.trim();
+            const nameError = document.getElementById('nameError');
+            
+            if (!name) {
+                nameError.style.display = 'block';
+                return;
+            }
+            
+            nameError.style.display = 'none';
+            studentName = name;
+            
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('examContainer').style.display = 'flex';
+            document.getElementById('studentInfo').textContent = 'Student: ' + studentName;
+            
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen request failed:', err);
+                });
+            }
+            
+            examStarted = true;
+            initializeProctoring();
+        }
+
+        function initializeProctoring() {
+            window.addEventListener('blur', handleViolation);
+            
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('fullscreenchange', function() {
+                if (!document.fullscreenElement && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('webkitfullscreenchange', function() {
+                if (!document.webkitFullscreenElement && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('mozfullscreenchange', function() {
+                if (!document.mozFullScreenElement && examStarted) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (examStarted) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (examStarted) {
+                    if (e.altKey || e.metaKey || (e.ctrlKey && e.key === 'Tab')) {
+                        handleViolation();
+                    }
+                    if (e.key === 'F11') {
+                        e.preventDefault();
+                    }
+                }
+            });
+        }
+
+        function handleViolation() {
+            if (!examStarted) return;
+            
+            violationCount++;
+            document.getElementById('violationCount').textContent = violationCount;
+            document.getElementById('violationLog').classList.add('active');
+            
+            const alert = document.getElementById('proctoringAlert');
+            const message = document.getElementById('violationMessage');
+            const blackout = document.getElementById('blackoutOverlay');
+            
+            message.textContent = 'Violation detected! Enter the reactivation code to continue. You have 60 seconds.';
+            
+            blackout.classList.add('active');
+            alert.classList.add('active');
+            document.getElementById('reactivationInput').value = '';
+            document.getElementById('reactivationInput').focus();
+            
+            startReactivationTimer();
+        }
+
+        function startReactivationTimer() {
+            reactivationTimeLeft = 60;
+            document.getElementById('reactivationTimer').textContent = reactivationTimeLeft;
+            
+            if (reactivationTimerInterval) {
+                clearInterval(reactivationTimerInterval);
+            }
+            
+            reactivationTimerInterval = setInterval(() => {
+                reactivationTimeLeft--;
+                document.getElementById('reactivationTimer').textContent = reactivationTimeLeft;
+                
+                if (reactivationTimeLeft <= 0) {
+                    clearInterval(reactivationTimerInterval);
+                    terminateExam();
+                }
+            }, 1000);
+        }
+
+        function verifyReactivation() {
+            const input = document.getElementById('reactivationInput').value.trim();
+            const errorDiv = document.getElementById('reactivationError');
+            
+            if (input === CORRECT_CODE) {
+                clearInterval(reactivationTimerInterval);
+                errorDiv.style.display = 'none';
+                document.getElementById('proctoringAlert').classList.remove('active');
+                document.getElementById('blackoutOverlay').classList.remove('active');
+                
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log('Cannot re-enter fullscreen:', err);
+                    });
+                }
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('reactivationInput').value = '';
+                document.getElementById('reactivationInput').focus();
+            }
+        }
+
+        function terminateExam() {
+            examStarted = false;
+            clearInterval(reactivationTimerInterval);
+            
+            alert('Test terminated due to failure to enter reactivation code in time.');
+            
+            const data = collectAnswers();
+            data.terminated = true;
+            data.terminationReason = 'Failed to enter reactivation code';
+            
+            submitExamData(data);
+        }
+
+        function showPart(partNum) {
+            document.querySelectorAll('.part-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.part-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById('part' + partNum).classList.add('active');
+            document.querySelectorAll('.part-btn')[partNum - 1].classList.add('active');
+        }
+
+        function selectMCQ(element, questionNum, value) {
+            const parentGroup = element.closest('.question-item');
+            
+            // For questions 19-20 (TWO answers), allow unlimited selections
+            if (questionNum === 19) {
+                if (!mcqAnswers[19]) mcqAnswers[19] = [];
+                
+                if (element.classList.contains('selected')) {
+                    element.classList.remove('selected');
+                    mcqAnswers[19] = mcqAnswers[19].filter(a => a !== value);
+                } else {
+                    element.classList.add('selected');
+                    mcqAnswers[19].push(value);
+                }
+            } else {
+                // Single selection for other MCQs
+                parentGroup.querySelectorAll('.mcq-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                element.classList.add('selected');
+                mcqAnswers[questionNum] = value;
+            }
+        }
+
+        function collectAnswers() {
+            const answers = {};
+            
+            // Collect text input answers
+            document.querySelectorAll('.answer-input').forEach(input => {
+                const questionNum = input.getAttribute('data-question');
+                if (questionNum) {
+                    answers[questionNum] = input.value.trim() || '(not answered)';
+                }
+            });
+            
+            // Collect MCQ answers
+            Object.keys(mcqAnswers).forEach(key => {
+                if (key === '19' && Array.isArray(mcqAnswers[19])) {
+                    // Take only first 2 selections
+                    answers['19'] = mcqAnswers[19][0] || '(not answered)';
+                    answers['20'] = mcqAnswers[19][1] || '(not answered)';
+                } else {
+                    answers[key] = mcqAnswers[key] || '(not answered)';
+                }
+            });
+            
+            return { studentName, answers, violationCount };
+        }
+
+        function formatAnswerSheet(data) {
+            let sheet = `EDUNEST - IELTS MOCK EXAM
+Listening Test Answer Sheet
+═══════════════════════════════════════
+
+Student Name: ${data.studentName}
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+Test Code: ${CORRECT_CODE}
+Proctoring Violations: ${data.violationCount}
+${data.terminated ? 'Status: TERMINATED - ' + data.terminationReason : 'Status: Completed'}
+
+═══════════════════════════════════════
+
+PART 1 (Questions 1-10)
+───────────────────────────────────────`;
+            
+            for (let i = 1; i <= 10; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\nPART 2 (Questions 11-20)
+───────────────────────────────────────`;
+            
+            for (let i = 11; i <= 20; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\nPART 3 (Questions 21-30)
+───────────────────────────────────────`;
+            
+            for (let i = 21; i <= 30; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\nPART 4 (Questions 31-40)
+───────────────────────────────────────`;
+            
+            for (let i = 31; i <= 40; i++) {
+                sheet += `\n${i}.  ${data.answers[i.toString()] || '(not answered)'}`;
+            }
+            
+            sheet += `\n\n═══════════════════════════════════════\nEnd of Answer Sheet`;
+            
+            return sheet;
+        }
+
+        async function generatePDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(220, 38, 38);
+            doc.text('EDUNEST', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text('IELTS MOCK EXAM - Listening Test', 105, 30, { align: 'center' });
+            doc.text('Answer Sheet', 105, 38, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Student Name: ${data.studentName}`, 20, 50);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 56);
+            doc.text(`Time: ${new Date().toLocaleTimeString()}`, 20, 62);
+            doc.text(`Code: ${CORRECT_CODE}`, 20, 68);
+            doc.text(`Violations: ${data.violationCount}`, 20, 74);
+            if (data.terminated) {
+                doc.setTextColor(220, 38, 38);
+                doc.text(`Status: TERMINATED - ${data.terminationReason}`, 20, 80);
+                doc.setTextColor(0, 0, 0);
+            }
+            
+            let y = data.terminated ? 90 : 85;
+            
+            // Part 1
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PART 1 (Questions 1-10)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 1; i <= 10; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Part 2
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+            
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PART 2 (Questions 11-20)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 11; i <= 20; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Part 3
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+            
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PART 3 (Questions 21-30)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 21; i <= 30; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            y += 5;
+            
+            // Part 4
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+            
+            doc.setFontSize(12);
+            doc.setTextColor(220, 38, 38);
+            doc.text('PART 4 (Questions 31-40)', 20, y);
+            y += 8;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 31; i <= 40; i++) {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(`${i}.  ${data.answers[i.toString()] || '(not answered)'}`, 25, y);
+                y += 6;
+            }
+            
+            doc.save(`EDUNEST_Listening_${CORRECT_CODE}_${data.studentName.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`);
+        }
+
+        async function submitExamData(data) {
+            const answerSheet = formatAnswerSheet(data);
+            
+            document.getElementById('answerSheet').textContent = answerSheet;
+            document.getElementById('resultsModal').style.display = 'flex';
+            
+            await generatePDF(data);
+            
+            const telegramText = `🎓 EDUNEST - IELTS MOCK EXAM
+🎧 Listening Test Results
+
+👤 Name: ${data.studentName}
+📅 Date: ${new Date().toLocaleDateString()}
+⏰ Time: ${new Date().toLocaleTimeString()}
+🔑 Code: ${CORRECT_CODE}
+⚠️ Violations: ${data.violationCount}
+${data.terminated ? '🚫 Status: TERMINATED - ' + data.terminationReason : '✅ Status: Completed'}
+
+━━━━━━━━━━━━━━━━━━━━
+ANSWERS:
+
+PART 1:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 1 && parseInt(k) <= 10).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+PART 2:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 11 && parseInt(k) <= 20).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+PART 3:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 21 && parseInt(k) <= 30).map(k => `${k}. ${data.answers[k]}`).join('\n')}
+
+PART 4:
+${Object.keys(data.answers).filter(k => parseInt(k) >= 31 && parseInt(k) <= 40).map(k => `${k}. ${data.answers[k]}`).join('\n')}`;
+
+            try {
+                await fetch('https://mdrx18.pythonanywhere.com/api/telegram/send/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: telegramText,
+                        send_to_all_admins: true,
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+            }
+            
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => {
+                    console.log('Cannot exit fullscreen:', err);
+                });
+            }
+        }
+
+        async function submitExam() {
+            examStarted = false;
+            
+            const data = collectAnswers();
+            
+            if (!data.studentName) {
+                return;
+            }
+            
+            await submitExamData(data);
+        }
+
+        async function autoSubmitExam() {
+            await submitExam();
+        }
+
+        function copyAnswers() {
+            const answerSheet = document.getElementById('answerSheet').textContent;
+            navigator.clipboard.writeText(answerSheet).then(() => {
+                alert('Answers copied to clipboard!');
+            });
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
