@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - A2 English Listening Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Screen */
+        #welcomeScreen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #ff3b3b;
+        }
+
+        .welcome-title {
+            font-size: 2em;
+            margin: 20px 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .name-input {
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border: 3px solid #ff3b3b;
+            border-radius: 10px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 400px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .name-input:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 59, 59, 0.5);
+        }
+
+        .start-btn {
+            padding: 15px 50px;
+            font-size: 1.2em;
+            background: #ff3b3b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 59, 59, 0.4);
+        }
+
+        .start-btn:hover {
+            background: #ff0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 59, 59, 0.6);
+        }
+
+        .start-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Test Screen */
+        #testScreen {
+            display: none;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 3px solid #ff3b3b;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header .student-name {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .brand {
+            color: #ff3b3b;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border: 3px solid #ff3b3b;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ff3b3b;
+        }
+
+        .question {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Listening 1 - Dropdown Style */
+        .answer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .answer-box label {
+            font-weight: bold;
+            min-width: 200px;
+        }
+
+        .answer-box select {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #ff3b3b;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            min-width: 150px;
+            outline: none;
+        }
+
+        .answer-box select:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 59, 59, 0.3);
+        }
+
+        /* Map Image */
+        .map-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 3px solid #ff3b3b;
+        }
+
+        .map-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* Listening 2 - Radio Buttons */
+        .radio-option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            background: #f0f0f0;
+            border-color: #ff3b3b;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #ff3b3b;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            font-weight: bold;
+            color: #ff3b3b;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+        }
+
+        .submit-btn {
+            padding: 20px 60px;
+            font-size: 1.3em;
+            background: #ff3b3b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 59, 59, 0.4);
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #ff0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 59, 59, 0.6);
+        }
+
+        /* Results Screen */
+        #resultsScreen {
+            display: none;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 3px solid #ff3b3b;
+        }
+
+        .results-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ff3b3b;
+        }
+
+        .answer-sheet {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #ddd;
+        }
+
+        .answer-item {
+            padding: 12px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #ff3b3b;
+            border-radius: 4px;
+        }
+
+        .answer-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .answer-value {
+            color: #333;
+            margin-left: 10px;
+        }
+
+        .copy-btn, .download-btn {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 1.1em;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover, .download-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Proctoring Modal */
+        .proctor-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .proctor-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            border: 3px solid #ff3b3b;
+        }
+
+        .proctor-modal h2 {
+            color: #ff3b3b;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .proctor-modal p {
+            margin: 15px 0;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .code-input {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #ff3b3b;
+            border-radius: 8px;
+            margin: 20px 0;
+            width: 100%;
+            text-align: center;
+            outline: none;
+        }
+
+        .verify-btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: #ff3b3b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .verify-btn:hover {
+            background: #ff0000;
+        }
+
+        .error-message {
+            color: #ff3b3b;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+            }
+
+            .welcome-title {
+                font-size: 1.5em;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .answer-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .answer-box select {
+                width: 100%;
+            }
+
+            .submit-btn {
+                padding: 15px 40px;
+                font-size: 1.1em;
+            }
+
+            .proctor-modal {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .section-title {
+                font-size: 1.2em;
+            }
+
+            .question-text {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen">
+        <div class="logo">EDUNEST</div>
+        <h1 class="welcome-title">A2 English Listening Test</h1>
+        <p style="font-size: 1.2em; margin: 20px 0;">Please enter your name to begin the test</p>
+        <input type="text" id="studentName" class="name-input" placeholder="Enter your full name" />
+        <button id="startTestBtn" class="start-btn" disabled>Start Test</button>
+    </div>
+
+    <!-- Test Screen -->
+    <div id="testScreen">
+        <div class="container">
+            <div class="header">
+                <div class="brand">EDUNEST</div>
+                <h1>A2 English Listening Test</h1>
+                <div class="student-name">Student: <span id="displayName"></span></div>
+            </div>
+
+            <!-- Listening 1 -->
+            <div class="section">
+                <h2 class="section-title">Listening 1</h2>
+                <p style="font-size: 1.1em; margin-bottom: 20px;">
+                    Listen to five conversations where people ask for directions. For each dialogue, look at the map in the video and choose the correct answer, A-E.
+                </p>
+
+                <div class="map-container">
+                    <img src="https://i.ibb.co/JFdWQ1Q4/image.png" alt="Map for directions">
+                </div>
+
+                <div class="question">
+                    <div class="answer-box">
+                        <label>1. Which building is the library?</label>
+                        <select id="q1_1" class="answer-select">
+                            <option value="">Select...</option>
+                            <option value="A">Building A</option>
+                            <option value="B">Building B</option>
+                            <option value="C">Building C</option>
+                            <option value="D">Building D</option>
+                            <option value="E">Building E</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="answer-box">
+                        <label>2. Which building is the pharmacy?</label>
+                        <select id="q1_2" class="answer-select">
+                            <option value="">Select...</option>
+                            <option value="A">Building A</option>
+                            <option value="B">Building B</option>
+                            <option value="C">Building C</option>
+                            <option value="D">Building D</option>
+                            <option value="E">Building E</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="answer-box">
+                        <label>3. Which building is the grocery store?</label>
+                        <select id="q1_3" class="answer-select">
+                            <option value="">Select...</option>
+                            <option value="A">Building A</option>
+                            <option value="B">Building B</option>
+                            <option value="C">Building C</option>
+                            <option value="D">Building D</option>
+                            <option value="E">Building E</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="answer-box">
+                        <label>4. Which building is the bank?</label>
+                        <select id="q1_4" class="answer-select">
+                            <option value="">Select...</option>
+                            <option value="A">Building A</option>
+                            <option value="B">Building B</option>
+                            <option value="C">Building C</option>
+                            <option value="D">Building D</option>
+                            <option value="E">Building E</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="answer-box">
+                        <label>5. Which building is the post office?</label>
+                        <select id="q1_5" class="answer-select">
+                            <option value="">Select...</option>
+                            <option value="A">Building A</option>
+                            <option value="B">Building B</option>
+                            <option value="C">Building C</option>
+                            <option value="D">Building D</option>
+                            <option value="E">Building E</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listening 2 -->
+            <div class="section">
+                <h2 class="section-title">Listening 2</h2>
+                <p style="font-size: 1.1em; margin-bottom: 20px;">
+                    Listen to four parents talking about how their children help with household chores. For questions 1 to 7, choose the correct answer.
+                </p>
+
+                <!-- Question 1 -->
+                <div class="question">
+                    <div class="question-text">1. According to Ravi,...</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_1" value="A">
+                        <span>A. four years old is too early to give chores to a child.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_1" value="B">
+                        <span>B. his child doesn't like to do housework.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_1" value="C">
+                        <span>C. children can do more things than we think.</span>
+                    </label>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question">
+                    <div class="question-text">2. Which chore did Ravi's son do when he was four?</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_2" value="A">
+                        <span>A. Take out the trash.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_2" value="B">
+                        <span>B. Make his bed.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_2" value="C">
+                        <span>C. Set the table.</span>
+                    </label>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question">
+                    <div class="question-text">3. According to Sophie...</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_3" value="A">
+                        <span>A. their kids shout a lot.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_3" value="B">
+                        <span>B. it is hard to make her children do chores.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_3" value="C">
+                        <span>C. her teenagers only do the simplest tasks.</span>
+                    </label>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="question">
+                    <div class="question-text">4. What does Sophie say about her children?</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_4" value="A">
+                        <span>A. They didn't help at all when they were younger.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_4" value="B">
+                        <span>B. They don't walk the dog enough.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_4" value="C">
+                        <span>C. They never clear the table or take the rubbish out.</span>
+                    </label>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="question">
+                    <div class="question-text">5. Emily...</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_5" value="A">
+                        <span>A. pays her kids for each chore they do.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_5" value="B">
+                        <span>B. pays her kids extra money for washing cars.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_5" value="C">
+                        <span>C. never allows her children to stay up watching TV.</span>
+                    </label>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="question">
+                    <div class="question-text">6. Which is true about Oliver?</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_6" value="A">
+                        <span>A. Each child does four or five chores every week.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_6" value="B">
+                        <span>B. Their home is very messy.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_6" value="C">
+                        <span>C. His kids only do the chores that they choose.</span>
+                    </label>
+                </div>
+
+                <!-- Question 7 -->
+                <div class="question">
+                    <div class="question-text">7. According to Oliver,...</div>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_7" value="A">
+                        <span>A. today, Ben is helping with the laundry.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_7" value="B">
+                        <span>B. one of the children is just three years old.</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2_7" value="C">
+                        <span>C. he and his wife both have jobs.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button id="submitBtn" class="submit-btn">Submit Test</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="resultsScreen">
+        <div class="results-container">
+            <div class="brand" style="text-align: center; font-size: 2em; margin-bottom: 10px;">EDUNEST</div>
+            <h2 class="results-title">Your Answer Sheet</h2>
+            <div class="answer-sheet" id="answerSheet"></div>
+            <div class="button-group">
+                <button id="copyBtn" class="copy-btn">Copy Answers</button>
+                <button id="downloadBtn" class="download-btn">Download PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proctoring Overlay -->
+    <div id="proctorOverlay" class="proctor-overlay">
+        <div class="proctor-modal">
+            <h2>⚠️ Test Security Alert</h2>
+            <p>You have left the test window.</p>
+            <p>Please enter the reactivation code to continue:</p>
+            <input type="text" id="codeInput" class="code-input" placeholder="Enter code" maxlength="4" />
+            <button id="verifyBtn" class="verify-btn">Verify Code</button>
+            <div id="errorMessage" class="error-message">Incorrect code. Please try again.</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let studentName = '';
+        let testStarted = false;
+        const REACTIVATION_CODE = '0429';
+
+        // Enable start button when name is entered
+        document.getElementById('studentName').addEventListener('input', function() {
+            const name = this.value.trim();
+            document.getElementById('startTestBtn').disabled = name.length === 0;
+        });
+
+        // Start test and enter fullscreen
+        document.getElementById('startTestBtn').addEventListener('click', function() {
+            studentName = document.getElementById('studentName').value.trim();
+            if (studentName) {
+                document.getElementById('displayName').textContent = studentName;
+                document.getElementById('welcomeScreen').style.display = 'none';
+                document.getElementById('testScreen').style.display = 'block';
+                testStarted = true;
+                
+                // Enter fullscreen
+                enterFullscreen();
+                
+                // Start proctoring
+                startProctoring();
+            }
+        });
+
+        // Fullscreen function
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Proctoring System
+        function startProctoring() {
+            // Detect window blur (switching apps)
+            window.addEventListener('blur', showProctorModal);
+            
+            // Detect fullscreen exit
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('msfullscreenchange', handleFullscreenChange);
+            
+            // Detect visibility change (tab switching)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && testStarted) {
+                    showProctorModal();
+                }
+            });
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = document.fullscreenElement || 
+                                document.webkitFullscreenElement || 
+                                document.msFullscreenElement;
+            
+            if (!isFullscreen && testStarted) {
+                showProctorModal();
+            }
+        }
+
+        function showProctorModal() {
+            if (testStarted && document.getElementById('resultsScreen').style.display !== 'block') {
+                document.getElementById('proctorOverlay').style.display = 'flex';
+                document.getElementById('codeInput').value = '';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+        }
+
+        // Verify reactivation code
+        document.getElementById('verifyBtn').addEventListener('click', verifyCode);
+        document.getElementById('codeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCode();
+            }
+        });
+
+        function verifyCode() {
+            const code = document.getElementById('codeInput').value;
+            if (code === REACTIVATION_CODE) {
+                document.getElementById('proctorOverlay').style.display = 'none';
+                enterFullscreen();
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('codeInput').value = '';
+            }
+        }
+
+        // Submit test
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            // Collect answers
+            const answers = {
+                listening1: {
+                    q1: document.getElementById('q1_1').value || 'Not answered',
+                    q2: document.getElementById('q1_2').value || 'Not answered',
+                    q3: document.getElementById('q1_3').value || 'Not answered',
+                    q4: document.getElementById('q1_4').value || 'Not answered',
+                    q5: document.getElementById('q1_5').value || 'Not answered'
+                },
+                listening2: {
+                    q1: getRadioValue('q2_1'),
+                    q2: getRadioValue('q2_2'),
+                    q3: getRadioValue('q2_3'),
+                    q4: getRadioValue('q2_4'),
+                    q5: getRadioValue('q2_5'),
+                    q6: getRadioValue('q2_6'),
+                    q7: getRadioValue('q2_7')
+                }
+            };
+
+            displayResults(answers);
+        });
+
+        function getRadioValue(name) {
+            const radio = document.querySelector(`input[name="${name}"]:checked`);
+            return radio ? radio.value : 'Not answered';
+        }
+
+        function displayResults(answers) {
+            testStarted = false; // Stop proctoring
+            document.getElementById('testScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            const answerSheet = document.getElementById('answerSheet');
+            let html = `
+                <div class="answer-item">
+                    <span class="answer-label">Student Name:</span>
+                    <span class="answer-value">${studentName}</span>
+                </div>
+                <div class="answer-item">
+                    <span class="answer-label">Test Date:</span>
+                    <span class="answer-value">${new Date().toLocaleDateString()}</span>
+                </div>
+                <h3 style="margin: 20px 0 10px 0; color: #ff3b3b;">Listening 1</h3>
+            `;
+
+            for (let i = 1; i <= 5; i++) {
+                html += `
+                    <div class="answer-item">
+                        <span class="answer-label">Question ${i}:</span>
+                        <span class="answer-value">${answers.listening1['q' + i]}</span>
+                    </div>
+                `;
+            }
+
+            html += `<h3 style="margin: 20px 0 10px 0; color: #ff3b3b;">Listening 2</h3>`;
+
+            for (let i = 1; i <= 7; i++) {
+                html += `
+                    <div class="answer-item">
+                        <span class="answer-label">Question ${i}:</span>
+                        <span class="answer-value">${answers.listening2['q' + i]}</span>
+                    </div>
+                `;
+            }
+
+            answerSheet.innerHTML = html;
+
+            // Store answers for PDF
+            window.currentAnswers = answers;
+        }
+
+        // Copy answers
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const answers = window.currentAnswers;
+            let text = `EDUNEST - A2 English Listening Test\n`;
+            text += `Student: ${studentName}\n`;
+            text += `Date: ${new Date().toLocaleDateString()}\n\n`;
+            text += `LISTENING 1\n`;
+            for (let i = 1; i <= 5; i++) {
+                text += `${i}. ${answers.listening1['q' + i]}\n`;
+            }
+            text += `\nLISTENING 2\n`;
+            for (let i = 1; i <= 7; i++) {
+                text += `${i}. ${answers.listening2['q' + i]}\n`;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Answers copied to clipboard!');
+            });
+        });
+
+        // Download PDF
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const answers = window.currentAnswers;
+
+            // Header
+            doc.setFontSize(20);
+            doc.setTextColor(255, 59, 59);
+            doc.text('EDUNEST', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('A2 English Listening Test', 105, 30, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.text(`Student: ${studentName}`, 20, 45);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 52);
+
+            // Listening 1
+            doc.setFontSize(14);
+            doc.setTextColor(255, 59, 59);
+            doc.text('Listening 1', 20, 65);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(0, 0, 0);
+            let y = 75;
+            for (let i = 1; i <= 5; i++) {
+                doc.text(`${i}. ${answers.listening1['q' + i]}`, 25, y);
+                y += 7;
+            }
+
+            // Listening 2
+            y += 10;
+            doc.setFontSize(14);
+            doc.setTextColor(255, 59, 59);
+            doc.text('Listening 2', 20, y);
+            
+            y += 10;
+            doc.setFontSize(11);
+            doc.setTextColor(0, 0, 0);
+            for (let i = 1; i <= 7; i++) {
+                doc.text(`${i}. ${answers.listening2['q' + i]}`, 25, y);
+                y += 7;
+            }
+
+            doc.save(`${studentName}_Listening_Test.pdf`);
+        });
+    </script>
+</body>
+</html>
