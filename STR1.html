@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDI Writing Task 1 - EDUNEST</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -737,7 +738,10 @@
                 }
             }
 
-            alert('Test submitted successfully! Your responses have been recorded.');
+            // Generate PDF with answers
+            generatePDF();
+
+            alert('Test submitted successfully! Your responses have been saved as PDF.');
             
             // Exit fullscreen
             if (document.exitFullscreen) {
@@ -747,6 +751,104 @@
             } else if (document.msExitFullscreen) {
                 document.msExitFullscreen();
             }
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const studentName = document.getElementById('studentInfo').textContent.replace('Student: ', '');
+            const startTime = document.getElementById('startTime').textContent;
+            const submitTime = new Date().toLocaleTimeString();
+            
+            // Header
+            doc.setFontSize(22);
+            doc.setTextColor(102, 126, 234);
+            doc.text('CDI Writing Task 1 - Test Results', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.setTextColor(118, 75, 162);
+            doc.text('EDUNEST', 105, 30, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(231, 76, 60);
+            doc.text('Instructor: Jasurbek Abdurakhimov', 105, 38, { align: 'center' });
+            
+            // Student Info
+            doc.setFontSize(11);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Student: ${studentName}`, 20, 50);
+            doc.text(`Start Time: ${startTime}`, 20, 57);
+            doc.text(`Submit Time: ${submitTime}`, 20, 64);
+            doc.text(`Violations: ${violationCount}`, 20, 71);
+            
+            doc.setDrawColor(231, 76, 60);
+            doc.setLineWidth(0.5);
+            doc.line(20, 75, 190, 75);
+            
+            let yPosition = 85;
+            const answers = document.querySelectorAll('.answer-box');
+            const structures = [
+                'HAVING', 'BEFORE',
+                'AFTER', 'VERB ING',
+                'ALTHOUGH', 'TRANSITION',
+                'DESPITE', 'AFTER WHICH',
+                'WHICH WAS FOLLOWED BY', 'HAVING'
+            ];
+            
+            let answerIndex = 0;
+            
+            for (let taskNum = 1; taskNum <= 5; taskNum++) {
+                // Check if we need a new page
+                if (yPosition > 250) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                // Task Header
+                doc.setFontSize(14);
+                doc.setTextColor(102, 126, 234);
+                doc.text(`TASK ${taskNum}`, 20, yPosition);
+                yPosition += 10;
+                
+                // Q1
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Q1: Structure - ${structures[answerIndex]}`, 20, yPosition);
+                yPosition += 7;
+                
+                doc.setFontSize(10);
+                const answer1 = answers[answerIndex].value.trim() || '(No answer provided)';
+                const lines1 = doc.splitTextToSize(answer1, 170);
+                doc.text(lines1, 20, yPosition);
+                yPosition += (lines1.length * 5) + 10;
+                
+                answerIndex++;
+                
+                // Q2
+                doc.setFontSize(11);
+                doc.text(`Q2: Structure - ${structures[answerIndex]}`, 20, yPosition);
+                yPosition += 7;
+                
+                doc.setFontSize(10);
+                const answer2 = answers[answerIndex].value.trim() || '(No answer provided)';
+                const lines2 = doc.splitTextToSize(answer2, 170);
+                doc.text(lines2, 20, yPosition);
+                yPosition += (lines2.length * 5) + 15;
+                
+                answerIndex++;
+                
+                // Divider line
+                if (taskNum < 5) {
+                    doc.setDrawColor(200, 200, 200);
+                    doc.setLineWidth(0.3);
+                    doc.line(20, yPosition - 5, 190, yPosition - 5);
+                }
+            }
+            
+            // Save PDF
+            const fileName = `CDI_Test_${studentName.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`;
+            doc.save(fileName);
         }
 
         // Detect fullscreen exit
