@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDI Writing Task 1 - EDUNEST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .welcome-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1000;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            border: 3px solid #e74c3c;
+        }
+
+        .welcome-card h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .welcome-card h2 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+        }
+
+        .welcome-card p {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .instructor-name {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .name-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 3px solid #e74c3c;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .brand {
+            color: #764ba2;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .header .instructor {
+            color: #e74c3c;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .student-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #e74c3c;
+        }
+
+        .student-info strong {
+            color: #667eea;
+        }
+
+        .proctoring-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 3px solid #e74c3c;
+        }
+
+        .proctoring-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .proctoring-title {
+            color: #e74c3c;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .proctoring-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #2ecc71;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .proctoring-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e74c3c;
+        }
+
+        .info-label {
+            color: #667eea;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .reactivation-section {
+            display: none;
+        }
+
+        .violation-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .violation-card {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255,0,0,0.5);
+            text-align: center;
+            max-width: 600px;
+            border: 4px solid #e74c3c;
+        }
+
+        .violation-card h2 {
+            color: #e74c3c;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .violation-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .violation-message {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .timer-display {
+            background: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+            border: 3px solid #e74c3c;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            outline: none;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        .code-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .reactivate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .reactivate-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .violation-count {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #e74c3c;
+        }
+
+        .violation-count strong {
+            color: #e74c3c;
+        }
+
+        .task-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 3px solid #e74c3c;
+        }
+
+        .task-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: -30px -30px 30px -30px;
+            border: 3px solid #e74c3c;
+        }
+
+        .task-header h2 {
+            font-size: 2em;
+        }
+
+        .task-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 3px solid #e74c3c;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e74c3c;
+        }
+
+        .question-label {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .structure-tag {
+            background: #764ba2;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .answer-box {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            margin-top: 15px;
+            resize: vertical;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .answer-box:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border: 3px solid #e74c3c;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .welcome-card {
+                padding: 30px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .task-header h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-card">
+            <h1>EDUNEST</h1>
+            <h2>CDI Writing Task 1</h2>
+            <p class="instructor-name">Instructor: Jasurbek Abdurakhimov</p>
+            <p>Please enter your name to begin the test</p>
+            <input type="text" class="name-input" id="studentName" placeholder="Enter your full name" />
+            <button class="start-btn" id="startBtn" onclick="startTest()">Start Test</button>
+        </div>
+    </div>
+
+    <!-- Main Test Container -->
+    <div class="container" id="mainContainer">
+        <!-- Header -->
+        <div class="header">
+            <h1>CDI Writing Task 1 Test</h1>
+            <div class="brand">EDUNEST</div>
+            <div class="instructor">Instructor: Jasurbek Abdurakhimov</div>
+            <div class="student-info" id="studentInfo"></div>
+        </div>
+
+        <!-- Proctoring Panel -->
+        <div class="proctoring-panel">
+            <div class="proctoring-header">
+                <div class="proctoring-title">🔒 Proctoring System Active</div>
+                <div class="proctoring-status">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">Monitoring</div>
+                </div>
+            </div>
+            <div class="proctoring-info">
+                <div class="info-box">
+                    <div class="info-label">Session ID:</div>
+                    <div class="info-value" id="sessionId">CDI-2026-001</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Start Time:</div>
+                    <div class="info-value" id="startTime">--:--:--</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Integrity Status:</div>
+                    <div class="info-value">✓ Verified</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Task 1 -->
+        <div class="task-card">
+            <div class="task-header">
+                <h2>TASK 1</h2>
+            </div>
+            <img src="https://i.ibb.co/G4MTF5p2/image.png" alt="Task 1 Image" class="task-image">
+            
+            <div class="question">
+                <div class="question-label">Q1: Write a sentence using the structure:</div>
+                <div class="structure-tag">HAVING</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+            
+            <div class="question">
+                <div class="question-label">Q2: Write a sentence using the structure:</div>
+                <div class="structure-tag">BEFORE</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task-card">
+            <div class="task-header">
+                <h2>TASK 2</h2>
+            </div>
+            <img src="https://i.ibb.co/B2nNthYZ/image.png" alt="Task 2 Image" class="task-image">
+            
+            <div class="question">
+                <div class="question-label">Q1: Write a sentence using the structure:</div>
+                <div class="structure-tag">AFTER</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+            
+            <div class="question">
+                <div class="question-label">Q2: Write a sentence using the structure:</div>
+                <div class="structure-tag">VERB ING</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task-card">
+            <div class="task-header">
+                <h2>TASK 3</h2>
+            </div>
+            <img src="https://i.ibb.co/N6Nsdzp0/image.png" alt="Task 3 Image" class="task-image">
+            
+            <div class="question">
+                <div class="question-label">Q1: Write a sentence using the structure:</div>
+                <div class="structure-tag">ALTHOUGH</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+            
+            <div class="question">
+                <div class="question-label">Q2: Write a sentence using the structure:</div>
+                <div class="structure-tag">TRANSITION</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="task-card">
+            <div class="task-header">
+                <h2>TASK 4</h2>
+            </div>
+            <img src="https://i.ibb.co/Z1LCdVdJ/image.png" alt="Task 4 Image" class="task-image">
+            
+            <div class="question">
+                <div class="question-label">Q1: Write a sentence using the structure:</div>
+                <div class="structure-tag">DESPITE</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+            
+            <div class="question">
+                <div class="question-label">Q2: Write a sentence using the structure:</div>
+                <div class="structure-tag">AFTER WHICH</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="task-card">
+            <div class="task-header">
+                <h2>TASK 5</h2>
+            </div>
+            <img src="https://i.ibb.co/5gWFh8Tx/image.png" alt="Task 5 Image" class="task-image">
+            
+            <div class="question">
+                <div class="question-label">Q1: Write a sentence using the structure:</div>
+                <div class="structure-tag">WHICH WAS FOLLOWED BY</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+            
+            <div class="question">
+                <div class="question-label">Q2: Write a sentence using the structure:</div>
+                <div class="structure-tag">HAVING</div>
+                <textarea class="answer-box" placeholder="Write your answer here..."></textarea>
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+    </div>
+
+    <!-- Violation Screen -->
+    <div class="violation-screen" id="violationScreen">
+        <div class="violation-card">
+            <div class="violation-icon">⚠️</div>
+            <h2>Security Violation Detected!</h2>
+            <div class="violation-message">
+                You have left the test window or exited full screen mode.<br>
+                Please enter the reactivation code to continue.
+            </div>
+            <div class="timer-display" id="timerDisplay">01:00</div>
+            <input type="text" class="code-input" id="codeInput" placeholder="Enter Code" maxlength="4" />
+            <button class="reactivate-btn" onclick="verifyCode()">Reactivate</button>
+            <div class="error-message" id="errorMessage">❌ Incorrect code. Please try again.</div>
+            <div class="violation-count" id="violationCount">
+                <strong>Violations:</strong> <span id="violationNumber">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const REACTIVATION_CODE = '9STR';
+        let violationCount = 0;
+        let countdownTimer = null;
+        let timeRemaining = 60;
+        let testActive = false;
+
+        function startTest() {
+            const studentName = document.getElementById('studentName').value.trim();
+            if (studentName === '') {
+                alert('Please enter your name to continue');
+                return;
+            }
+
+            // Hide welcome screen and show main container
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+
+            // Display student name
+            document.getElementById('studentInfo').innerHTML = `<strong>Student:</strong> ${studentName}`;
+
+            // Set start time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('startTime').textContent = timeString;
+
+            // Enter full screen mode
+            enterFullScreen();
+
+            // Mark test as active
+            testActive = true;
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function enterFullScreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        function showViolationScreen() {
+            if (!testActive) return;
+
+            violationCount++;
+            document.getElementById('violationNumber').textContent = violationCount;
+            document.getElementById('violationScreen').style.display = 'flex';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('codeInput').value = '';
+            
+            // Start countdown timer
+            timeRemaining = 60;
+            updateTimerDisplay();
+            countdownTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(countdownTimer);
+                    alert('Time expired! Your test session has been terminated.');
+                    window.location.reload();
+                }
+            }, 1000);
+
+            // Focus on code input
+            setTimeout(() => {
+                document.getElementById('codeInput').focus();
+            }, 100);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timerDisplay').textContent = display;
+            
+            // Change color when time is running out
+            const timerElement = document.getElementById('timerDisplay');
+            if (timeRemaining <= 10) {
+                timerElement.style.background = '#c0392b';
+                timerElement.style.animation = 'pulse 0.5s infinite';
+            }
+        }
+
+        function verifyCode() {
+            const enteredCode = document.getElementById('codeInput').value.trim().toUpperCase();
+            
+            if (enteredCode === REACTIVATION_CODE) {
+                // Code is correct
+                clearInterval(countdownTimer);
+                document.getElementById('violationScreen').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+                
+                // Re-enter full screen
+                enterFullScreen();
+            } else {
+                // Code is incorrect
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('codeInput').value = '';
+                document.getElementById('codeInput').focus();
+            }
+        }
+
+        function submitTest() {
+            testActive = false;
+            const answers = document.querySelectorAll('.answer-box');
+            let emptyCount = 0;
+            
+            answers.forEach(answer => {
+                if (answer.value.trim() === '') {
+                    emptyCount++;
+                }
+            });
+
+            if (emptyCount > 0) {
+                const confirmed = confirm(`You have ${emptyCount} unanswered question(s). Do you still want to submit?`);
+                if (!confirmed) {
+                    testActive = true;
+                    return;
+                }
+            }
+
+            alert('Test submitted successfully! Your responses have been recorded.');
+            
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // Detect fullscreen exit
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement && testActive) {
+                showViolationScreen();
+            }
+        });
+
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (!document.webkitFullscreenElement && testActive) {
+                showViolationScreen();
+            }
+        });
+
+        document.addEventListener('mozfullscreenchange', function() {
+            if (!document.mozFullScreenElement && testActive) {
+                showViolationScreen();
+            }
+        });
+
+        document.addEventListener('MSFullscreenChange', function() {
+            if (!document.msFullscreenElement && testActive) {
+                showViolationScreen();
+            }
+        });
+
+        // Detect window focus loss (tab switching or app switching)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && testActive) {
+                showViolationScreen();
+            }
+        });
+
+        window.addEventListener('blur', function() {
+            if (testActive) {
+                showViolationScreen();
+            }
+        });
+
+        // Enable start button when name is entered
+        document.getElementById('studentName').addEventListener('input', function() {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.disabled = this.value.trim() === '';
+        });
+
+        // Enter key to start test
+        document.getElementById('studentName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim() !== '') {
+                startTest();
+            }
+        });
+
+        // Enter key to verify code
+        document.getElementById('codeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyCode();
+            }
+        });
+
+        // Auto-uppercase code input
+        document.getElementById('codeInput').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>
