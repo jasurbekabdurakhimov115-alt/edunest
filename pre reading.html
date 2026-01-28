@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - A2 English Reading Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            border: 3px solid #e63946;
+            text-align: center;
+        }
+
+        .edunest-header {
+            color: #e63946;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .test-title {
+            color: #1d3557;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1d3557;
+            font-size: 1.1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #e63946;
+            outline: none;
+        }
+
+        .start-btn {
+            background-color: #e63946;
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .start-btn:hover {
+            background-color: #d32f3d;
+            transform: translateY(-2px);
+        }
+
+        .start-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Test Screen */
+        .test-screen {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            border: 3px solid #e63946;
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .student-name-display {
+            font-size: 1.2rem;
+            color: #1d3557;
+            font-weight: 600;
+        }
+
+        .fullscreen-btn {
+            background-color: #457b9d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .reading-text {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #457b9d;
+        }
+
+        .reading-text h3 {
+            color: #1d3557;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .reading-text p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #1d3557;
+            font-weight: 600;
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .option-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 14px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .option-btn.selected {
+            background-color: #e63946;
+            color: white;
+            border-color: #e63946;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #21867a;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            border: 3px solid #2a9d8f;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1d3557;
+        }
+
+        .answersheet {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .answersheet th {
+            background-color: #1d3557;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .answersheet td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .answersheet tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .answer-correct {
+            color: #2a9d8f;
+            font-weight: 600;
+        }
+
+        .answer-wrong {
+            color: #e63946;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn {
+            background-color: #457b9d;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background-color: #3a6a8a;
+        }
+
+        .download-btn {
+            background-color: #e63946;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background-color: #d32f3d;
+        }
+
+        /* Proctoring Overlay */
+        .proctoring-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .proctoring-message {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .proctoring-input {
+            padding: 15px;
+            font-size: 1.5rem;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            border: none;
+        }
+
+        .proctoring-submit {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background-color: #e63946;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Fullscreen styling */
+        body:fullscreen {
+            background-color: #f5f7fa;
+        }
+
+        body:fullscreen .container {
+            padding-top: 40px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .welcome-screen, .test-screen, .results-screen {
+                padding: 25px 20px;
+            }
+            
+            .edunest-header {
+                font-size: 2.2rem;
+            }
+            
+            .test-title {
+                font-size: 1.5rem;
+            }
+            
+            .options-container {
+                flex-direction: column;
+            }
+            
+            .option-btn {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+            
+            .test-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+        /* Instructions */
+        .instructions {
+            background-color: #e9f5ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #457b9d;
+        }
+
+        .instructions h4 {
+            color: #1d3557;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <h1 class="edunest-header">EDUNEST</h1>
+            <h2 class="test-title">A2 English Reading Test</h2>
+            
+            <div class="input-group">
+                <label for="studentName">Enter your full name:</label>
+                <input type="text" id="studentName" placeholder="John Smith">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Enter test password:</label>
+                <input type="password" id="password" placeholder="Enter 4-digit password">
+            </div>
+            
+            <div class="instructions">
+                <h4>Test Instructions:</h4>
+                <ul>
+                    <li>Read the text carefully before answering questions</li>
+                    <li>Select TRUE or FALSE for each statement</li>
+                    <li>The test will start in fullscreen mode</li>
+                    <li>Do not switch tabs or applications during the test</li>
+                    <li>When finished, click "Submit Answers" to see your results</li>
+                </ul>
+            </div>
+            
+            <button class="start-btn" id="startBtn" disabled>START TEST</button>
+        </div>
+        
+        <!-- Test Screen -->
+        <div class="test-screen" id="testScreen">
+            <div class="test-header">
+                <div class="student-name-display">Student: <span id="displayName"></span></div>
+                <button class="fullscreen-btn" id="fullscreenBtn">Enter Fullscreen</button>
+            </div>
+            
+            <div class="reading-text">
+                <h3>Should your kids help with household chores?</h3>
+                <p>Not everyone thinks that children and teenagers should help with household chores. Some believe that asking children to help in the house teaches them important life lessons. Others feel that they should only think about school, extracurricular activities, and having fun.</p>
+                <p>From a young age, children can learn to do some small jobs around the house, like tidying up their rooms, making the bed, and setting the table. In this way, children learn that a family needs everyone's help. They also learn to value manual work and to respect others and their work. As they grow, it feels natural for children to participate in the housework even more, such as clearing the table and washing the dishes. But it's important to ask kids and teens to do chores that are right for their age and won't be too hard for them. If they are doing something for the first time, they should learn how to do it first. They don't know what to do if they don't see it!</p>
+                <p>For children and teenagers, learning how to cook a meal, do laundry, or clean the house is an important part of growing up. It gives them confidence in their own abilities. When children and teens are responsible for some household tasks, as well as doing their homework and participating in after- school activities, they learn to organise their time better. This can be useful in every aspect of their lives. Some people don't agree with this idea. They think that helping with the housework might make children's lives harder when they should just enjoy being young. Because childhood is an important part of their lives, they believe that children have other things to think about, such as studying at school, doing sports, or playing music. They worry that giving them chores might stress them out or take away from their fun time.</p>
+            </div>
+            
+            <div id="questionsContainer">
+                <!-- Questions will be generated here -->
+            </div>
+            
+            <div class="submit-section">
+                <button class="submit-btn" id="submitBtn">Submit Answers</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-header">
+                <h2>Test Results</h2>
+                <p>Student: <span id="resultsName"></span></p>
+            </div>
+            
+            <table class="answersheet" id="answerSheet">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Your Answer</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="answersTableBody">
+                    <!-- Results will be displayed here -->
+                </tbody>
+            </table>
+            
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" id="copyBtn">Copy Answers to Clipboard</button>
+                <button class="action-btn download-btn" id="downloadBtn">Download as PDF</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Proctoring Overlay -->
+    <div class="proctoring-overlay" id="proctoringOverlay">
+        <div class="proctoring-message">
+            <p>Test interrupted! You switched windows or left fullscreen mode.</p>
+            <p>Enter the reactivation code to continue the test.</p>
+        </div>
+        <input type="text" class="proctoring-input" id="reactivationCode" placeholder="Enter code" maxlength="4">
+        <button class="proctoring-submit" id="proctoringSubmit">Continue Test</button>
+    </div>
+
+    <script>
+        // Test data - questions and correct answers
+        const questions = [
+            { id: 1, text: "Some people think that children learn other skills while doing household tasks.", correctAnswer: "true" },
+            { id: 2, text: "Other people believe that housework is for adults only.", correctAnswer: "false" },
+            { id: 3, text: "Children who help around the house work harder when they are teenagers.", correctAnswer: "false" },
+            { id: 4, text: "Children should try to do easy and difficult chores.", correctAnswer: "false" },
+            { id: 5, text: "Children can learn to do housework without someone teaching them.", correctAnswer: "false" },
+            { id: 6, text: "With many things to do, teenagers understand how to plan their time.", correctAnswer: "true" },
+            { id: 7, text: "Some people think that children's lives become difficult if they do housework.", correctAnswer: "true" },
+            { id: 8, text: "Some people think that children's lives are too busy and there isn't time for housework.", correctAnswer: "true" }
+        ];
+
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const testScreen = document.getElementById('testScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const startBtn = document.getElementById('startBtn');
+        const studentNameInput = document.getElementById('studentName');
+        const passwordInput = document.getElementById('password');
+        const displayName = document.getElementById('displayName');
+        const resultsName = document.getElementById('resultsName');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const answersTableBody = document.getElementById('answersTableBody');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const proctoringOverlay = document.getElementById('proctoringOverlay');
+        const reactivationCode = document.getElementById('reactivationCode');
+        const proctoringSubmit = document.getElementById('proctoringSubmit');
+
+        // Test state
+        let studentName = '';
+        let userAnswers = {};
+        let testStarted = false;
+        const correctPassword = '2211';
+        const reactivationPassword = '0227';
+
+        // Initialize the test
+        function initTest() {
+            // Create question elements
+            questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.id = `question-${question.id}`;
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = `${question.id}. ${question.text}`;
+                
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+                
+                // Create TRUE button
+                const trueBtn = document.createElement('button');
+                trueBtn.className = 'option-btn';
+                trueBtn.textContent = 'TRUE';
+                trueBtn.dataset.questionId = question.id;
+                trueBtn.dataset.answer = 'true';
+                trueBtn.onclick = function() { selectAnswer(question.id, 'true'); };
+                
+                // Create FALSE button
+                const falseBtn = document.createElement('button');
+                falseBtn.className = 'option-btn';
+                falseBtn.textContent = 'FALSE';
+                falseBtn.dataset.questionId = question.id;
+                falseBtn.dataset.answer = 'false';
+                falseBtn.onclick = function() { selectAnswer(question.id, 'false'); };
+                
+                optionsContainer.appendChild(trueBtn);
+                optionsContainer.appendChild(falseBtn);
+                
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(optionsContainer);
+                questionsContainer.appendChild(questionDiv);
+                
+                // Initialize answer as not selected
+                userAnswers[question.id] = null;
+            });
+            
+            // Set up event listeners
+            studentNameInput.addEventListener('input', validateStartButton);
+            passwordInput.addEventListener('input', validateStartButton);
+            startBtn.addEventListener('click', startTest);
+            submitBtn.addEventListener('click', submitTest);
+            copyBtn.addEventListener('click', copyAnswers);
+            downloadBtn.addEventListener('click', downloadPDF);
+            fullscreenBtn.addEventListener('click', enterFullscreen);
+            proctoringSubmit.addEventListener('click', checkReactivationCode);
+            
+            // Set up visibility change detection for proctoring
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            
+            // Set up fullscreen change detection
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            
+            // Set up blur detection for proctoring
+            window.addEventListener('blur', handleWindowBlur);
+        }
+
+        // Validate start button
+        function validateStartButton() {
+            const nameValid = studentNameInput.value.trim().length > 0;
+            const passwordValid = passwordInput.value === correctPassword;
+            startBtn.disabled = !(nameValid && passwordValid);
+        }
+
+        // Start the test
+        function startTest() {
+            studentName = studentNameInput.value.trim();
+            if (!studentName || passwordInput.value !== correctPassword) {
+                alert('Please enter your name and correct password');
+                return;
+            }
+            
+            displayName.textContent = studentName;
+            welcomeScreen.style.display = 'none';
+            testScreen.style.display = 'block';
+            testStarted = true;
+            
+            // Enter fullscreen mode
+            enterFullscreen();
+        }
+
+        // Select answer for a question
+        function selectAnswer(questionId, answer) {
+            userAnswers[questionId] = answer;
+            
+            // Update button styles
+            const questionDiv = document.getElementById(`question-${questionId}`);
+            const optionBtns = questionDiv.querySelectorAll('.option-btn');
+            
+            optionBtns.forEach(btn => {
+                if (btn.dataset.answer === answer) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        // Submit the test
+        function submitTest() {
+            // Check if all questions are answered
+            const unanswered = questions.filter(q => userAnswers[q.id] === null);
+            if (unanswered.length > 0) {
+                if (!confirm(`You haven't answered ${unanswered.length} question(s). Submit anyway?`)) {
+                    return;
+                }
+            }
+            
+            // Show results
+            testScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            resultsName.textContent = studentName;
+            
+            // Generate results table
+            answersTableBody.innerHTML = '';
+            questions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || 'Not answered';
+                const isCorrect = userAnswer === question.correctAnswer;
+                
+                const row = document.createElement('tr');
+                
+                const questionCell = document.createElement('td');
+                questionCell.textContent = question.text;
+                
+                const answerCell = document.createElement('td');
+                answerCell.textContent = userAnswer.toUpperCase();
+                
+                const statusCell = document.createElement('td');
+                if (userAnswer === 'Not answered') {
+                    statusCell.textContent = 'Not answered';
+                } else {
+                    statusCell.textContent = isCorrect ? 'Correct' : 'Incorrect';
+                    statusCell.className = isCorrect ? 'answer-correct' : 'answer-wrong';
+                }
+                
+                row.appendChild(questionCell);
+                row.appendChild(answerCell);
+                row.appendChild(statusCell);
+                answersTableBody.appendChild(row);
+            });
+            
+            // Exit fullscreen
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
+
+        // Copy answers to clipboard
+        function copyAnswers() {
+            let textToCopy = `EDUNEST A2 English Reading Test - ${studentName}\n\n`;
+            textToCopy += "Answers:\n";
+            
+            questions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || 'Not answered';
+                textToCopy += `${question.id}. ${question.text}\nAnswer: ${userAnswer.toUpperCase()}\n\n`;
+            });
+            
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => alert('Answers copied to clipboard!'))
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy answers to clipboard');
+                });
+        }
+
+        // Download as PDF (simulated - in a real implementation, use a PDF library)
+        function downloadPDF() {
+            alert('In a real implementation, this would generate and download a PDF file with the test results.');
+            // For actual PDF generation, you would use a library like jsPDF
+            // This is a simplified version for demonstration
+        }
+
+        // Enter fullscreen mode
+        function enterFullscreen() {
+            const element = document.documentElement;
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+            fullscreenBtn.textContent = 'Exit Fullscreen';
+        }
+
+        // Exit fullscreen mode
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            fullscreenBtn.textContent = 'Enter Fullscreen';
+        }
+
+        // Handle fullscreen change
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && testStarted) {
+                // Show proctoring overlay if test is in progress
+                showProctoringOverlay();
+            }
+            
+            // Update button text
+            fullscreenBtn.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen';
+        }
+
+        // Handle visibility change (tab switching)
+        function handleVisibilityChange() {
+            if (document.hidden && testStarted) {
+                showProctoringOverlay();
+            }
+        }
+
+        // Handle window blur (switching applications)
+        function handleWindowBlur() {
+            if (testStarted) {
+                showProctoringOverlay();
+            }
+        }
+
+        // Show proctoring overlay
+        function showProctoringOverlay() {
+            if (testStarted && !document.getElementById('proctoringOverlay').style.display) {
+                proctoringOverlay.style.display = 'flex';
+                reactivationCode.value = '';
+            }
+        }
+
+        // Check reactivation code
+        function checkReactivationCode() {
+            if (reactivationCode.value === reactivationPassword) {
+                proctoringOverlay.style.display = 'none';
+                enterFullscreen();
+            } else {
+                alert('Incorrect reactivation code. Please try again.');
+                reactivationCode.value = '';
+                reactivationCode.focus();
+            }
+        }
+
+        // Initialize the test when page loads
+        window.onload = initTest;
+    </script>
+</body>
+</html>
