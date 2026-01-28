@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edunest | My Day (A1 Reading Test)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --edunest-blue: #1a56db;
+            --edunest-light: #e8f1ff;
+            --edunest-red: #e63946;
+            --edunest-green: #2a9d8f;
+            --edunest-dark: #1a202c;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--edunest-dark);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--edunest-light) 0%, #ffffff 100%);
+        }
+
+        .edunest-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .edunest-header h1 {
+            color: var(--edunest-blue);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .edunest-header p {
+            color: #4a5568;
+            font-size: 1.2rem;
+        }
+
+        .welcome-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            border: 2px solid var(--edunest-blue);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--edunest-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--edunest-blue);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+        }
+
+        .start-btn {
+            background-color: var(--edunest-blue);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .start-btn:hover {
+            background-color: #1546b4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 86, 219, 0.2);
+        }
+
+        .start-btn:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .error-message {
+            color: var(--edunest-red);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Test Screen */
+        .test-screen {
+            display: none;
+            min-height: 100vh;
+            padding-top: 20px;
+            padding-bottom: 80px;
+        }
+
+        .test-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid var(--edunest-blue);
+        }
+
+        .student-info {
+            font-size: 1.1rem;
+        }
+
+        .student-name {
+            color: var(--edunest-blue);
+            font-weight: 700;
+        }
+
+        .test-title {
+            color: var(--edunest-blue);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .test-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border: 2px solid var(--edunest-red);
+        }
+
+        .test-passage h2 {
+            color: var(--edunest-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--edunest-light);
+        }
+
+        .test-passage p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        .questions-container h3 {
+            color: var(--edunest-green);
+            margin: 30px 0 20px;
+            font-size: 1.4rem;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: var(--edunest-blue);
+            background-color: var(--edunest-light);
+        }
+
+        .option.selected {
+            border-color: var(--edunest-blue);
+            background-color: var(--edunest-light);
+        }
+
+        .option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .option label {
+            cursor: pointer;
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        .test-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .submit-btn {
+            background-color: var(--edunest-green);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(42, 157, 143, 0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: #21867a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(42, 157, 143, 0.3);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 30px 0;
+        }
+
+        .results-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--edunest-green);
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--edunest-light);
+        }
+
+        .results-header h2 {
+            color: var(--edunest-green);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .results-summary {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--edunest-light);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .summary-item h3 {
+            color: var(--edunest-blue);
+            margin-bottom: 10px;
+        }
+
+        .summary-item p {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--edunest-dark);
+        }
+
+        .answers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .answers-table th {
+            background-color: var(--edunest-blue);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .answers-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .answers-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .correct-answer {
+            color: var(--edunest-green);
+            font-weight: 600;
+        }
+
+        .user-answer {
+            color: var(--edunest-blue);
+            font-weight: 600;
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 16px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copy-btn {
+            background-color: var(--edunest-blue);
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background-color: #1546b4;
+            transform: translateY(-2px);
+        }
+
+        .new-test-btn {
+            background-color: var(--edunest-green);
+            color: white;
+        }
+
+        .new-test-btn:hover {
+            background-color: #21867a;
+            transform: translateY(-2px);
+        }
+
+        .exit-fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+
+        /* Fullscreen mode */
+        body.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .edunest-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .test-title {
+                font-size: 1.5rem;
+            }
+            
+            .test-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .test-content, .welcome-form, .results-container {
+                padding: 20px;
+            }
+            
+            .summary-item {
+                min-width: 100%;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .edunest-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+            
+            .option {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="edunest-header">
+            <h1><i class="fas fa-graduation-cap"></i> Edunest</h1>
+            <p>Interactive Reading Test (A1 Level)</p>
+        </div>
+        
+        <div class="welcome-form">
+            <div class="form-group">
+                <label for="studentName"><i class="fas fa-user"></i> Student Name</label>
+                <input type="text" id="studentName" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Test Access Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="Enter the test password">
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="error-message" id="passwordError">
+                    Incorrect password. Please try again.
+                </div>
+            </div>
+            
+            <button class="start-btn" id="startBtn" disabled>
+                <i class="fas fa-play-circle"></i> Start Test
+            </button>
+            
+            <div style="margin-top: 20px; text-align: center; color: #718096; font-size: 0.9rem;">
+                <p><i class="fas fa-info-circle"></i> You'll need to enter the correct password to begin the test.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Screen -->
+    <div class="test-screen" id="testScreen">
+        <div class="container">
+            <div class="test-header">
+                <div class="student-info">
+                    <p>Student: <span class="student-name" id="displayStudentName"></span></p>
+                    <p>Test: <strong>My Day (A1 Reading)</strong></p>
+                </div>
+                <div class="test-timer">
+                    <h2 class="test-title">My Day (A1)</h2>
+                </div>
+            </div>
+            
+            <div class="test-content">
+                <div class="test-passage">
+                    <h2>My day (A1)</h2>
+                    <p>First, I wake up. Then, I get dressed. I walk to school. I do not ride a bike. I do not ride the bus. I like to go to school. It rains. I do not like rain. I eat lunch. I eat a sandwich and an apple.</p>
+                    <p>I play outside. I like to play. I read a book. I like to read books. I walk home. I do not like walking home. My mother cooks soup for dinner. The soup is hot. Then, I go to bed. I do not like to go to bed.</p>
+                    
+                    <h3>Did you understand the text?</h3>
+                </div>
+                
+                <div class="questions-container">
+                    <div class="question" id="q1">
+                        <div class="question-text">1) What happens first?</div>
+                        <div class="options">
+                            <div class="option" data-value="a">
+                                <input type="radio" id="q1a" name="q1">
+                                <label for="q1a">a) Wake up</label>
+                            </div>
+                            <div class="option" data-value="b">
+                                <input type="radio" id="q1b" name="q1">
+                                <label for="q1b">b) Get dressed</label>
+                            </div>
+                            <div class="option" data-value="c">
+                                <input type="radio" id="q1c" name="q1">
+                                <label for="q1c">c) Eat lunch</label>
+                            </div>
+                            <div class="option" data-value="d">
+                                <input type="radio" id="q1d" name="q1">
+                                <label for="q1d">d) Walk to school</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" id="q2">
+                        <div class="question-text">2) What do I like?</div>
+                        <div class="options">
+                            <div class="option" data-value="a">
+                                <input type="radio" id="q2a" name="q2">
+                                <label for="q2a">a) Rain</label>
+                            </div>
+                            <div class="option" data-value="b">
+                                <input type="radio" id="q2b" name="q2">
+                                <label for="q2b">b) Going to bed</label>
+                            </div>
+                            <div class="option" data-value="c">
+                                <input type="radio" id="q2c" name="q2">
+                                <label for="q2c">c) Walking home</label>
+                            </div>
+                            <div class="option" data-value="d">
+                                <input type="radio" id="q2d" name="q2">
+                                <label for="q2d">d) Books</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" id="q3">
+                        <div class="question-text">3) How do I go to school?</div>
+                        <div class="options">
+                            <div class="option" data-value="a">
+                                <input type="radio" id="q3a" name="q3">
+                                <label for="q3a">a) I ride a bike.</label>
+                            </div>
+                            <div class="option" data-value="b">
+                                <input type="radio" id="q3b" name="q3">
+                                <label for="q3b">b) I ride the bus.</label>
+                            </div>
+                            <div class="option" data-value="c">
+                                <input type="radio" id="q3c" name="q3">
+                                <label for="q3c">c) I walk.</label>
+                            </div>
+                            <div class="option" data-value="d">
+                                <input type="radio" id="q3d" name="q3">
+                                <label for="q3d">d) I drive a car.</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" id="q4">
+                        <div class="question-text">4) What do I eat for dinner?</div>
+                        <div class="options">
+                            <div class="option" data-value="a">
+                                <input type="radio" id="q4a" name="q4">
+                                <label for="q4a">a) Soup</label>
+                            </div>
+                            <div class="option" data-value="b">
+                                <input type="radio" id="q4b" name="q4">
+                                <label for="q4b">b) Sandwich</label>
+                            </div>
+                            <div class="option" data-value="c">
+                                <input type="radio" id="q4c" name="q4">
+                                <label for="q4c">c) Apple</label>
+                            </div>
+                            <div class="option" data-value="d">
+                                <input type="radio" id="q4d" name="q4">
+                                <label for="q4d">d) Pie</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" id="q5">
+                        <div class="question-text">5) What do I not like?</div>
+                        <div class="options">
+                            <div class="option" data-value="a">
+                                <input type="radio" id="q5a" name="q5">
+                                <label for="q5a">a) Playing</label>
+                            </div>
+                            <div class="option" data-value="b">
+                                <input type="radio" id="q5b" name="q5">
+                                <label for="q5b">b) Soup</label>
+                            </div>
+                            <div class="option" data-value="c">
+                                <input type="radio" id="q5c" name="q5">
+                                <label for="q5c">c) Going to school</label>
+                            </div>
+                            <div class="option" data-value="d">
+                                <input type="radio" id="q5d" name="q5">
+                                <label for="q5d">d) Going to bed</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-footer">
+            <button class="submit-btn" id="submitBtn">
+                <i class="fas fa-file-pdf"></i> Submit Test & Save as PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="container">
+            <div class="results-container">
+                <div class="results-header">
+                    <h2><i class="fas fa-chart-bar"></i> Test Results</h2>
+                    <p>Student: <span class="student-name" id="resultsStudentName"></span></p>
+                    <p>Test: <strong>My Day (A1 Reading)</strong></p>
+                </div>
+                
+                <div class="results-summary">
+                    <div class="summary-item">
+                        <h3>Questions Answered</h3>
+                        <p id="answeredCount">0/5</p>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Correct Answers</h3>
+                        <p id="correctCount">0/5</p>
+                    </div>
+                    <div class="summary-item">
+                        <h3>Score</h3>
+                        <p id="scorePercentage">0%</p>
+                    </div>
+                </div>
+                
+                <table class="answers-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="answersTableBody">
+                        <!-- Results will be populated here -->
+                    </tbody>
+                </table>
+                
+                <div class="result-actions">
+                    <button class="action-btn copy-btn" id="copyAnswersBtn">
+                        <i class="fas fa-copy"></i> Copy Answers
+                    </button>
+                    <button class="action-btn new-test-btn" id="newTestBtn">
+                        <i class="fas fa-redo"></i> Take New Test
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Fullscreen Button -->
+    <button class="exit-fullscreen-btn" id="exitFullscreenBtn">
+        <i class="fas fa-compress"></i>
+    </button>
+
+    <script>
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const testScreen = document.getElementById('testScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const studentNameInput = document.getElementById('studentName');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordError = document.getElementById('passwordError');
+        const startBtn = document.getElementById('startBtn');
+        const displayStudentName = document.getElementById('displayStudentName');
+        const resultsStudentName = document.getElementById('resultsStudentName');
+        const submitBtn = document.getElementById('submitBtn');
+        const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+        const copyAnswersBtn = document.getElementById('copyAnswersBtn');
+        const newTestBtn = document.getElementById('newTestBtn');
+        
+        // Correct answers
+        const correctAnswers = {
+            q1: 'a',
+            q2: 'd',
+            q3: 'c',
+            q4: 'a',
+            q5: 'd'
+        };
+        
+        // Test state
+        let studentName = '';
+        let userAnswers = {};
+        let testStarted = false;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password toggle
+            togglePasswordBtn.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            // Enable start button when both fields are filled
+            studentNameInput.addEventListener('input', updateStartButton);
+            passwordInput.addEventListener('input', updateStartButton);
+            
+            // Start test
+            startBtn.addEventListener('click', startTest);
+            
+            // Submit test
+            submitBtn.addEventListener('click', submitTest);
+            
+            // Exit fullscreen
+            exitFullscreenBtn.addEventListener('click', exitFullscreen);
+            
+            // Copy answers
+            copyAnswersBtn.addEventListener('click', copyAnswersToClipboard);
+            
+            // New test
+            newTestBtn.addEventListener('click', resetTest);
+            
+            // Option selection
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.closest('.question').id;
+                    const value = this.getAttribute('data-value');
+                    
+                    // Unselect other options in this question
+                    const otherOptions = this.parentElement.querySelectorAll('.option');
+                    otherOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    
+                    // Update radio button
+                    const radioBtn = this.querySelector('input');
+                    radioBtn.checked = true;
+                    
+                    // Save answer
+                    userAnswers[questionId] = value;
+                });
+            });
+        });
+        
+        function updateStartButton() {
+            const nameFilled = studentNameInput.value.trim().length > 0;
+            const passwordFilled = passwordInput.value.length > 0;
+            
+            startBtn.disabled = !(nameFilled && passwordFilled);
+            passwordError.style.display = 'none';
+        }
+        
+        function startTest() {
+            const password = passwordInput.value;
+            const correctPassword = '2211';
+            
+            if (password !== correctPassword) {
+                passwordError.style.display = 'block';
+                passwordInput.focus();
+                return;
+            }
+            
+            studentName = studentNameInput.value.trim();
+            displayStudentName.textContent = studentName;
+            resultsStudentName.textContent = studentName;
+            
+            // Switch to test screen
+            welcomeScreen.style.display = 'none';
+            testScreen.style.display = 'block';
+            resultsScreen.style.display = 'none';
+            
+            // Enter fullscreen mode
+            enterFullscreen();
+            
+            testStarted = true;
+        }
+        
+        function enterFullscreen() {
+            const body = document.body;
+            
+            if (!document.fullscreenElement) {
+                body.classList.add('fullscreen');
+                exitFullscreenBtn.style.display = 'flex';
+                
+                // Request fullscreen
+                if (body.requestFullscreen) {
+                    body.requestFullscreen();
+                } else if (body.webkitRequestFullscreen) { /* Safari */
+                    body.webkitRequestFullscreen();
+                } else if (body.msRequestFullscreen) { /* IE11 */
+                    body.msRequestFullscreen();
+                }
+            }
+        }
+        
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+            
+            document.body.classList.remove('fullscreen');
+            exitFullscreenBtn.style.display = 'none';
+        }
+        
+        // Handle fullscreen change
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                document.body.classList.remove('fullscreen');
+                exitFullscreenBtn.style.display = 'none';
+            }
+        }
+        
+        function submitTest() {
+            // Check if all questions are answered
+            const answeredQuestions = Object.keys(userAnswers).length;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            
+            if (answeredQuestions < totalQuestions) {
+                if (!confirm(`You have only answered ${answeredQuestions} out of ${totalQuestions} questions. Submit anyway?`)) {
+                    return;
+                }
+            }
+            
+            // Calculate results
+            let correctCount = 0;
+            let resultsHTML = '';
+            
+            for (const [questionId, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = userAnswers[questionId] || 'Not answered';
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) correctCount++;
+                
+                // Get question text
+                const questionElement = document.getElementById(questionId);
+                const questionText = questionElement.querySelector('.question-text').textContent;
+                
+                // Get answer texts
+                const answerTexts = {
+                    'a': questionElement.querySelector(`[data-value="a"] label`).textContent,
+                    'b': questionElement.querySelector(`[data-value="b"] label`).textContent,
+                    'c': questionElement.querySelector(`[data-value="c"] label`).textContent,
+                    'd': questionElement.querySelector(`[data-value="d"] label`).textContent
+                };
+                
+                resultsHTML += `
+                    <tr>
+                        <td>${questionText}</td>
+                        <td class="user-answer">${userAnswer === 'Not answered' ? 'Not answered' : answerTexts[userAnswer]}</td>
+                        <td class="correct-answer">${answerTexts[correctAnswer]}</td>
+                        <td>${isCorrect ? '✅ Correct' : '❌ Incorrect'}</td>
+                    </tr>
+                `;
+            }
+            
+            // Update results display
+            document.getElementById('answeredCount').textContent = `${answeredQuestions}/${totalQuestions}`;
+            document.getElementById('correctCount').textContent = `${correctCount}/${totalQuestions}`;
+            document.getElementById('scorePercentage').textContent = `${Math.round((correctCount / totalQuestions) * 100)}%`;
+            document.getElementById('answersTableBody').innerHTML = resultsHTML;
+            
+            // Switch to results screen
+            testScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            
+            // Generate and download PDF
+            generatePDF();
+        }
+        
+        function generatePDF() {
+            // Create a printable version of results
+            const printWindow = window.open('', '_blank');
+            const testDate = new Date().toLocaleDateString();
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Edunest Test Results - ${studentName}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 40px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .header h1 { color: #1a56db; }
+                        .student-info { margin-bottom: 20px; }
+                        .summary { display: flex; justify-content: space-around; margin-bottom: 30px; }
+                        .summary-item { text-align: center; padding: 15px; background-color: #e8f1ff; border-radius: 8px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+                        th { background-color: #1a56db; color: white; padding: 12px; text-align: left; }
+                        td { padding: 12px; border-bottom: 1px solid #ddd; }
+                        .correct { color: #2a9d8f; font-weight: bold; }
+                        .user-answer { color: #1a56db; }
+                        .footer { text-align: center; margin-top: 40px; color: #666; font-size: 0.9em; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Edunest Test Results</h1>
+                        <p>My Day (A1 Reading Test)</p>
+                    </div>
+                    
+                    <div class="student-info">
+                        <p><strong>Student:</strong> ${studentName}</p>
+                        <p><strong>Date:</strong> ${testDate}</p>
+                    </div>
+                    
+                    <div class="summary">
+                        <div class="summary-item">
+                            <h3>Questions Answered</h3>
+                            <p>${Object.keys(userAnswers).length}/5</p>
+                        </div>
+                        <div class="summary-item">
+                            <h3>Correct Answers</h3>
+                            <p>${calculateCorrectAnswers()}/5</p>
+                        </div>
+                        <div class="summary-item">
+                            <h3>Score</h3>
+                            <p>${Math.round((calculateCorrectAnswers() / 5) * 100)}%</p>
+                        </div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${generateAnswersTableForPDF()}
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        <p>Generated by Edunest Interactive Testing System</p>
+                        <p>Test ID: EDN-A1-READ-${Date.now().toString().slice(-6)}</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            // Give it a moment to load then trigger print/save as PDF
+            setTimeout(() => {
+                printWindow.print();
+                // Don't close immediately to allow user to choose save location
+            }, 500);
+        }
+        
+        function calculateCorrectAnswers() {
+            let correctCount = 0;
+            for (const [questionId, correctAnswer] of Object.entries(correctAnswers)) {
+                if (userAnswers[questionId] === correctAnswer) {
+                    correctCount++;
+                }
+            }
+            return correctCount;
+        }
+        
+        function generateAnswersTableForPDF() {
+            let tableHTML = '';
+            
+            for (const [questionId, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = userAnswers[questionId] || 'Not answered';
+                const isCorrect = userAnswer === correctAnswer;
+                
+                // Get question text
+                const questionElement = document.getElementById(questionId);
+                const questionText = questionElement.querySelector('.question-text').textContent;
+                
+                // Get answer texts
+                const answerTexts = {
+                    'a': questionElement.querySelector(`[data-value="a"] label`).textContent,
+                    'b': questionElement.querySelector(`[data-value="b"] label`).textContent,
+                    'c': questionElement.querySelector(`[data-value="c"] label`).textContent,
+                    'd': questionElement.querySelector(`[data-value="d"] label`).textContent
+                };
+                
+                tableHTML += `
+                    <tr>
+                        <td>${questionText}</td>
+                        <td class="user-answer">${userAnswer === 'Not answered' ? 'Not answered' : answerTexts[userAnswer]}</td>
+                        <td class="correct">${answerTexts[correctAnswer]}</td>
+                        <td>${isCorrect ? '✅ Correct' : '❌ Incorrect'}</td>
+                    </tr>
+                `;
+            }
+            
+            return tableHTML;
+        }
+        
+        function copyAnswersToClipboard() {
+            let textToCopy = `Edunest Test Results - ${studentName}\n`;
+            textToCopy += `My Day (A1 Reading Test)\n`;
+            textToCopy += `Date: ${new Date().toLocaleDateString()}\n\n`;
+            
+            textToCopy += `SUMMARY:\n`;
+            textToCopy += `Questions Answered: ${Object.keys(userAnswers).length}/5\n`;
+            textToCopy += `Correct Answers: ${calculateCorrectAnswers()}/5\n`;
+            textToCopy += `Score: ${Math.round((calculateCorrectAnswers() / 5) * 100)}%\n\n`;
+            
+            textToCopy += `DETAILED ANSWERS:\n`;
+            textToCopy += `----------------------------------------\n`;
+            
+            for (const [questionId, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = userAnswers[questionId] || 'Not answered';
+                const isCorrect = userAnswer === correctAnswer;
+                
+                // Get question text
+                const questionElement = document.getElementById(questionId);
+                const questionText = questionElement.querySelector('.question-text').textContent;
+                
+                // Get answer texts
+                const answerTexts = {
+                    'a': questionElement.querySelector(`[data-value="a"] label`).textContent,
+                    'b': questionElement.querySelector(`[data-value="b"] label`).textContent,
+                    'c': questionElement.querySelector(`[data-value="c"] label`).textContent,
+                    'd': questionElement.querySelector(`[data-value="d"] label`).textContent
+                };
+                
+                textToCopy += `${questionText}\n`;
+                textToCopy += `Your Answer: ${userAnswer === 'Not answered' ? 'Not answered' : answerTexts[userAnswer]}\n`;
+                textToCopy += `Correct Answer: ${answerTexts[correctAnswer]}\n`;
+                textToCopy += `Result: ${isCorrect ? 'Correct' : 'Incorrect'}\n`;
+                textToCopy += `----------------------------------------\n`;
+            }
+            
+            textToCopy += `\nGenerated by Edunest Interactive Testing System`;
+            
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    // Show temporary feedback
+                    const originalText = copyAnswersBtn.innerHTML;
+                    copyAnswersBtn.innerHTML = '<i class="fas fa-check"></i> Copied to Clipboard!';
+                    copyAnswersBtn.style.backgroundColor = '#2a9d8f';
+                    
+                    setTimeout(() => {
+                        copyAnswersBtn.innerHTML = originalText;
+                        copyAnswersBtn.style.backgroundColor = '';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy results to clipboard. Please try again.');
+                });
+        }
+        
+        function resetTest() {
+            // Reset all answers
+            userAnswers = {};
+            
+            // Clear all selected options
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+                option.querySelector('input').checked = false;
+            });
+            
+            // Exit fullscreen if active
+            exitFullscreen();
+            
+            // Return to welcome screen
+            welcomeScreen.style.display = 'flex';
+            testScreen.style.display = 'none';
+            resultsScreen.style.display = 'none';
+            
+            // Clear password field
+            passwordInput.value = '';
+            passwordInput.type = 'password';
+            togglePasswordBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            
+            // Reset student name field
+            studentNameInput.value = '';
+            studentNameInput.focus();
+            
+            testStarted = false;
+        }
+    </script>
+</body>
+</html>
