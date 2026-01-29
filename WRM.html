@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>IELTS Mock Writing - EDUNEST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            background: white;
+            overflow-x: hidden;
+        }
+
+        /* Header - Mobile Optimized */
+        .header {
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .brand {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: clamp(12px, 3.5vw, 16px);
+            opacity: 0.95;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .instructor {
+            font-size: clamp(11px, 3vw, 14px);
+            opacity: 0.9;
+        }
+
+        /* Timer - Mobile Optimized */
+        .timer-section {
+            background: #fff3e0;
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 3px solid #e53935;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .timer {
+            font-size: clamp(24px, 6vw, 32px);
+            font-weight: bold;
+            color: #e53935;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer.warning {
+            color: #ff6f00;
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            color: #f44336;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Mobile-First: Single Column Layout */
+        .split-container {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 160px);
+        }
+
+        /* Mobile Toggle Buttons */
+        .mobile-toggle {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid #e53935;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 15px;
+            background: #f5f5f5;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-right: 1px solid #ddd;
+        }
+
+        .toggle-btn:last-child {
+            border-right: none;
+        }
+
+        .toggle-btn.active {
+            background: #e53935;
+            color: white;
+        }
+
+        .toggle-btn:active {
+            transform: scale(0.98);
+        }
+
+        .question-panel,
+        .answer-panel {
+            width: 100%;
+            padding: 20px 15px;
+            display: none;
+        }
+
+        .question-panel.active,
+        .answer-panel.active {
+            display: block;
+        }
+
+        .question-panel {
+            background: #f9f9f9;
+            min-height: 60vh;
+        }
+
+        .answer-panel {
+            background: white;
+            padding-bottom: 120px; /* Space for fixed buttons */
+        }
+
+        /* Task Navigation - Mobile Optimized */
+        .task-nav {
+            position: fixed;
+            bottom: 80px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .task-btn {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.4);
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        .task-btn:active {
+            transform: scale(0.95);
+        }
+
+        .task-btn.active {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Task Content */
+        .task-content {
+            display: none;
+        }
+
+        .task-content.active {
+            display: block;
+        }
+
+        .task-title {
+            color: #e53935;
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e53935;
+        }
+
+        .task-description {
+            color: #333;
+            font-size: clamp(14px, 4vw, 16px);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .task-image {
+            max-width: 100%;
+            height: auto;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: block;
+        }
+
+        /* Answer Section - Mobile Optimized */
+        .answer-section {
+            display: none;
+        }
+
+        .answer-section.active {
+            display: block;
+        }
+
+        .answer-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e53935;
+        }
+
+        .answer-title {
+            color: #e53935;
+            font-size: clamp(18px, 4.5vw, 22px);
+            font-weight: bold;
+        }
+
+        .word-count {
+            font-size: clamp(16px, 4vw, 18px);
+            font-weight: bold;
+            color: #666;
+            align-self: flex-start;
+        }
+
+        .word-count.warning {
+            color: #ff6f00;
+        }
+
+        .word-count.good {
+            color: #4caf50;
+        }
+
+        /* Textarea - Mobile Optimized */
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            height: 50vh;
+            padding: 15px;
+            font-size: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            line-height: 1.6;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #e53935;
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+        }
+
+        /* Submit Button - Mobile Optimized */
+        .submit-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Start Screen - Mobile Optimized */
+        .start-screen {
+            padding: 20px;
+            max-width: 100%;
+        }
+
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .instructions h2 {
+            color: #e53935;
+            font-size: clamp(20px, 5vw, 24px);
+            margin-bottom: 15px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            line-height: 1.6;
+            font-size: clamp(14px, 3.5vw, 16px);
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            -webkit-appearance: none;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Success Message - Mobile Optimized */
+        .success-message {
+            display: none;
+            padding: 30px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .success-message h1 {
+            font-size: clamp(24px, 6vw, 36px);
+            margin-bottom: 20px;
+        }
+
+        .success-message p {
+            font-size: clamp(16px, 4vw, 20px);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* Copy Section - Mobile Optimized */
+        .copy-section {
+            display: none;
+            padding: 20px;
+            background: white;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.98);
+            background: #1976d2;
+        }
+
+        .copy-feedback {
+            display: none;
+            color: #4caf50;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* Exam Status - Mobile Optimized */
+        .exam-status {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: #2196f3;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 300;
+            display: none;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Violation Modal - Mobile Optimized */
+        .violation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .violation-content {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 10px;
+            max-width: 100%;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .violation-content h2 {
+            color: #f44336;
+            font-size: clamp(24px, 6vw, 32px);
+            margin-bottom: 20px;
+        }
+
+        .violation-content p {
+            font-size: clamp(16px, 4vw, 18px);
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .close-modal-btn {
+            width: 100%;
+            padding: 15px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            touch-action: manipulation;
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .mobile-toggle {
+                display: none;
+            }
+
+            .split-container {
+                flex-direction: row;
+                height: calc(100vh - 200px);
+            }
+
+            .question-panel,
+            .answer-panel {
+                display: block;
+                width: 50%;
+                padding: 30px;
+                overflow-y: auto;
+            }
+
+            .question-panel {
+                border-right: 3px solid #e53935;
+            }
+
+            .task-nav {
+                flex-direction: row;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .task-btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            .submit-section {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: auto;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .submit-btn {
+                width: auto;
+                padding: 15px 40px;
+            }
+
+            .answer-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .word-count {
+                align-self: center;
+            }
+
+            textarea {
+                height: calc(100vh - 400px);
+                min-height: 400px;
+            }
+
+            .start-screen {
+                padding: 40px;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Landscape Mobile Adjustments */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .header {
+                padding: 10px 15px;
+            }
+
+            .brand {
+                font-size: 18px;
+                margin-bottom: 3px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            .instructor {
+                font-size: 11px;
+            }
+
+            .timer-section {
+                padding: 8px;
+            }
+
+            .timer {
+                font-size: 20px;
+            }
+
+            textarea {
+                min-height: 200px;
+                height: 40vh;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Accessibility Improvements */
+        button:focus,
+        input:focus,
+        textarea:focus {
+            outline: 3px solid #2196f3;
+            outline-offset: 2px;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .question-panel {
+                background: #2a2a2a;
+                color: #e0e0e0;
+            }
+
+            .task-description {
+                background: #333;
+                color: #e0e0e0;
+                border-color: #444;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="start-screen">
+            <div class="header">
+                <div class="brand">EDUNEST</div>
+                <div class="subtitle">IELTS Academic Writing Mock Test</div>
+                <div class="instructor">Instructor: Jasurbek Abdurakhimov</div>
+            </div>
+
+            <div class="instructions">
+                <h2>📋 Exam Instructions</h2>
+                <ul>
+                    <li><strong>Duration:</strong> 60 minutes for both tasks</li>
+                    <li><strong>Task 1:</strong> Write at least 150 words</li>
+                    <li><strong>Task 2:</strong> Write at least 250 words</li>
+                    <li><strong>On Mobile:</strong> Use the toggle buttons to switch between Question and Answer panels</li>
+                    <li><strong>Switch Tasks:</strong> Use the round buttons (1 and 2) in the bottom right</li>
+                    <li><strong>Auto-save:</strong> Your answers are saved every 30 seconds</li>
+                    <li><strong>Submit:</strong> Use the green Submit button at the bottom when done</li>
+                    <li><strong>Warning:</strong> The exam will auto-submit when time expires</li>
+                </ul>
+
+                <p style="margin: 20px 0; padding: 15px; background: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                    <strong>⚠️ Important:</strong> Please enter your full name before starting. Once started, you cannot pause the exam.
+                </p>
+
+                <input type="text" id="studentNameStartInput" class="name-input" placeholder="Enter your full name" required>
+                <button id="startExamBtn" class="start-btn">🚀 Start Exam</button>
+            </div>
+        </div>
+
+        <!-- Exam Content -->
+        <div id="examContent" style="display: none;">
+            <!-- Exam Status Badge -->
+            <div id="examStatus" class="exam-status">🟢 Exam in Progress</div>
+
+            <!-- Header -->
+            <div class="header">
+                <div class="brand">EDUNEST</div>
+                <div class="subtitle">IELTS Academic Writing Mock Test</div>
+                <div class="instructor">Instructor: Jasurbek Abdurakhimov</div>
+            </div>
+
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <div id="timer" class="timer">60:00</div>
+            </div>
+
+            <!-- Mobile Toggle Buttons -->
+            <div class="mobile-toggle">
+                <button class="toggle-btn active" id="questionToggle">📄 Question</button>
+                <button class="toggle-btn" id="answerToggle">✍️ Answer</button>
+            </div>
+
+            <!-- Split Container -->
+            <div class="split-container">
+                <!-- Question Panel -->
+                <div class="question-panel active" id="questionPanel">
+                    <!-- Task 1 Content -->
+                    <div id="task1Content" class="task-content active">
+                        <div class="task-title">TASK 1 - Academic</div>
+                        <div class="task-description">
+                            <p><strong>You should spend about 20 minutes on this task.</strong></p>
+                            <p style="margin-top: 10px;">The chart below shows the percentage of households in owned and rented accommodation in England and Wales between 1918 and 2011.</p>
+                            <p style="margin-top: 10px;"><strong>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</strong></p>
+                            <p style="margin-top: 10px;"><em>Write at least 150 words.</em></p>
+                        </div>
+                        <img src="https://ieltsliz.com/wp-content/uploads/2016/02/ielts-writing-task-1-bar-chart-owned-and-rented-households.jpg" alt="Task 1 Chart" class="task-image">
+                    </div>
+
+                    <!-- Task 2 Content -->
+                    <div id="task2Content" class="task-content">
+                        <div class="task-title">TASK 2 - Essay</div>
+                        <div class="task-description">
+                            <p><strong>You should spend about 40 minutes on this task.</strong></p>
+                            <p style="margin-top: 15px;"><strong>Write about the following topic:</strong></p>
+                            <p style="margin-top: 15px; font-size: 18px; line-height: 1.8;">
+                                <strong>Some people believe that it is best to accept a bad situation, such as an unsatisfactory job or shortage of money. Others argue that it is better to try and improve such situations.</strong>
+                            </p>
+                            <p style="margin-top: 15px;"><strong>Discuss both these views and give your own opinion.</strong></p>
+                            <p style="margin-top: 15px;"><em>Give reasons for your answer and include any relevant examples from your own knowledge or experience.</em></p>
+                            <p style="margin-top: 10px;"><em>Write at least 250 words.</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer Panel -->
+                <div class="answer-panel" id="answerPanel">
+                    <!-- Task 1 Answer -->
+                    <div id="task1Answer" class="answer-section active">
+                        <div class="answer-header">
+                            <div class="answer-title">Your Answer - Task 1</div>
+                            <div id="wordCount1" class="word-count">Words: 0</div>
+                        </div>
+                        <textarea id="task1Textarea" placeholder="Start writing your Task 1 answer here..."></textarea>
+                    </div>
+
+                    <!-- Task 2 Answer -->
+                    <div id="task2Answer" class="answer-section">
+                        <div class="answer-header">
+                            <div class="answer-title">Your Answer - Task 2</div>
+                            <div id="wordCount2" class="word-count">Words: 0</div>
+                        </div>
+                        <textarea id="task2Textarea" placeholder="Start writing your Task 2 answer here..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Navigation Buttons -->
+            <div class="task-nav">
+                <button class="task-btn active" id="task1Btn" title="Switch to Task 1">1</button>
+                <button class="task-btn" id="task2Btn" title="Switch to Task 2">2</button>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button id="submitBtn" class="submit-btn">✅ Submit Exam</button>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="success-message">
+            <h1>✅ Exam Submitted Successfully!</h1>
+            <p>Your answers have been sent to your instructor.</p>
+            <p>You will receive feedback soon.</p>
+            <p style="font-size: 14px; margin-top: 20px; opacity: 0.9;">Thank you for taking the IELTS Mock Writing Test!</p>
+
+            <!-- Copy Section -->
+            <div id="copySection" class="copy-section">
+                <h3 style="color: #e53935; margin-bottom: 15px;">📋 Copy Your Answers</h3>
+                <button id="copyTask1Btn" class="copy-btn">Copy Task 1</button>
+                <span id="copyFeedback1" class="copy-feedback">✓ Copied!</span>
+                
+                <button id="copyTask2Btn" class="copy-btn">Copy Task 2</button>
+                <span id="copyFeedback2" class="copy-feedback">✓ Copied!</span>
+                
+                <button id="copyBothBtn" class="copy-btn" style="background: #4caf50;">Copy Both Tasks</button>
+                <span id="copyFeedbackBoth" class="copy-feedback">✓ Copied!</span>
+            </div>
+        </div>
+
+        <!-- Violation Modal -->
+        <div id="violationModal" class="violation-modal">
+            <div class="violation-content">
+                <h2>⚠️ Exam Violation Detected</h2>
+                <p id="violationMessage">You have violated the exam rules.</p>
+                <p style="color: #666;">Your exam has been automatically submitted and your instructor has been notified.</p>
+                <button id="closeModalBtn" class="close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        // ===== ELEMENT REFERENCES =====
+        const startScreen = document.getElementById('startScreen');
+        const examContent = document.getElementById('examContent');
+        const startExamBtn = document.getElementById('startExamBtn');
+        const studentNameStartInput = document.getElementById('studentNameStartInput');
+        const timer = document.getElementById('timer');
+        const task1Btn = document.getElementById('task1Btn');
+        const task2Btn = document.getElementById('task2Btn');
+        const task1Content = document.getElementById('task1Content');
+        const task2Content = document.getElementById('task2Content');
+        const task1Answer = document.getElementById('task1Answer');
+        const task2Answer = document.getElementById('task2Answer');
+        const task1Textarea = document.getElementById('task1Textarea');
+        const task2Textarea = document.getElementById('task2Textarea');
+        const wordCount1 = document.getElementById('wordCount1');
+        const wordCount2 = document.getElementById('wordCount2');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const examStatus = document.getElementById('examStatus');
+        const copySection = document.getElementById('copySection');
+        const violationModal = document.getElementById('violationModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const violationMessage = document.getElementById('violationMessage');
+
+        // Mobile toggle elements
+        const questionToggle = document.getElementById('questionToggle');
+        const answerToggle = document.getElementById('answerToggle');
+        const questionPanel = document.getElementById('questionPanel');
+        const answerPanel = document.getElementById('answerPanel');
+
+        // ===== STATE VARIABLES =====
+        let examStarted = false;
+        let examSubmitted = false;
+        let timeRemaining = 3600; // 60 minutes in seconds
+        let timerInterval;
+        let currentTask = 1;
+        let violationReason = '';
+
+        // ===== MOBILE TOGGLE FUNCTIONALITY =====
+        questionToggle.addEventListener('click', function() {
+            questionToggle.classList.add('active');
+            answerToggle.classList.remove('active');
+            questionPanel.classList.add('active');
+            answerPanel.classList.remove('active');
+        });
+
+        answerToggle.addEventListener('click', function() {
+            answerToggle.classList.add('active');
+            questionToggle.classList.remove('active');
+            answerPanel.classList.add('active');
+            questionPanel.classList.remove('active');
+        });
+
+        // ===== START EXAM =====
+        startExamBtn.addEventListener('click', function() {
+            const studentName = studentNameStartInput.value.trim();
+            
+            if (!studentName) {
+                alert('⚠️ Please enter your full name before starting the exam.');
+                studentNameStartInput.focus();
+                return;
+            }
+            
+            if (confirm(`Are you ready to start the exam?\n\nStudent: ${studentName}\nDuration: 60 minutes\n\nOnce started, you cannot pause the exam.`)) {
+                startExam();
+            }
+        });
+
+        function startExam() {
+            examStarted = true;
+            startScreen.style.display = 'none';
+            examContent.style.display = 'block';
+            examStatus.style.display = 'block';
+            
+            // Start timer
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Request fullscreen on desktop
+            if (window.innerWidth >= 768) {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => console.log(err));
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            }
+            
+            // Focus on first textarea
+            task1Textarea.focus();
+        }
+
+        // ===== TIMER =====
+        function updateTimer() {
+            timeRemaining--;
+            
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Warning at 10 minutes
+            if (timeRemaining === 600) {
+                timer.classList.add('warning');
+                alert('⚠️ 10 minutes remaining!');
+            }
+            
+            // Critical at 5 minutes
+            if (timeRemaining === 300) {
+                timer.classList.remove('warning');
+                timer.classList.add('critical');
+                alert('⚠️ 5 minutes remaining!');
+            }
+            
+            // Time's up
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                alert('⏰ Time is up! Your exam will be submitted automatically.');
+                submitExam(false, true);
+            }
+        }
+
+        // ===== TASK SWITCHING =====
+        task1Btn.addEventListener('click', function() {
+            switchToTask(1);
+        });
+
+        task2Btn.addEventListener('click', function() {
+            switchToTask(2);
+        });
+
+        function switchToTask(taskNumber) {
+            currentTask = taskNumber;
+            
+            if (taskNumber === 1) {
+                task1Btn.classList.add('active');
+                task2Btn.classList.remove('active');
+                task1Content.classList.add('active');
+                task2Content.classList.remove('active');
+                task1Answer.classList.add('active');
+                task2Answer.classList.remove('active');
+                task1Textarea.focus();
+            } else {
+                task2Btn.classList.add('active');
+                task1Btn.classList.remove('active');
+                task2Content.classList.add('active');
+                task1Content.classList.remove('active');
+                task2Answer.classList.add('active');
+                task1Answer.classList.remove('active');
+                task2Textarea.focus();
+            }
+        }
+
+        // ===== WORD COUNT =====
+        task1Textarea.addEventListener('input', function() {
+            updateWordCount(task1Textarea, wordCount1, 150);
+        });
+
+        task2Textarea.addEventListener('input', function() {
+            updateWordCount(task2Textarea, wordCount2, 250);
+        });
+
+        function updateWordCount(textarea, countElement, minWords) {
+            const text = textarea.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            countElement.textContent = `Words: ${words}`;
+            
+            if (words < minWords) {
+                countElement.classList.remove('good');
+                countElement.classList.add('warning');
+            } else {
+                countElement.classList.remove('warning');
+                countElement.classList.add('good');
+            }
+        }
+
+        // ===== SUBMIT EXAM =====
+        submitBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to submit your exam? You cannot make changes after submission.')) {
+                submitExam(false, false);
+            }
+        });
+
+        function submitExam(isViolation = false, isAutoSubmit = false) {
+            if (examSubmitted) return;
+            
+            const studentName = studentNameStartInput.value.trim();
+            const task1AnswerText = task1Textarea.value.trim();
+            const task2AnswerText = task2Textarea.value.trim();
+            const wordCount1Val = wordCount1.textContent;
+            const wordCount2Val = wordCount2.textContent;
+            
+            if (!isViolation && !isAutoSubmit && !task1AnswerText && !task2AnswerText) {
+                alert('⚠️ Please write at least one answer before submitting.');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Submitting...';
+            
+            // Mark exam as submitted
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            
+            examStatus.textContent = isViolation ? '⚠️ Submitted (Violation)' : '✅ Exam Submitted';
+            examStatus.style.background = isViolation ? '#f44336' : '#4caf50';
+            
+            // Generate PDF
+            generatePDF(studentName, task1AnswerText, task2AnswerText, wordCount1Val, wordCount2Val);
+            
+            // Send to Telegram
+            const statusEmoji = isViolation ? '⚠️' : (isAutoSubmit ? '⏰' : '✅');
+            const statusText = isViolation ? `VIOLATION: ${violationReason}` : (isAutoSubmit ? 'AUTO-SUBMITTED (Time Up)' : 'COMPLETED SUCCESSFULLY');
+            
+            const telegramText = `
+${statusEmoji} IELTS Mock Writing - EDUNEST
+Instructor: Jasurbek Abdurakhimov
+
+👤 Student Name: ${studentName}
+📋 Status: ${statusText}
+📊 Task 1 Word Count: ${wordCount1Val}
+📊 Task 2 Word Count: ${wordCount2Val}
+📅 Date: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}
+
+📝 TASK 1:
+${task1AnswerText || 'No answer provided'}
+
+📝 TASK 2:
+${task2AnswerText || 'No answer provided'}
+            `.trim();
+            
+            fetch('https://mdrx18.pythonanywhere.com/api/telegram/send/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: telegramText,
+                    send_to_all_admins: true,
+                })
+            }).then(response => response.json())
+              .catch(error => {
+                  console.error('Error:', error);
+              });
+            
+            // Show success message
+            if (!isViolation) {
+                examContent.style.display = 'none';
+                successMessage.style.display = 'block';
+                copySection.style.display = 'block';
+                
+                if (isAutoSubmit) {
+                    successMessage.innerHTML = '<h1>⏰ Time is Up!</h1><p>Your exam has been submitted automatically.</p><p>Your answers have been sent to the instructor.</p>';
+                }
+            }
+            
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => console.log(err));
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // ===== GENERATE PDF =====
+        function generatePDF(studentName, task1Answer, task2Answer, wordCount1Val, wordCount2Val) {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            
+            let yPosition = 20;
+
+            // Add header
+            pdf.setFontSize(22);
+            pdf.setTextColor(229, 57, 53);
+            pdf.text('EDUNEST - IELTS Mock Writing', 105, yPosition, { align: 'center' });
+            
+            yPosition += 8;
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text('Instructor: Jasurbek Abdurakhimov', 105, yPosition, { align: 'center' });
+            
+            yPosition += 15;
+            pdf.setFontSize(14);
+            pdf.text(`Student Name: ${studentName}`, 20, yPosition);
+            
+            yPosition += 10;
+            pdf.setFontSize(12);
+            pdf.text(`Date: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 20, yPosition);
+            
+            yPosition += 15;
+
+            // Task 1
+            pdf.setFontSize(16);
+            pdf.setTextColor(229, 57, 53);
+            pdf.text('TASK 1', 20, yPosition);
+            yPosition += 8;
+            
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text(`Word Count: ${wordCount1Val}`, 20, yPosition);
+            yPosition += 10;
+            
+            const splitText1 = pdf.splitTextToSize(task1Answer || 'No answer provided', 170);
+            splitText1.forEach((line) => {
+                if (yPosition > 270) {
+                    pdf.addPage();
+                    yPosition = 20;
+                }
+                pdf.text(line, 20, yPosition);
+                yPosition += 6;
+            });
+
+            yPosition += 10;
+
+            // Task 2
+            if (yPosition > 240) {
+                pdf.addPage();
+                yPosition = 20;
+            }
+            
+            pdf.setFontSize(16);
+            pdf.setTextColor(229, 57, 53);
+            pdf.text('TASK 2', 20, yPosition);
+            yPosition += 8;
+            
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text(`Word Count: ${wordCount2Val}`, 20, yPosition);
+            yPosition += 10;
+            
+            const splitText2 = pdf.splitTextToSize(task2Answer || 'No answer provided', 170);
+            splitText2.forEach((line) => {
+                if (yPosition > 270) {
+                    pdf.addPage();
+                    yPosition = 20;
+                }
+                pdf.text(line, 20, yPosition);
+                yPosition += 6;
+            });
+
+            // Save PDF
+            const timestamp = new Date().getTime();
+            pdf.save(`${studentName}_IELTS_Writing_${timestamp}.pdf`);
+        }
+
+        // ===== COPY FUNCTIONALITY =====
+        document.getElementById('copyTask1Btn').addEventListener('click', function() {
+            const task1Text = task1Textarea.value;
+            navigator.clipboard.writeText(task1Text).then(() => {
+                const feedback = document.getElementById('copyFeedback1');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => feedback.style.display = 'none', 2000);
+            });
+        });
+
+        document.getElementById('copyTask2Btn').addEventListener('click', function() {
+            const task2Text = task2Textarea.value;
+            navigator.clipboard.writeText(task2Text).then(() => {
+                const feedback = document.getElementById('copyFeedback2');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => feedback.style.display = 'none', 2000);
+            });
+        });
+
+        document.getElementById('copyBothBtn').addEventListener('click', function() {
+            const bothText = `TASK 1:\n${task1Textarea.value}\n\n---\n\nTASK 2:\n${task2Textarea.value}`;
+            navigator.clipboard.writeText(bothText).then(() => {
+                const feedback = document.getElementById('copyFeedbackBoth');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => feedback.style.display = 'none', 2000);
+            });
+        });
+
+        // ===== VIOLATION MODAL =====
+        closeModalBtn.addEventListener('click', function() {
+            violationModal.style.display = 'none';
+            examContent.style.display = 'none';
+            successMessage.style.display = 'block';
+            successMessage.style.background = '#f44336';
+            successMessage.innerHTML = '⚠️ Your exam has been submitted due to violation.<br>Your instructor has been notified.';
+        });
+
+        // ===== WARN BEFORE LEAVING PAGE =====
+        window.addEventListener('beforeunload', function(e) {
+            if (examStarted && !examSubmitted) {
+                e.preventDefault();
+                e.returnValue = 'You have an exam in progress. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // ===== AUTO-SAVE FUNCTIONALITY =====
+        setInterval(() => {
+            if (examStarted && !examSubmitted) {
+                localStorage.setItem('task1_autosave', task1Textarea.value);
+                localStorage.setItem('task2_autosave', task2Textarea.value);
+            }
+        }, 30000);
+
+        // ===== PREVENT ZOOM ON MOBILE =====
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // ===== OPTIMIZE TEXTAREA ON MOBILE =====
+        if (window.innerWidth < 768) {
+            // Prevent viewport jumping when keyboard appears
+            const viewportHeight = window.innerHeight;
+            document.documentElement.style.setProperty('--vh', `${viewportHeight * 0.01}px`);
+            
+            window.addEventListener('resize', () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            });
+        }
+    </script>
+</body>
+</html>
