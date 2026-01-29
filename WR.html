@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Mock Writing - EDUNEST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: white;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+
+        .brand {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .instructor {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Timer Styles */
+        .timer-section {
+            background: #fff3e0;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 3px solid #e53935;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .timer {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e53935;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer.warning {
+            color: #ff6f00;
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            color: #f44336;
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Split Screen Layout */
+        .split-container {
+            display: flex;
+            height: calc(100vh - 200px);
+            position: relative;
+        }
+
+        .question-panel {
+            width: 50%;
+            border-right: 3px solid #e53935;
+            overflow-y: auto;
+            padding: 30px;
+            background: #f9f9f9;
+        }
+
+        .answer-panel {
+            width: 50%;
+            overflow-y: auto;
+            padding: 30px;
+            background: white;
+        }
+
+        /* Task Navigation Buttons */
+        .task-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .task-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.4);
+            transition: all 0.3s;
+        }
+
+        .task-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.6);
+        }
+
+        .task-btn.active {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Task Content */
+        .task-content {
+            display: none;
+        }
+
+        .task-content.active {
+            display: block;
+        }
+
+        .task-title {
+            color: #e53935;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e53935;
+        }
+
+        .task-description {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .task-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Answer Section */
+        .answer-section {
+            display: none;
+        }
+
+        .answer-section.active {
+            display: block;
+        }
+
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e53935;
+        }
+
+        .answer-title {
+            color: #e53935;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .word-count {
+            font-size: 18px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .word-count.warning {
+            color: #ff6f00;
+        }
+
+        .word-count.good {
+            color: #4caf50;
+        }
+
+        textarea {
+            width: 100%;
+            height: calc(100vh - 400px);
+            padding: 15px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            line-height: 1.8;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #e53935;
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+        }
+
+        /* Submit Button */
+        .submit-section {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .submit-btn {
+            padding: 15px 50px;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Exam Status Indicator */
+        .exam-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px;
+            background: white;
+        }
+
+        .start-screen h2 {
+            color: #e53935;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .exam-rules {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: left;
+            max-width: 700px;
+            border: 2px solid #e53935;
+        }
+
+        .exam-rules h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .exam-rules ul {
+            list-style-position: inside;
+            color: #666;
+            line-height: 2;
+        }
+
+        .exam-rules li {
+            margin-bottom: 10px;
+        }
+
+        .exam-rules .warning {
+            color: #e53935;
+            font-weight: 600;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef5f5;
+            border-radius: 5px;
+            border: 1px solid #e53935;
+        }
+
+        .name-section {
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .name-section label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .name-section input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #e53935;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .name-section input:focus {
+            outline: none;
+            border-color: #b71c1c;
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
+        }
+
+        .start-exam-btn {
+            padding: 18px 60px;
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .start-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.4);
+        }
+
+        /* Violation Warning Modal */
+        .violation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .violation-content {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 3px solid #f44336;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .violation-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .violation-content h2 {
+            color: #f44336;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .violation-content p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .close-modal-btn {
+            padding: 15px 40px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .close-modal-btn:hover {
+            background: #d32f2f;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            padding: 40px;
+            background: #4caf50;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 40px;
+        }
+
+        /* Copy Section */
+        .copy-section {
+            display: none;
+            padding: 30px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin: 20px 40px;
+            text-align: center;
+        }
+
+        .copy-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .copy-btn {
+            padding: 12px 30px;
+            margin: 5px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #1976D2;
+        }
+
+        .copy-feedback {
+            display: none;
+            color: #4caf50;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e53935;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b71c1c;
+        }
+
+        /* Focus indicator for exam atmosphere */
+        .focus-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(229, 57, 53, 0.95);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 9999;
+            display: none;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+
+        .focus-message.show {
+            display: block;
+            animation: fadeInOut 2s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Exam Status Indicator -->
+    <div class="exam-status" id="examStatus">⏳ Exam in Progress</div>
+
+    <!-- Focus Warning Message -->
+    <div class="focus-message" id="focusMessage">⚠️ Stay Focused! Exam in Progress</div>
+
+    <!-- Violation Warning Modal -->
+    <div class="violation-modal" id="violationModal">
+        <div class="violation-content">
+            <div class="violation-icon">⚠️</div>
+            <h2>Exam Violation Detected!</h2>
+            <p id="violationMessage">You have violated exam rules!</p>
+            <button class="close-modal-btn" id="closeModalBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        ✅ Your exam has been submitted successfully!<br>
+        Your answers have been sent to the instructor.
+    </div>
+
+    <!-- Copy Section -->
+    <div class="copy-section" id="copySection">
+        <h3>Copy Your Answers</h3>
+        <p style="color: #666; margin-bottom: 20px;">You can copy your answers to paste them elsewhere if needed.</p>
+        <button class="copy-btn" id="copyTask1Btn">Copy Task 1 <span class="copy-feedback" id="copyFeedback1">✓ Copied!</span></button>
+        <button class="copy-btn" id="copyTask2Btn">Copy Task 2 <span class="copy-feedback" id="copyFeedback2">✓ Copied!</span></button>
+        <button class="copy-btn" id="copyBothBtn">Copy Both Tasks <span class="copy-feedback" id="copyFeedbackBoth">✓ Copied!</span></button>
+    </div>
+
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="start-screen">
+            <h2>IELTS Mock Writing Exam</h2>
+            <div class="exam-rules">
+                <h3>⚠️ Important Exam Rules</h3>
+                <ul>
+                    <li>✓ You must stay in <strong>fullscreen mode</strong> during the entire exam</li>
+                    <li>✓ Do NOT switch tabs or windows</li>
+                    <li>✓ Do NOT exit fullscreen mode</li>
+                    <li>✓ Do NOT use any external applications or resources</li>
+                    <li>✓ You have <strong>60 minutes</strong> to complete both tasks</li>
+                    <li>✓ Use the T1 and T2 buttons to navigate between tasks</li>
+                    <li>✓ Enter your name before starting the exam</li>
+                </ul>
+                <div class="warning">
+                    ⚠️ <strong>WARNING:</strong> Any violation of these rules will result in automatic exam submission and your instructor will be notified!
+                </div>
+            </div>
+            <div class="name-section">
+                <label for="studentNameStart">Student Name (Required):</label>
+                <input type="text" id="studentNameStart" placeholder="Enter your full name" required>
+            </div>
+            <button class="start-exam-btn" id="startExamBtn">START EXAM</button>
+        </div>
+
+        <!-- Main Exam Content -->
+        <div id="examContent" style="display: none;">
+            <div class="header">
+                <div class="brand">EDUNEST</div>
+                <div class="subtitle">IELTS Mock Writing Exam</div>
+                <div class="instructor">Instructor: Jasurbek Abdurakhimov</div>
+            </div>
+
+            <div class="timer-section">
+                <div class="timer" id="timer">60:00</div>
+            </div>
+
+            <div class="split-container">
+                <!-- Question Panel (Left Side) -->
+                <div class="question-panel">
+                    <!-- Task 1 Content -->
+                    <div class="task-content active" id="task1Content">
+                        <div class="task-title">TASK 1</div>
+                        <div class="task-description">
+                            <p><strong>You should spend about 20 minutes on this task.</strong></p>
+                            <p style="margin-top: 10px;">
+                                The diagram below shows the production of electricity.
+                            </p>
+                            <p style="margin-top: 10px;">
+                                Summarise the information by selecting and reporting the main features, and make comparisons where relevant.
+                            </p>
+                            <p style="margin-top: 10px;"><strong>Write at least 150 words.</strong></p>
+                        </div>
+                        <img src="https://i.ibb.co/xxPfW3f/image.png" alt="Household Accommodation Chart" class="task-image">
+                    </div>
+
+                    <!-- Task 2 Content -->
+                    <div class="task-content" id="task2Content">
+                        <div class="task-title">TASK 2</div>
+                        <div class="task-description">
+                            <p><strong>You should spend about 40 minutes on this task.</strong></p>
+                            <p style="margin-top: 15px;">
+                                Today, many parents buy a lot of toys for their children.
+                            </p>
+                            <p style="margin-top: 15px;">
+                                <strong>What are the advantages and disadvantages of this?</strong>
+                            </p>
+                            <p style="margin-top: 15px;">
+                                Give reasons for your answer and include any relevant examples from your own knowledge or experience.
+                            </p>
+                            <p style="margin-top: 15px;"><strong>Write at least 250 words.</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer Panel (Right Side) -->
+                <div class="answer-panel">
+                    <!-- Task 1 Answer -->
+                    <div class="answer-section active" id="task1Answer">
+                        <div class="answer-header">
+                            <div class="answer-title">Your Answer - Task 1</div>
+                            <div class="word-count" id="wordCount1">Words: 0</div>
+                        </div>
+                        <textarea id="task1Textarea" placeholder="Start writing your answer for Task 1 here..."></textarea>
+                    </div>
+
+                    <!-- Task 2 Answer -->
+                    <div class="answer-section" id="task2Answer">
+                        <div class="answer-header">
+                            <div class="answer-title">Your Answer - Task 2</div>
+                            <div class="word-count" id="wordCount2">Words: 0</div>
+                        </div>
+                        <textarea id="task2Textarea" placeholder="Start writing your answer for Task 2 here..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Navigation Buttons -->
+            <div class="task-nav">
+                <button class="task-btn active" id="t1Btn" title="Task 1">T1</button>
+                <button class="task-btn" id="t2Btn" title="Task 2">T2</button>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button class="submit-btn" id="submitBtn">SUBMIT EXAM</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        // ===== VARIABLES =====
+        let examStarted = false;
+        let examSubmitted = false;
+        let violationReason = '';
+        let timerInterval;
+        let totalSeconds = 3600; // 60 minutes
+        let currentTask = 1;
+        let tabSwitchCount = 0;
+        let focusWarningCount = 0;
+
+        // ===== DOM ELEMENTS =====
+        const startScreen = document.getElementById('startScreen');
+        const examContent = document.getElementById('examContent');
+        const examStatus = document.getElementById('examStatus');
+        const violationModal = document.getElementById('violationModal');
+        const violationMessage = document.getElementById('violationMessage');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const successMessage = document.getElementById('successMessage');
+        const copySection = document.getElementById('copySection');
+        const submitBtn = document.getElementById('submitBtn');
+        const studentNameStartInput = document.getElementById('studentNameStart');
+        const startExamBtn = document.getElementById('startExamBtn');
+        const timerDisplay = document.getElementById('timer');
+        const focusMessage = document.getElementById('focusMessage');
+
+        // Task elements
+        const t1Btn = document.getElementById('t1Btn');
+        const t2Btn = document.getElementById('t2Btn');
+        const task1Content = document.getElementById('task1Content');
+        const task2Content = document.getElementById('task2Content');
+        const task1Answer = document.getElementById('task1Answer');
+        const task2Answer = document.getElementById('task2Answer');
+        const task1Textarea = document.getElementById('task1Textarea');
+        const task2Textarea = document.getElementById('task2Textarea');
+        const wordCount1 = document.getElementById('wordCount1');
+        const wordCount2 = document.getElementById('wordCount2');
+
+        // ===== EXAM ATMOSPHERE ENHANCEMENTS =====
+        // Periodic focus reminders
+        function showFocusReminder() {
+            if (examStarted && !examSubmitted && Math.random() < 0.3) {
+                focusMessage.textContent = '⚠️ Stay Focused! Exam in Progress';
+                focusMessage.classList.add('show');
+                setTimeout(() => {
+                    focusMessage.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // Show focus reminder every 5 minutes
+        setInterval(showFocusReminder, 300000);
+
+        // Enhanced tab visibility monitoring with warning system
+        let lastVisibilityWarning = 0;
+        document.addEventListener('visibilitychange', function() {
+            if (!examStarted || examSubmitted) return;
+            
+            if (document.hidden) {
+                tabSwitchCount++;
+                const now = Date.now();
+                
+                if (tabSwitchCount >= 3) {
+                    violationReason = 'Multiple tab switches detected (3 or more)';
+                    handleViolation();
+                } else if (now - lastVisibilityWarning > 5000) {
+                    // Show warning for first 2 switches
+                    focusMessage.textContent = `⚠️ Warning ${tabSwitchCount}/3: Return to exam immediately!`;
+                    focusMessage.classList.add('show');
+                    focusMessage.style.background = 'rgba(255, 111, 0, 0.95)';
+                    setTimeout(() => {
+                        focusMessage.classList.remove('show');
+                        focusMessage.style.background = 'rgba(229, 57, 53, 0.95)';
+                    }, 3000);
+                    lastVisibilityWarning = now;
+                }
+            }
+        });
+
+        // Sound notification for critical events (timer warning)
+        function playAlertSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // ===== TASK NAVIGATION =====
+        t1Btn.addEventListener('click', function() {
+            switchToTask(1);
+        });
+
+        t2Btn.addEventListener('click', function() {
+            switchToTask(2);
+        });
+
+        function switchToTask(taskNumber) {
+            currentTask = taskNumber;
+            
+            if (taskNumber === 1) {
+                // Show Task 1
+                task1Content.classList.add('active');
+                task2Content.classList.remove('active');
+                task1Answer.classList.add('active');
+                task2Answer.classList.remove('active');
+                t1Btn.classList.add('active');
+                t2Btn.classList.remove('active');
+            } else {
+                // Show Task 2
+                task1Content.classList.remove('active');
+                task2Content.classList.add('active');
+                task1Answer.classList.remove('active');
+                task2Answer.classList.add('active');
+                t1Btn.classList.remove('active');
+                t2Btn.classList.add('active');
+            }
+        }
+
+        // ===== WORD COUNT =====
+        task1Textarea.addEventListener('input', function() {
+            updateWordCount(this.value, wordCount1, 150);
+        });
+
+        task2Textarea.addEventListener('input', function() {
+            updateWordCount(this.value, wordCount2, 250);
+        });
+
+        function updateWordCount(text, displayElement, minWords) {
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            const count = words.length;
+            displayElement.textContent = `Words: ${count}`;
+            
+            if (count < minWords) {
+                displayElement.classList.remove('good');
+                displayElement.classList.add('warning');
+            } else {
+                displayElement.classList.remove('warning');
+                displayElement.classList.add('good');
+            }
+        }
+
+        // ===== START EXAM =====
+        startExamBtn.addEventListener('click', function() {
+            const studentName = studentNameStartInput.value.trim();
+            
+            if (!studentName) {
+                alert('⚠️ Please enter your name before starting the exam');
+                studentNameStartInput.focus();
+                return;
+            }
+
+            // Confirmation dialog
+            if (!confirm('Are you ready to start the exam? The timer will begin immediately and you must stay in fullscreen mode.')) {
+                return;
+            }
+
+            startExam(studentName);
+        });
+
+        function startExam(studentName) {
+            // Request fullscreen
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+            
+            // Show exam content
+            startScreen.style.display = 'none';
+            examContent.style.display = 'block';
+            examStatus.style.display = 'block';
+            
+            // Start timer
+            startTimer();
+            
+            // Start monitoring after a delay
+            setTimeout(() => {
+                examStarted = true;
+                initializeProctoring();
+                
+                // Show welcome message
+                focusMessage.textContent = '✓ Exam Started! Good Luck!';
+                focusMessage.style.background = 'rgba(76, 175, 80, 0.95)';
+                focusMessage.classList.add('show');
+                setTimeout(() => {
+                    focusMessage.classList.remove('show');
+                    focusMessage.style.background = 'rgba(229, 57, 53, 0.95)';
+                }, 2000);
+            }, 1000);
+        }
+
+        // ===== TIMER =====
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                totalSeconds--;
+                
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Timer warnings
+                if (totalSeconds === 600) { // 10 minutes left
+                    timerDisplay.classList.add('warning');
+                    playAlertSound();
+                    focusMessage.textContent = '⚠️ 10 Minutes Remaining!';
+                    focusMessage.style.background = 'rgba(255, 111, 0, 0.95)';
+                    focusMessage.classList.add('show');
+                    setTimeout(() => {
+                        focusMessage.classList.remove('show');
+                        focusMessage.style.background = 'rgba(229, 57, 53, 0.95)';
+                    }, 3000);
+                }
+                
+                if (totalSeconds === 300) { // 5 minutes left
+                    timerDisplay.classList.remove('warning');
+                    timerDisplay.classList.add('critical');
+                    playAlertSound();
+                    focusMessage.textContent = '🔥 5 Minutes Remaining!';
+                    focusMessage.style.background = 'rgba(244, 67, 54, 0.95)';
+                    focusMessage.classList.add('show');
+                    setTimeout(() => {
+                        focusMessage.classList.remove('show');
+                        focusMessage.style.background = 'rgba(229, 57, 53, 0.95)';
+                    }, 3000);
+                }
+                
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam(false, true);
+                }
+            }, 1000);
+        }
+
+        // ===== PROCTORING =====
+        const REACTIVATION_CODE = '2501';
+        let isExamLocked = false;
+        let violationCount = 0;
+
+        function initializeProctoring() {
+            // Monitor fullscreen changes
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            // Prevent right-click
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            // Detect visibility changes (tab switching)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && !isExamLocked && examStarted && !examSubmitted) {
+                    violationCount++;
+                    lockExam();
+                }
+            });
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement);
+            
+            if (!isFullscreen && !isExamLocked && examStarted && !examSubmitted) {
+                violationCount++;
+                lockExam();
+            }
+        }
+
+        function lockExam() {
+            isExamLocked = true;
+            const examContent = document.getElementById('examContent');
+            examContent.style.opacity = '0.3';
+            examContent.style.pointerEvents = 'none';
+            
+            const unlockOverlay = document.createElement('div');
+            unlockOverlay.id = 'unlockOverlay';
+            unlockOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 3000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            
+            unlockOverlay.innerHTML = `
+                <div style="background: white; padding: 40px; border-radius: 8px; border: 3px solid #e53935; max-width: 500px; text-align: center;">
+                    <div style="color: #e53935; font-size: 32px; font-weight: bold; margin-bottom: 20px;">🔒 EXAM LOCKED</div>
+                    <div style="color: #4b5563; font-size: 18px; margin-bottom: 20px;">
+                        A violation was detected.<br>
+                        Instructor code required to continue.
+                    </div>
+                    <div id="reactivationTimer" style="font-size: 48px; font-weight: bold; color: #e53935; margin-bottom: 20px; font-family: 'Courier New', monospace;">01:00</div>
+                    <div style="color: #e53935; font-size: 14px; margin-bottom: 20px;">Exam will terminate if code not entered in time</div>
+                    <input type="password" id="unlockCode" placeholder="Enter reactivation code" 
+                           style="width: 100%; padding: 15px; border: 2px solid #e53935; border-radius: 4px; font-size: 16px; margin-bottom: 20px;">
+                    <button onclick="checkUnlockCode()" 
+                            style="width: 100%; padding: 15px; background: #e53935; color: white; border: none; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                        UNLOCK EXAM
+                    </button>
+                    <div id="unlockError" style="color: #e53935; margin-top: 15px; font-weight: bold;"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(unlockOverlay);
+            
+            setTimeout(() => {
+                document.getElementById('unlockCode').focus();
+                document.getElementById('unlockCode').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkUnlockCode();
+                    }
+                });
+            }, 100);
+            
+            let timeLeft = 60;
+            const timerDisplay = document.getElementById('reactivationTimer');
+            
+            const reactivationTimer = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 10) {
+                    timerDisplay.style.color = '#e53935';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(reactivationTimer);
+                    terminateExam();
+                }
+            }, 1000);
+            
+            unlockOverlay.dataset.timerId = reactivationTimer;
+        }
+
+        function terminateExam() {
+            const overlay = document.getElementById('unlockOverlay');
+            if (overlay) {
+                const timerId = overlay.dataset.timerId;
+                if (timerId) {
+                    clearInterval(parseInt(timerId));
+                }
+                overlay.remove();
+            }
+            
+            const terminationOverlay = document.createElement('div');
+            terminationOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 4000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            
+            terminationOverlay.innerHTML = `
+                <div style="background: white; padding: 50px; border-radius: 8px; border: 3px solid #e53935; max-width: 600px; text-align: center;">
+                    <div style="color: #e53935; font-size: 48px; margin-bottom: 30px;">⏰</div>
+                    <div style="color: #e53935; font-size: 32px; font-weight: bold; margin-bottom: 20px;">EXAM TERMINATED</div>
+                    <div style="color: #4b5563; font-size: 18px; line-height: 1.6;">
+                        The reactivation code was not entered within the allowed time.<br>
+                        The exam has been terminated.<br><br>
+                        Please contact your instructor.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(terminationOverlay);
+            const examContent = document.getElementById('examContent');
+            examContent.style.display = 'none';
+        }
+
+        window.checkUnlockCode = function() {
+            const code = document.getElementById('unlockCode').value;
+            
+            if (code === REACTIVATION_CODE) {
+                isExamLocked = false;
+                const examContent = document.getElementById('examContent');
+                examContent.style.opacity = '1';
+                examContent.style.pointerEvents = 'auto';
+                
+                const overlay = document.getElementById('unlockOverlay');
+                if (overlay) {
+                    const timerId = overlay.dataset.timerId;
+                    if (timerId) {
+                        clearInterval(parseInt(timerId));
+                    }
+                    overlay.remove();
+                }
+                
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(() => {});
+                }
+            } else {
+                document.getElementById('unlockError').textContent = '❌ Invalid code. Try again.';
+                document.getElementById('unlockCode').value = '';
+                document.getElementById('unlockCode').focus();
+            }
+        }
+
+        // ===== HANDLE VIOLATION (Keep for compatibility) =====
+        function handleViolation() {
+            lockExam();
+        }
+
+        closeModalBtn.addEventListener('click', function() {
+            violationModal.style.display = 'none';
+            examContent.style.display = 'none';
+            successMessage.style.display = 'block';
+            successMessage.style.background = '#f44336';
+            successMessage.innerHTML = '⚠️ Your exam has been submitted due to violation.<br>Your instructor has been notified.';
+        });
+
+        // ===== GENERATE PDF =====
+        function generatePDF(studentName, task1Answer, task2Answer, wordCount1Val, wordCount2Val) {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            
+            let yPosition = 20;
+
+            // Add header
+            pdf.setFontSize(22);
+            pdf.setTextColor(229, 57, 53);
+            pdf.text('EDUNEST - IELTS Mock Writing', 105, yPosition, { align: 'center' });
+            
+            yPosition += 8;
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text('Instructor: Jasurbek Abdurakhimov', 105, yPosition, { align: 'center' });
+            
+            yPosition += 15;
+            pdf.setFontSize(14);
+            pdf.text(`Student Name: ${studentName}`, 20, yPosition);
+            
+            yPosition += 10;
+            pdf.setFontSize(12);
+            pdf.text(`Date: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 20, yPosition);
+            
+            yPosition += 15;
+
+            // Task 1
+            pdf.setFontSize(16);
+            pdf.setTextColor(229, 57, 53);
+            pdf.text('TASK 1', 20, yPosition);
+            yPosition += 8;
+            
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text(`Word Count: ${wordCount1Val}`, 20, yPosition);
+            yPosition += 10;
+            
+            const splitText1 = pdf.splitTextToSize(task1Answer || 'No answer provided', 170);
+            splitText1.forEach((line) => {
+                if (yPosition > 270) {
+                    pdf.addPage();
+                    yPosition = 20;
+                }
+                pdf.text(line, 20, yPosition);
+                yPosition += 6;
+            });
+
+            yPosition += 10;
+
+            // Task 2
+            if (yPosition > 240) {
+                pdf.addPage();
+                yPosition = 20;
+            }
+            
+            pdf.setFontSize(16);
+            pdf.setTextColor(229, 57, 53);
+            pdf.text('TASK 2', 20, yPosition);
+            yPosition += 8;
+            
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text(`Word Count: ${wordCount2Val}`, 20, yPosition);
+            yPosition += 10;
+            
+            const splitText2 = pdf.splitTextToSize(task2Answer || 'No answer provided', 170);
+            splitText2.forEach((line) => {
+                if (yPosition > 270) {
+                    pdf.addPage();
+                    yPosition = 20;
+                }
+                pdf.text(line, 20, yPosition);
+                yPosition += 6;
+            });
+
+            // Save PDF
+            const timestamp = new Date().getTime();
+            pdf.save(`${studentName}_IELTS_Writing_${timestamp}.pdf`);
+        }
+
+        // ===== SUBMIT EXAM =====
+        submitBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to submit your exam? You cannot make changes after submission.')) {
+                submitExam(false, false);
+            }
+        });
+
+        function submitExam(isViolation = false, isAutoSubmit = false) {
+            if (examSubmitted) return;
+            
+            const studentName = studentNameStartInput.value.trim();
+            const task1AnswerText = task1Textarea.value.trim();
+            const task2AnswerText = task2Textarea.value.trim();
+            const wordCount1Val = wordCount1.textContent;
+            const wordCount2Val = wordCount2.textContent;
+            
+            if (!isViolation && !isAutoSubmit && !task1AnswerText && !task2AnswerText) {
+                alert('⚠️ Please write at least one answer before submitting.');
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Mark exam as submitted
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            
+            examStatus.textContent = isViolation ? '⚠️ Submitted (Violation)' : '✅ Exam Submitted';
+            examStatus.style.background = isViolation ? '#f44336' : '#4caf50';
+            
+            // Generate PDF
+            generatePDF(studentName, task1AnswerText, task2AnswerText, wordCount1Val, wordCount2Val);
+            
+            // Send to Telegram
+            const statusEmoji = isViolation ? '⚠️' : (isAutoSubmit ? '⏰' : '✅');
+            const statusText = isViolation ? `VIOLATION: ${violationReason}` : (isAutoSubmit ? 'AUTO-SUBMITTED (Time Up)' : 'COMPLETED SUCCESSFULLY');
+            
+            const telegramText = `
+${statusEmoji} IELTS Mock Writing - EDUNEST
+Instructor: Jasurbek Abdurakhimov
+
+👤 Student Name: ${studentName}
+📋 Status: ${statusText}
+📊 Task 1 Word Count: ${wordCount1Val}
+📊 Task 2 Word Count: ${wordCount2Val}
+📅 Date: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}
+
+📝 TASK 1:
+${task1AnswerText || 'No answer provided'}
+
+📝 TASK 2:
+${task2AnswerText || 'No answer provided'}
+            `.trim();
+            
+            fetch('https://mdrx18.pythonanywhere.com/api/telegram/send/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: telegramText,
+                    send_to_all_admins: true,
+                })
+            }).then(response => response.json())
+              .catch(error => {
+                  console.error('Error:', error);
+              });
+            
+            // Show success message
+            if (!isViolation) {
+                examContent.style.display = 'none';
+                successMessage.style.display = 'block';
+                copySection.style.display = 'block';
+                
+                if (isAutoSubmit) {
+                    successMessage.innerHTML = '⏰ Time is up! Your exam has been submitted automatically.<br>Your answers have been sent to the instructor.';
+                }
+            }
+            
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // ===== COPY FUNCTIONALITY =====
+        document.getElementById('copyTask1Btn').addEventListener('click', function() {
+            const task1Text = task1Textarea.value;
+            navigator.clipboard.writeText(task1Text).then(() => {
+                const feedback = document.getElementById('copyFeedback1');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => feedback.style.display = 'none', 2000);
+            });
+        });
+
+        document.getElementById('copyTask2Btn').addEventListener('click', function() {
+            const task2Text = task2Textarea.value;
+            navigator.clipboard.writeText(task2Text).then(() => {
+                const feedback = document.getElementById('copyFeedback2');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => feedback.style.display = 'none', 2000);
+            });
+        });
+
+        document.getElementById('copyBothBtn').addEventListener('click', function() {
+            const bothText = `TASK 1:\n${task1Textarea.value}\n\n---\n\nTASK 2:\n${task2Textarea.value}`;
+            navigator.clipboard.writeText(bothText).then(() => {
+                const feedback = document.getElementById('copyFeedbackBoth');
+                feedback.style.display = 'inline-block';
+                setTimeout(() => feedback.style.display = 'none', 2000);
+            });
+        });
+
+        // ===== WARN BEFORE LEAVING PAGE =====
+        window.addEventListener('beforeunload', function(e) {
+            if (examStarted && !examSubmitted) {
+                e.preventDefault();
+                e.returnValue = 'You have an exam in progress. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // ===== AUTO-SAVE FUNCTIONALITY =====
+        // Auto-save answers every 30 seconds to prevent data loss
+        setInterval(() => {
+            if (examStarted && !examSubmitted) {
+                localStorage.setItem('task1_autosave', task1Textarea.value);
+                localStorage.setItem('task2_autosave', task2Textarea.value);
+            }
+        }, 30000);
+
+        // Restore auto-saved content if available (commented out for exam integrity)
+        // window.addEventListener('load', function() {
+        //     const savedTask1 = localStorage.getItem('task1_autosave');
+        //     const savedTask2 = localStorage.getItem('task2_autosave');
+        //     if (savedTask1) task1Textarea.value = savedTask1;
+        //     if (savedTask2) task2Textarea.value = savedTask2;
+        // });
+    </script>
+</body>
+</html>
