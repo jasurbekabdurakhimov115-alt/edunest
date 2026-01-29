@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - 1920s Inventions Reading Test</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Welcome Screen */
+        #welcome-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .welcome-container {
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .edunest-brand {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffeb3b;
+        }
+        
+        .test-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #e8eaf6;
+        }
+        
+        .creator-info {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #c5cae9;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .password-note {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: #ffcc80;
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #f57c00;
+        }
+        
+        .btn:disabled {
+            background-color: #bdbdbd;
+            cursor: not-allowed;
+        }
+        
+        /* Test Screen */
+        #test-screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .test-header {
+            background-color: #1a237e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffeb3b;
+        }
+        
+        .student-info {
+            font-weight: 600;
+        }
+        
+        .timer {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ffeb3b;
+        }
+        
+        .test-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .test-content {
+                flex-direction: column;
+            }
+        }
+        
+        .reading-passage {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+            border-right: 2px solid #e0e0e0;
+        }
+        
+        .questions-section {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .section-title {
+            color: #1a237e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff9800;
+        }
+        
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #1a237e;
+        }
+        
+        .question-number {
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            margin-bottom: 15px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .option input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .gap-filling input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+            margin-left: 10px;
+            outline: 2px solid transparent;
+            transition: outline 0.2s;
+        }
+        
+        .gap-filling input:focus {
+            outline: 2px solid #1a237e;
+        }
+        
+        .test-footer {
+            padding: 15px 20px;
+            background-color: #f5f5f5;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-secondary {
+            background-color: #5c6bc0;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #3f51b5;
+        }
+        
+        /* Proctoring Screen */
+        #proctoring-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .proctoring-message {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #ff5252;
+        }
+        
+        .reactivation-code-input {
+            padding: 15px;
+            font-size: 1.5rem;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: none;
+        }
+        
+        /* Results Screen */
+        #results-screen {
+            display: none;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1a237e;
+        }
+        
+        .score-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4caf50;
+            margin: 20px 0;
+        }
+        
+        .answers-review {
+            margin-top: 30px;
+        }
+        
+        .answer-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        
+        .answer-status {
+            font-weight: 600;
+        }
+        
+        .red-outline {
+            border: 2px solid #f44336;
+            border-radius: 5px;
+        }
+        
+        /* Fullscreen styling */
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <div class="welcome-container">
+            <div class="edunest-brand">EDUNEST</div>
+            <h1 class="test-title">A2 English Reading Test</h1>
+            <div class="creator-info">Created by: JONY</div>
+            
+            <div class="input-group">
+                <label for="student-name">Enter Your Name:</label>
+                <input type="text" id="student-name" placeholder="Your full name">
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Enter Test Password:</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="password-note">Password required to start the test</div>
+            </div>
+            
+            <button id="start-btn" class="btn">Start Test</button>
+            <div id="password-error" style="color: #ff5252; margin-top: 15px; display: none;">
+                Incorrect password. Please try again.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Screen -->
+    <div id="test-screen">
+        <div class="test-header">
+            <div class="student-info">Student: <span id="display-name"></span></div>
+            <div class="timer">Time: <span id="timer">45:00</span></div>
+        </div>
+        
+        <div class="test-content">
+            <!-- Reading Passage Section -->
+            <div class="reading-passage">
+                <h2 class="section-title">Three popular inventions from the 1920s</h2>
+                <div id="passage-content">
+                    <p>The 1920s was an exciting time for inventions. Some of the things
+                    invented around that time changed the lives of millions of people, and
+                    some of those inventions are still widely used today.</p>
+                    
+                    <h3>The television</h3>
+                    <p>The invention with the biggest impact was probably the television. It
+                    was invented by a Scottish man, John Logie Baird. The first televised
+                    pictures were sent over a short distance in 1924, and his invention was
+                    formally demonstrated at the Royal Institute two years later. The
+                    pictures on the screen were not clear, but the viewers could see that
+                    they were human faces, and they could see their eyes opening and
+                    closing. In 1928, images were sent from Britain to America, and later,
+                    to a ship 1,500 miles out to sea. In the same year, the first colour
+                    images were sent. The first 'seeing-in sets' were sold that same year.
+                    For £25 (£1000 in today's money), people in their homes could watch
+                    moving images that were sent from a broadcasting station.</p>
+                    
+                    <h3>The fridge</h3>
+                    <p>Another invention that became popular in the 1920s was the home
+                    refrigerator. People used different ways to keep food cool and fresh
+                    long before the 1900s, but home fridges weren't invented until 1913 in
+                    the USA. Home fridges became very popular in the USA in the 1920s. Sales
+                    of the popular 'Frigidaire' model increased from 5,000 in 1921 to
+                    750,000 in 1926. British people were less interested in fridges than
+                    Americans. They thought that they were unnecessary because the weather
+                    in Britain was cooler. But fridges were heavily advertised, and their
+                    advantages were described in detail. Soon, more fridges were sold, and
+                    the price decreased.</p>
+                    
+                    <h3>The polygraph</h3>
+                    <p>Another interesting invention of the 1920s was the polygraph, or lie
+                    detector. It was invented in 1921 by a Californian policeman, John
+                    Larson. He used the ideas of other psychologists to make a machine that
+                    measured people's heart rate, breathing and blood pressure while they
+                    were asked questions. The experts believed that sudden changes in these
+                    measurements showed that someone was lying. Although this invention is
+                    well-known, it can't really detect lies. Marston tried to use
+                    measurements from his polygraph in a court case in 1923, but they
+                    weren't accepted as evidence and never have been since then. However,
+                    polygraphs are still used by some police forces and the FBI because many
+                    people believe they work, so they tell the truth to avoid the machine.</p>
+                </div>
+            </div>
+            
+            <!-- Questions Section -->
+            <div class="questions-section">
+                <h2 class="section-title">Questions</h2>
+                
+                <!-- True/False Questions (1-10) -->
+                <div class="question-block">
+                    <div class="question-number">Questions 1-10: Choose True or False</div>
+                    <div id="true-false-questions">
+                        <!-- Questions will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Gap-filling Questions (11-14) -->
+                <div class="question-block">
+                    <div class="question-number">Questions 11-14: Fill in the gaps (no more than 2 words)</div>
+                    <div id="gap-filling-questions">
+                        <!-- Questions will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Multiple Choice Questions (15-21) -->
+                <div class="question-block">
+                    <div class="question-number">Questions 15-21: Choose the correct answer (A, B, or C)</div>
+                    <div id="multiple-choice-questions">
+                        <!-- Questions will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="test-footer">
+                    <button id="fullscreen-btn" class="btn btn-secondary">Full Screen</button>
+                    <button id="submit-btn" class="btn">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Proctoring Screen -->
+    <div id="proctoring-screen">
+        <div class="proctoring-message">Test Window Inactive!</div>
+        <p>You switched windows or left full screen mode. Please enter the reactivation code to continue the test.</p>
+        <input type="text" class="reactivation-code-input" id="reactivation-code" placeholder="Enter code">
+        <button id="reactivate-btn" class="btn">Reactivate Test</button>
+        <div id="code-error" style="color: #ff5252; margin-top: 15px; display: none;">
+            Incorrect code. Please try again.
+        </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="results-screen">
+        <div class="results-header">
+            <h2>Test Results</h2>
+            <div class="score-display">Score: <span id="score">0</span>/21</div>
+            <p>Student: <span id="results-name"></span></p>
+        </div>
+        
+        <div class="answers-review">
+            <h3>Your Answers:</h3>
+            <div id="answers-list">
+                <!-- Answers will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+            <button id="copy-answers-btn" class="btn">Copy Answers</button>
+            <button id="save-pdf-btn" class="btn btn-secondary">Save as PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // Test configuration
+        const PASSWORD = "2211";
+        const REACTIVATION_CODE = "0429";
+        const TEST_TIME_MINUTES = 45;
+        
+        // Correct answers
+        const correctAnswers = {
+            1: "B", 2: "A", 3: "B", 4: "A", 5: "A",
+            6: "B", 7: "A", 8: "B", 9: "B", 10: "B",
+            11: "SCOTLAND", 12: "1924", 13: "AMERICA", 14: "BLOOD PRESSURE",
+            15: "B", 16: "B", 17: "A", 18: "C", 19: "C", 20: "B", 21: "B"
+        };
+        
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const testScreen = document.getElementById('test-screen');
+        const proctoringScreen = document.getElementById('proctoring-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const studentNameInput = document.getElementById('student-name');
+        const passwordInput = document.getElementById('password');
+        const passwordError = document.getElementById('password-error');
+        const displayName = document.getElementById('display-name');
+        const timerElement = document.getElementById('timer');
+        const submitBtn = document.getElementById('submit-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const reactivateBtn = document.getElementById('reactivate-btn');
+        const reactivationCodeInput = document.getElementById('reactivation-code');
+        const codeError = document.getElementById('code-error');
+        const copyAnswersBtn = document.getElementById('copy-answers-btn');
+        const savePdfBtn = document.getElementById('save-pdf-btn');
+        const scoreElement = document.getElementById('score');
+        const resultsName = document.getElementById('results-name');
+        const answersList = document.getElementById('answers-list');
+        
+        // Test state
+        let studentName = "";
+        let timerInterval;
+        let timeLeft = TEST_TIME_MINUTES * 60;
+        let isFullscreen = false;
+        let userAnswers = {};
+        
+        // Initialize the test
+        function initTest() {
+            generateQuestions();
+            setupEventListeners();
+            updateTimerDisplay();
+        }
+        
+        // Generate question elements
+        function generateQuestions() {
+            // True/False questions (1-10)
+            const tfQuestions = document.getElementById('true-false-questions');
+            tfQuestions.innerHTML = '';
+            
+            const tfQuestionsData = [
+                "When the television images were first transmitted, viewers didn't know exactly what the image was.",
+                "The television was demonstrated at the Royal Institute in 1926.",
+                "Color images were not possible until after the 1920s.",
+                "Television images were first sent across the Atlantic ocean in 1928.",
+                "People could buy television sets in the 1920s.",
+                "Home refrigerators were invented in the 1920s.",
+                "Fridges became popular in the USA before they were popular in the UK.",
+                "Some psychologists helped John Larson to build his invention.",
+                "On some occasions, lie detectors have been used as evidence in court.",
+                "Today, lie detectors are never used by the police."
+            ];
+            
+            tfQuestionsData.forEach((questionText, index) => {
+                const questionNum = index + 1;
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-text';
+                questionDiv.innerHTML = `
+                    <div>${questionNum}. ${questionText}</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="q${questionNum}a" name="q${questionNum}" value="A">
+                            <label for="q${questionNum}a">A - True</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="q${questionNum}b" name="q${questionNum}" value="B">
+                            <label for="q${questionNum}b">B - False</label>
+                        </div>
+                    </div>
+                `;
+                tfQuestions.appendChild(questionDiv);
+            });
+            
+            // Gap-filling questions (11-14)
+            const gapQuestions = document.getElementById('gap-filling-questions');
+            gapQuestions.innerHTML = '';
+            
+            const gapQuestionsData = [
+                "John Logie Baird was from __________.",
+                "The first televised pictures were sent in __________.",
+                "In 1928, images were sent from Britain to __________.",
+                "The polygraph measures heart rate, breathing, and __________."
+            ];
+            
+            gapQuestionsData.forEach((questionText, index) => {
+                const questionNum = index + 11;
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-text gap-filling';
+                questionDiv.innerHTML = `
+                    <div>${questionNum}. ${questionText.replace('__________', `<input type="text" id="q${questionNum}" data-question="${questionNum}">`)}</div>
+                `;
+                gapQuestions.appendChild(questionDiv);
+            });
+            
+            // Multiple choice questions (15-21)
+            const mcQuestions = document.getElementById('multiple-choice-questions');
+            mcQuestions.innerHTML = '';
+            
+            const mcQuestionsData = [
+                {
+                    question: "Why were early television pictures difficult to see clearly?",
+                    options: [
+                        "The screens were too small",
+                        "The pictures were not clear",
+                        "People watched from far away"
+                    ]
+                },
+                {
+                    question: "How much did the first television sets cost in the 1920s?",
+                    options: [
+                        "£1,000",
+                        "£25",
+                        "£100"
+                    ]
+                },
+                {
+                    question: "When were home refrigerators first invented?",
+                    options: [
+                        "In 1913",
+                        "In 1921",
+                        "In 1928"
+                    ]
+                },
+                {
+                    question: "Why were British people less interested in fridges at first?",
+                    options: [
+                        "They were too expensive",
+                        "Shops sold fresh food daily",
+                        "The weather was cooler"
+                    ]
+                },
+                {
+                    question: "What happened to fridge prices later?",
+                    options: [
+                        "They stayed the same",
+                        "They increased",
+                        "They decreased"
+                    ]
+                },
+                {
+                    question: "Why are polygraphs still used by some police forces?",
+                    options: [
+                        "Courts accept them as evidence",
+                        "Many people believe they work",
+                        "They always detect lies"
+                    ]
+                }
+            ];
+            
+            mcQuestionsData.forEach((questionData, index) => {
+                const questionNum = index + 15;
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-text';
+                questionDiv.innerHTML = `
+                    <div>${questionNum}. ${questionData.question}</div>
+                    <div class="options">
+                        ${questionData.options.map((option, optIndex) => {
+                            const optionLetter = String.fromCharCode(65 + optIndex);
+                            return `
+                                <div class="option">
+                                    <input type="radio" id="q${questionNum}${optionLetter.toLowerCase()}" name="q${questionNum}" value="${optionLetter}">
+                                    <label for="q${questionNum}${optionLetter.toLowerCase()}">${optionLetter}. ${option}</label>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                mcQuestions.appendChild(questionDiv);
+            });
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            startBtn.addEventListener('click', startTest);
+            
+            passwordInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    startTest();
+                }
+            });
+            
+            submitBtn.addEventListener('click', submitTest);
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            reactivateBtn.addEventListener('click', reactivateTest);
+            
+            reactivationCodeInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    reactivateTest();
+                }
+            });
+            
+            copyAnswersBtn.addEventListener('click', copyAnswers);
+            savePdfBtn.addEventListener('click', saveAsPDF);
+            
+            // Proctoring: Detect window focus changes
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('blur', handleWindowBlur);
+            window.addEventListener('focus', handleWindowFocus);
+            
+            // Prevent right-click and text selection
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+            });
+        }
+        
+        // Start the test
+        function startTest() {
+            const name = studentNameInput.value.trim();
+            const password = passwordInput.value;
+            
+            if (!name) {
+                alert("Please enter your name.");
+                return;
+            }
+            
+            if (password !== PASSWORD) {
+                passwordError.style.display = 'block';
+                passwordInput.classList.add('red-outline');
+                return;
+            }
+            
+            studentName = name;
+            displayName.textContent = name;
+            
+            // Hide welcome screen, show test screen
+            welcomeScreen.style.display = 'none';
+            testScreen.style.display = 'flex';
+            
+            // Start timer
+            startTimer();
+            
+            // Enter fullscreen
+            enterFullscreen();
+        }
+        
+        // Timer functions
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color when time is running out
+            if (timeLeft < 300) { // 5 minutes
+                timerElement.style.color = '#ff5252';
+            }
+        }
+        
+        // Fullscreen functions
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+            
+            isFullscreen = true;
+            fullscreenBtn.textContent = "Exit Full Screen";
+            document.body.classList.add('fullscreen');
+        }
+        
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            
+            isFullscreen = false;
+            fullscreenBtn.textContent = "Full Screen";
+            document.body.classList.remove('fullscreen');
+        }
+        
+        function toggleFullscreen() {
+            if (isFullscreen) {
+                exitFullscreen();
+            } else {
+                enterFullscreen();
+            }
+        }
+        
+        // Proctoring functions
+        function handleVisibilityChange() {
+            if (document.hidden && testScreen.style.display === 'flex') {
+                showProctoringScreen();
+            }
+        }
+        
+        function handleWindowBlur() {
+            if (testScreen.style.display === 'flex') {
+                setTimeout(() => {
+                    if (!document.hasFocus()) {
+                        showProctoringScreen();
+                    }
+                }, 100);
+            }
+        }
+        
+        function handleWindowFocus() {
+            // Nothing to do here
+        }
+        
+        function showProctoringScreen() {
+            proctoringScreen.style.display = 'flex';
+            testScreen.style.display = 'none';
+            codeError.style.display = 'none';
+            reactivationCodeInput.value = '';
+        }
+        
+        function reactivateTest() {
+            const code = reactivationCodeInput.value;
+            
+            if (code !== REACTIVATION_CODE) {
+                codeError.style.display = 'block';
+                reactivationCodeInput.classList.add('red-outline');
+                return;
+            }
+            
+            proctoringScreen.style.display = 'none';
+            testScreen.style.display = 'flex';
+            
+            // Re-enter fullscreen
+            if (!isFullscreen) {
+                enterFullscreen();
+            }
+        }
+        
+        // Collect user answers
+        function collectAnswers() {
+            userAnswers = {};
+            
+            // True/False questions (1-10)
+            for (let i = 1; i <= 10; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                userAnswers[i] = selectedOption ? selectedOption.value : "";
+            }
+            
+            // Gap-filling questions (11-14)
+            for (let i = 11; i <= 14; i++) {
+                const input = document.getElementById(`q${i}`);
+                userAnswers[i] = input ? input.value.trim().toUpperCase() : "";
+            }
+            
+            // Multiple choice questions (15-21)
+            for (let i = 15; i <= 21; i++) {
+                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+                userAnswers[i] = selectedOption ? selectedOption.value : "";
+            }
+        }
+        
+        // Submit test and show results
+        function submitTest() {
+            clearInterval(timerInterval);
+            collectAnswers();
+            
+            // Calculate score
+            let score = 0;
+            const answerDetails = [];
+            
+            for (let i = 1; i <= 21; i++) {
+                const userAnswer = userAnswers[i] || "No answer";
+                const correctAnswer = correctAnswers[i];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                answerDetails.push({
+                    question: i,
+                    userAnswer: userAnswer,
+                    correctAnswer: correctAnswer,
+                    isCorrect: isCorrect
+                });
+            }
+            
+            // Display results
+            testScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            
+            scoreElement.textContent = score;
+            resultsName.textContent = studentName;
+            
+            // Populate answers list
+            answersList.innerHTML = '';
+            answerDetails.forEach(item => {
+                const answerItem = document.createElement('div');
+                answerItem.className = `answer-item ${item.isCorrect ? 'correct' : 'incorrect'}`;
+                
+                let userAnswerDisplay = item.userAnswer;
+                if (item.question <= 10) {
+                    userAnswerDisplay = item.userAnswer === "A" ? "True" : 
+                                       item.userAnswer === "B" ? "False" : "No answer";
+                }
+                
+                let correctAnswerDisplay = item.correctAnswer;
+                if (item.question <= 10) {
+                    correctAnswerDisplay = item.correctAnswer === "A" ? "True" : "False";
+                }
+                
+                answerItem.innerHTML = `
+                    <div>
+                        <strong>Question ${item.question}:</strong> 
+                        Your answer: ${userAnswerDisplay}
+                    </div>
+                    <div class="answer-status">
+                        ${item.isCorrect ? '✓ Correct' : `✗ Correct: ${correctAnswerDisplay}`}
+                    </div>
+                `;
+                
+                answersList.appendChild(answerItem);
+            });
+            
+            // Exit fullscreen
+            if (isFullscreen) {
+                exitFullscreen();
+            }
+        }
+        
+        // Copy answers to clipboard
+        function copyAnswers() {
+            let textToCopy = `EDUNEST A2 English Reading Test Results\n`;
+            textToCopy += `Student: ${studentName}\n`;
+            textToCopy += `Score: ${scoreElement.textContent}/21\n\n`;
+            textToCopy += `Answers:\n`;
+            
+            const answerItems = document.querySelectorAll('.answer-item');
+            answerItems.forEach(item => {
+                const questionText = item.querySelector('div:first-child').textContent;
+                const statusText = item.querySelector('.answer-status').textContent;
+                textToCopy += `${questionText} - ${statusText}\n`;
+            });
+            
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    alert("Answers copied to clipboard!");
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert("Failed to copy answers to clipboard.");
+                });
+        }
+        
+        // Save as PDF (simulated)
+        function saveAsPDF() {
+            alert("PDF export would be implemented in a production environment. For now, you can copy your answers or take a screenshot.");
+            
+            // In a real implementation, this would generate a PDF using a library like jsPDF
+            // For this demo, we'll just simulate the behavior
+        }
+        
+        // Initialize the test when page loads
+        window.addEventListener('DOMContentLoaded', initTest);
+    </script>
+</body>
+</html>
