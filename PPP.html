@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EDUNEST Listening Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            touch-action: pan-y;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #d10000 0%, #8b0000 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .welcome-screen.hidden {
+            display: none;
+        }
+
+        .brand-container {
+            margin-bottom: 20px;
+        }
+
+        .brand-logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .welcome-title {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            margin-bottom: 20px;
+            max-width: 600px;
+            padding: 0 10px;
+        }
+
+        .owner-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid white;
+        }
+
+        .owner-name {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px; /* Prevents zoom on iOS */
+            transition: box-shadow 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 1.2rem;
+        }
+
+        .start-btn {
+            background-color: white;
+            color: #d10000;
+            border: none;
+            padding: 16px 40px;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-height: 50px;
+        }
+
+        .start-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-btn:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .instructions {
+            max-width: 600px;
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+
+        /* Proctoring Overlay */
+        .proctoring-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .proctoring-overlay.active {
+            display: flex;
+        }
+
+        .proctoring-warning {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 30px;
+            color: #ff4444;
+        }
+
+        .proctoring-code-input {
+            padding: 15px;
+            font-size: 1.5rem;
+            width: 90%;
+            max-width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            border: 2px solid #666;
+            background-color: #222;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .proctoring-submit {
+            background-color: #d10000;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            border-radius: 8px;
+            cursor: pointer;
+            min-height: 50px;
+            transition: all 0.2s ease;
+        }
+
+        .proctoring-submit:active {
+            transform: scale(0.95);
+        }
+
+        /* Test Container */
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 15px;
+            display: none;
+        }
+
+        .test-container.active {
+            display: block;
+        }
+
+        .test-header {
+            background-color: #d10000;
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .test-title {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            flex: 1 1 100%;
+        }
+
+        .student-info {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            flex: 1 1 auto;
+        }
+
+        .fullscreen-btn {
+            background-color: white;
+            color: #d10000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            min-height: 40px;
+            transition: all 0.2s ease;
+        }
+
+        .fullscreen-btn:active {
+            transform: scale(0.95);
+        }
+
+        .test-content {
+            background-color: white;
+            padding: 20px 15px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .focus-warning {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff4444;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1500;
+            display: none;
+            animation: slideDown 0.3s ease;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .focus-warning.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Section styling */
+        .section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            background-color: #d10000;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+            font-weight: bold;
+        }
+
+        .audio-player {
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            height: 45px;
+            border-radius: 8px;
+        }
+
+        /* Question styling */
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #d10000;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            line-height: 1.5;
+        }
+
+        /* Multiple choice options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: white;
+            font-size: clamp(0.9rem, 2.8vw, 1rem);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .option:active {
+            transform: scale(0.98);
+        }
+
+        .option:hover {
+            border-color: #d10000;
+            background-color: #fff5f5;
+        }
+
+        .option.selected {
+            border-color: #d10000;
+            background-color: #ffe5e5;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(209, 0, 0, 0.2);
+        }
+
+        .option.selected::before {
+            content: '✓';
+            position: absolute;
+            right: 15px;
+            color: #d10000;
+            font-weight: bold;
+            font-size: 1.4rem;
+            animation: checkMark 0.3s ease;
+        }
+
+        @keyframes checkMark {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Matching dropdowns */
+        .matching-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .matching-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .matching-label {
+            font-weight: 600;
+            color: #333;
+            font-size: clamp(0.9rem, 2.8vw, 1rem);
+        }
+
+        .matching-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 45px;
+        }
+
+        .matching-select:focus {
+            outline: none;
+            border-color: #d10000;
+            box-shadow: 0 0 0 3px rgba(209, 0, 0, 0.1);
+        }
+
+        .matching-select.answered {
+            border-color: #4CAF50;
+            background-color: #f0f8f0;
+        }
+
+        /* Gap fill inputs */
+        .gap-fill-group {
+            margin-bottom: 20px;
+        }
+
+        .gap-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .gap-label {
+            font-weight: 600;
+            color: #333;
+            font-size: clamp(0.9rem, 2.8vw, 1rem);
+        }
+
+        .gap-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-height: 45px;
+        }
+
+        .gap-input:focus {
+            outline: none;
+            border-color: #d10000;
+            box-shadow: 0 0 0 3px rgba(209, 0, 0, 0.1);
+        }
+
+        .gap-input:not(:placeholder-shown) {
+            border-color: #4CAF50;
+            background-color: #f0f8f0;
+        }
+
+        /* Spelling items */
+        .spelling-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .spelling-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .spelling-label {
+            font-weight: 600;
+            color: #333;
+            font-size: clamp(0.9rem, 2.8vw, 1rem);
+        }
+
+        .spelling-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-height: 45px;
+        }
+
+        .spelling-input:focus {
+            outline: none;
+            border-color: #d10000;
+            box-shadow: 0 0 0 3px rgba(209, 0, 0, 0.1);
+        }
+
+        .spelling-input:not(:placeholder-shown) {
+            border-color: #4CAF50;
+            background-color: #f0f8f0;
+        }
+
+        /* Submit button */
+        .submit-section {
+            margin-top: 35px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .submit-btn {
+            background-color: #d10000;
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-height: 55px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Answers display */
+        .answers-display {
+            background-color: #f0f0f0;
+            padding: 25px 15px;
+            border-radius: 10px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .answers-display.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answers-title {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            color: #d10000;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .answer-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #d10000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .answer-item:active {
+            transform: scale(0.98);
+        }
+
+        .answer-question {
+            font-weight: bold;
+            color: #d10000;
+            margin-bottom: 5px;
+            font-size: clamp(0.9rem, 2.8vw, 1rem);
+        }
+
+        .answer-value {
+            color: #333;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .copy-btn.copied {
+            background-color: #4CAF50;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Tablet styles */
+        @media (min-width: 768px) {
+            .test-container {
+                padding: 30px 20px;
+            }
+
+            .test-header {
+                padding: 20px;
+            }
+
+            .test-content {
+                padding: 30px;
+            }
+
+            .answers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            .option:hover {
+                transform: translateX(5px);
+            }
+
+            .start-btn:hover {
+                background-color: #ffefef;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            }
+
+            .submit-btn:hover {
+                background-color: #a00000;
+                transform: translateY(-2px);
+            }
+
+            .copy-btn:hover {
+                background-color: #555;
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Improved touch feedback */
+        button:active, .option:active, .answer-item:active {
+            opacity: 0.8;
+        }
+
+        /* Prevent text selection on touch */
+        .option, button, .answer-item {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Input fields should allow selection */
+        input, select, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="brand-container">
+            <div class="welcome-title">EDUNEST</div>
+            <div class="welcome-subtitle">Intermediate Listening Test</div>
+        </div>
+        
+        <div class="owner-info">
+            <div class="owner-name">JONY </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="studentName">Enter Your Name</label>
+            <input type="text" id="studentName" placeholder="Your full name" required>
+        </div>
+        
+        <div class="input-group">
+            <label for="testPassword">Enter Test Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="testPassword" placeholder="Password" required>
+                <button class="password-toggle" id="passwordToggle">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+        </div>
+        
+        <button class="start-btn" id="startBtn">Start Test</button>
+        
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <p>• This test contains 4 listening sections with 26 questions total</p>
+            <p>• You can listen to each audio multiple times</p>
+            <p>• Answer all questions before submitting</p>
+            <p>• Do not leave the test window or switch tabs</p>
+            <p>• Good luck!</p>
+        </div>
+    </div>
+
+    <!-- Proctoring Overlay -->
+    <div class="proctoring-overlay" id="proctoringOverlay">
+        <div class="proctoring-warning">
+            <i class="fas fa-exclamation-triangle"></i><br>
+            Test window lost focus!
+        </div>
+        <p style="margin-bottom: 20px; font-size: clamp(1rem, 3vw, 1.2rem);">Enter the reactivation code to continue:</p>
+        <input type="text" class="proctoring-code-input" id="proctoringCode" placeholder="Code">
+        <button class="proctoring-submit" id="proctoringSubmit">Resume Test</button>
+    </div>
+
+    <!-- Focus Warning -->
+    <div class="focus-warning" id="focusWarning">
+        <i class="fas fa-exclamation-circle"></i>
+        Warning: Switching tabs or windows is not allowed!
+    </div>
+
+    <!-- Test Container -->
+    <div class="test-container" id="testContainer">
+        <div class="test-header">
+            <div class="test-title">EDUNEST Listening Test</div>
+            <div class="student-info" id="studentInfo"></div>
+            <button class="fullscreen-btn" id="fullscreenBtn">
+                <i class="fas fa-expand"></i> Full Screen
+            </button>
+        </div>
+        
+        <div class="test-content">
+            <!-- Section 1: Listening 1 -->
+            <div class="section">
+                <div class="section-title">Listening 1: Multiple Choice (Questions 1-7)</div>
+                
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="https://edunest.uz/Listenings/For-inter/Listening%201.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">1. What is the woman's name?</div>
+                    <div class="options">
+                        <div class="option" data-question="1" data-value="A">A) Jenny</div>
+                        <div class="option" data-question="1" data-value="B">B) Julia</div>
+                        <div class="option" data-question="1" data-value="C">C) Jane</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">2. Where is the woman from originally?</div>
+                    <div class="options">
+                        <div class="option" data-question="2" data-value="A">A) England</div>
+                        <div class="option" data-question="2" data-value="B">B) The United States</div>
+                        <div class="option" data-question="2" data-value="C">C) Canada</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">3. About how old was the man when he returned to the United States?</div>
+                    <div class="options">
+                        <div class="option" data-question="3" data-value="A">A) 7 years old</div>
+                        <div class="option" data-question="3" data-value="B">B) 10 years old</div>
+                        <div class="option" data-question="3" data-value="C">C) 17 years old</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">4. What is the man studying?</div>
+                    <div class="options">
+                        <div class="option" data-question="4" data-value="A">A) Physics</div>
+                        <div class="option" data-question="4" data-value="B">B) Biology</div>
+                        <div class="option" data-question="4" data-value="C">C) Psychology</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">5. What is the woman's job?</div>
+                    <div class="options">
+                        <div class="option" data-question="5" data-value="A">A) A sales representative</div>
+                        <div class="option" data-question="5" data-value="B">B) A computer programmer</div>
+                        <div class="option" data-question="5" data-value="C">C) A receptionist</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">6. What is the woman's telephone number?</div>
+                    <div class="options">
+                        <div class="option" data-question="6" data-value="A">A) 843-9758</div>
+                        <div class="option" data-question="6" data-value="B">B) 843-9759</div>
+                        <div class="option" data-question="6" data-value="C">C) 843-9798</div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">7. What do the speakers decide to do at the end of the conversation?</div>
+                    <div class="options">
+                        <div class="option" data-question="7" data-value="A">A) Go to a movie</div>
+                        <div class="option" data-question="7" data-value="B">B) Go out for dinner</div>
+                        <div class="option" data-question="7" data-value="C">C) Meet at a bookstore</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Listening 2 -->
+            <div class="section">
+                <div class="section-title">Listening 2: Matching (Questions 8-12)</div>
+                
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="https://edunest.uz/Listenings/For-inter/Listening%202.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
+                <p style="margin-bottom: 20px; font-weight: 600;">Match the adjective on the left with the noun it describes:</p>
+
+                <div class="matching-group">
+                    <div class="matching-item">
+                        <label class="matching-label" for="matching8">8. Brilliant</label>
+                        <select id="matching8" class="matching-select">
+                            <option value="">-- Select --</option>
+                            <option value="A">A) Sunny weather</option>
+                            <option value="B">B) People</option>
+                            <option value="C">C) Scenery</option>
+                            <option value="D">D) Public transportation</option>
+                            <option value="E">E) Architecture</option>
+                        </select>
+                    </div>
+
+                    <div class="matching-item">
+                        <label class="matching-label" for="matching9">9. Gorgeous</label>
+                        <select id="matching9" class="matching-select">
+                            <option value="">-- Select --</option>
+                            <option value="A">A) Sunny weather</option>
+                            <option value="B">B) People</option>
+                            <option value="C">C) Scenery</option>
+                            <option value="D">D) Public transportation</option>
+                            <option value="E">E) Architecture</option>
+                        </select>
+                    </div>
+
+                    <div class="matching-item">
+                        <label class="matching-label" for="matching10">10. Friendly</label>
+                        <select id="matching10" class="matching-select">
+                            <option value="">-- Select --</option>
+                            <option value="A">A) Sunny weather</option>
+                            <option value="B">B) People</option>
+                            <option value="C">C) Scenery</option>
+                            <option value="D">D) Public transportation</option>
+                            <option value="E">E) Architecture</option>
+                        </select>
+                    </div>
+
+                    <div class="matching-item">
+                        <label class="matching-label" for="matching11">11. Marvelous</label>
+                        <select id="matching11" class="matching-select">
+                            <option value="">-- Select --</option>
+                            <option value="A">A) Sunny weather</option>
+                            <option value="B">B) People</option>
+                            <option value="C">C) Scenery</option>
+                            <option value="D">D) Public transportation</option>
+                            <option value="E">E) Architecture</option>
+                        </select>
+                    </div>
+
+                    <div class="matching-item">
+                        <label class="matching-label" for="matching12">12. Convenient</label>
+                        <select id="matching12" class="matching-select">
+                            <option value="">-- Select --</option>
+                            <option value="A">A) Sunny weather</option>
+                            <option value="B">B) People</option>
+                            <option value="C">C) Scenery</option>
+                            <option value="D">D) Public transportation</option>
+                            <option value="E">E) Architecture</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Listening 3 -->
+            <div class="section">
+                <div class="section-title">Listening 3: Gap Fill (Questions 13-17)</div>
+                
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="https://edunest.uz/Listenings/For-inter/Listening%203.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
+                <p style="margin-bottom: 20px; font-weight: 600;">Fill in the missing information:</p>
+
+                <div class="gap-fill-group">
+                    <div class="gap-item">
+                        <label class="gap-label" for="gap13">13. Josh is _____ years old.</label>
+                        <input type="text" id="gap13" class="gap-input" placeholder="Your answer">
+                    </div>
+
+                    <div class="gap-item">
+                        <label class="gap-label" for="gap14">14. Josh is a _____.</label>
+                        <input type="text" id="gap14" class="gap-input" placeholder="Your answer">
+                    </div>
+
+                    <div class="gap-item">
+                        <label class="gap-label" for="gap15">15. Josh wants a part time job because _____.</label>
+                        <input type="text" id="gap15" class="gap-input" placeholder="Your answer">
+                    </div>
+
+                    <div class="gap-item">
+                        <label class="gap-label" for="gap16">16. Josh's hobbies are _____.</label>
+                        <input type="text" id="gap16" class="gap-input" placeholder="Your answer">
+                    </div>
+
+                    <div class="gap-item">
+                        <label class="gap-label" for="gap17">17. Josh can work _____.</label>
+                        <input type="text" id="gap17" class="gap-input" placeholder="Your answer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Listening 4 -->
+            <div class="section">
+                <div class="section-title">Listening 4: Spelling (Questions 18-26)</div>
+                
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="https://edunest.uz/Listenings/For-inter/Listening%204.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
+                <p style="margin-bottom: 20px; font-weight: 600;">Write the correct spelling for each word:</p>
+
+                <div class="spelling-group">
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling18">18. Word 1</label>
+                        <input type="text" id="spelling18" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling19">19. Word 2</label>
+                        <input type="text" id="spelling19" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling20">20. Word 3</label>
+                        <input type="text" id="spelling20" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling21">21. Word 4</label>
+                        <input type="text" id="spelling21" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling22">22. Word 5</label>
+                        <input type="text" id="spelling22" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling23">23. Word 6</label>
+                        <input type="text" id="spelling23" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling24">24. Word 7</label>
+                        <input type="text" id="spelling24" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling25">25. Word 8</label>
+                        <input type="text" id="spelling25" class="spelling-input" placeholder="Type the word">
+                    </div>
+
+                    <div class="spelling-item">
+                        <label class="spelling-label" for="spelling26">26. Word 9</label>
+                        <input type="text" id="spelling26" class="spelling-input" placeholder="Type the word">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Submit Answers
+                </button>
+            </div>
+
+            <!-- Answers Display -->
+            <div class="answers-display" id="answersDisplay">
+                <div class="answers-title">Your Answers</div>
+                <div class="answers-grid" id="answersGrid"></div>
+                <button class="copy-btn" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy Answers
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const TEST_PASSWORD = '2111';
+        const REACTIVATION_CODE = '1234';
+
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const testContainer = document.getElementById('testContainer');
+        const studentNameInput = document.getElementById('studentName');
+        const testPasswordInput = document.getElementById('testPassword');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const startBtn = document.getElementById('startBtn');
+        const studentInfo = document.getElementById('studentInfo');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const proctoringOverlay = document.getElementById('proctoringOverlay');
+        const proctoringCode = document.getElementById('proctoringCode');
+        const proctoringSubmit = document.getElementById('proctoringSubmit');
+        const focusWarning = document.getElementById('focusWarning');
+        const submitBtn = document.getElementById('submitBtn');
+        const answersDisplay = document.getElementById('answersDisplay');
+        const answersGrid = document.getElementById('answersGrid');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // State
+        let studentName = '';
+        let isFullscreen = false;
+        let hasLeftWindow = false;
+        let focusWarningTimeout = null;
+
+        // Password toggle
+        passwordToggle.addEventListener('click', function() {
+            const type = testPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            testPasswordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Enable/disable start button
+        function checkStartButton() {
+            if (studentNameInput.value.trim() && testPasswordInput.value) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        }
+
+        studentNameInput.addEventListener('input', checkStartButton);
+        testPasswordInput.addEventListener('input', checkStartButton);
+
+        // Start test
+        startBtn.addEventListener('click', function() {
+            const name = studentNameInput.value.trim();
+            const password = testPasswordInput.value;
+
+            if (!name) {
+                alert('Please enter your name.');
+                return;
+            }
+
+            if (password !== TEST_PASSWORD) {
+                alert('Incorrect password. Please try again.');
+                testPasswordInput.value = '';
+                testPasswordInput.focus();
+                return;
+            }
+            
+            studentName = name;
+            studentInfo.textContent = `Student: ${studentName}`;
+            
+            // Hide welcome screen, show test
+            welcomeScreen.classList.add('hidden');
+            testContainer.classList.add('active');
+            
+            // Enter fullscreen
+            enterFullscreen();
+            
+            // Set up focus tracking
+            setupFocusTracking();
+        });
+        
+        // Fullscreen functionality
+        fullscreenBtn.addEventListener('click', function() {
+            if (!isFullscreen) {
+                enterFullscreen();
+            } else {
+                exitFullscreen();
+            }
+        });
+        
+        function enterFullscreen() {
+            const element = document.documentElement;
+            
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+            
+            isFullscreen = true;
+            fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Exit Full Screen';
+        }
+        
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            
+            isFullscreen = false;
+            fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Full Screen';
+        }
+        
+        // Fullscreen change events
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+            isFullscreen = !!(document.fullscreenElement || 
+                             document.mozFullScreenElement || 
+                             document.webkitFullscreenElement ||
+                             document.msFullscreenElement);
+            
+            fullscreenBtn.innerHTML = isFullscreen ? 
+                '<i class="fas fa-compress"></i> Exit Full Screen' : 
+                '<i class="fas fa-expand"></i> Full Screen';
+        }
+        
+        // Proctoring system
+        function setupFocusTracking() {
+            // Visibility change (tab switching)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    handleWindowFocusLost();
+                }
+            });
+            
+            // Fullscreen exit
+            document.addEventListener('fullscreenchange', function() {
+                if (!document.fullscreenElement) {
+                    handleWindowFocusLost();
+                }
+            });
+            
+            // Window blur (switching applications)
+            window.addEventListener('blur', function() {
+                handleWindowFocusLost();
+            });
+        }
+        
+        function handleWindowFocusLost() {
+            if (!hasLeftWindow) {
+                hasLeftWindow = true;
+                proctoringOverlay.classList.add('active');
+                focusWarning.classList.add('active');
+                
+                // Hide warning after 5 seconds
+                clearTimeout(focusWarningTimeout);
+                focusWarningTimeout = setTimeout(() => {
+                    focusWarning.classList.remove('active');
+                }, 5000);
+            }
+        }
+        
+        // Reactivation code submission
+        proctoringSubmit.addEventListener('click', function() {
+            if (proctoringCode.value === REACTIVATION_CODE) {
+                proctoringOverlay.classList.remove('active');
+                proctoringCode.value = '';
+                hasLeftWindow = false;
+                
+                // Return to fullscreen
+                if (!isFullscreen) {
+                    enterFullscreen();
+                }
+            } else {
+                alert('Incorrect reactivation code. Please try again.');
+                proctoringCode.value = '';
+                proctoringCode.focus();
+            }
+        });
+        
+        proctoringCode.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                proctoringSubmit.click();
+            }
+        });
+        
+        // Multiple choice selection with visual feedback
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.getAttribute('data-question');
+                const value = this.getAttribute('data-value');
+                
+                // Deselect other options for this question
+                document.querySelectorAll(`.option[data-question="${question}"]`).forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Select this option
+                this.classList.add('selected');
+            });
+        });
+
+        // Add visual feedback for matching selects
+        document.querySelectorAll('.matching-select').forEach(select => {
+            select.addEventListener('change', function() {
+                if (this.value) {
+                    this.classList.add('answered');
+                } else {
+                    this.classList.remove('answered');
+                }
+            });
+        });
+        
+        // Submit answers
+        submitBtn.addEventListener('click', function() {
+            // Add loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                // Collect all answers
+                const answers = {};
+                
+                // Listening 1 answers (multiple choice)
+                for (let i = 1; i <= 7; i++) {
+                    const selectedOption = document.querySelector(`.option[data-question="${i}"].selected`);
+                    answers[`Q${i}`] = selectedOption ? selectedOption.getAttribute('data-value') : 'Not answered';
+                }
+                
+                // Listening 2 answers (matching)
+                for (let i = 8; i <= 12; i++) {
+                    const select = document.getElementById(`matching${i}`);
+                    answers[`Q${i}`] = select.value || 'Not answered';
+                }
+                
+                // Listening 3 answers (gap fill)
+                for (let i = 13; i <= 17; i++) {
+                    const input = document.getElementById(`gap${i}`);
+                    answers[`Q${i}`] = input.value.trim() || 'Not answered';
+                }
+                
+                // Listening 4 answers (spelling)
+                for (let i = 18; i <= 26; i++) {
+                    const input = document.getElementById(`spelling${i}`);
+                    answers[`Q${i}`] = input.value.trim() || 'Not answered';
+                }
+                
+                // Display answers
+                displayAnswers(answers);
+                
+                // Show copy button
+                copyBtn.style.display = 'block';
+                
+                // Scroll to answers
+                answersDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 500);
+        });
+        
+        // Display answers in the answers display area
+        function displayAnswers(answers) {
+            answersGrid.innerHTML = '';
+            
+            // Create answer items
+            for (const [question, answer] of Object.entries(answers)) {
+                const answerItem = document.createElement('div');
+                answerItem.className = 'answer-item';
+                
+                answerItem.innerHTML = `
+                    <div class="answer-question">${question}</div>
+                    <div class="answer-value">${answer}</div>
+                `;
+                
+                answersGrid.appendChild(answerItem);
+            }
+            
+            // Show answers display
+            answersDisplay.classList.add('active');
+        }
+        
+        // Copy answers to clipboard with improved mobile support
+        copyBtn.addEventListener('click', function() {
+            const answerItems = document.querySelectorAll('.answer-item');
+            let textToCopy = `EDUNEST Listening Test - ${studentName}\n`;
+            textToCopy += `Date: ${new Date().toLocaleDateString()}\n`;
+            textToCopy += '='.repeat(50) + '\n\n';
+            
+            answerItems.forEach(item => {
+                const question = item.querySelector('.answer-question').textContent;
+                const answer = item.querySelector('.answer-value').textContent;
+                textToCopy += `${question}: ${answer}\n`;
+            });
+            
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        showCopySuccess();
+                    })
+                    .catch(err => {
+                        // Fallback for older browsers/mobile
+                        fallbackCopy(textToCopy);
+                    });
+            } else {
+                // Fallback for older browsers/mobile
+                fallbackCopy(textToCopy);
+            }
+        });
+
+        function showCopySuccess() {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.classList.add('copied');
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }
+
+        function fallbackCopy(text) {
+            // Create a temporary textarea
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            
+            // Select and copy
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    alert('Copy failed. Please manually select and copy the answers.');
+                }
+            } catch (err) {
+                alert('Copy failed. Please manually select and copy the answers.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Prevent zoom on double tap for iOS
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
