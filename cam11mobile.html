@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - IELTS Reading Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0A2540;
+            --accent: #FF6B35;
+            --secondary: #004E89;
+            --light: #F7F9FC;
+            --text: #1A1A1A;
+            --border: #E0E6ED;
+            --highlight: #FFE66D;
+            --success: #06D6A0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Welcome Screen */
+        #welcomeScreen {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #welcomeScreen::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        #welcomeScreen::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(6,214,160,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -200px;
+            left: -200px;
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+
+        .welcome-container {
+            background: white;
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-subtitle {
+            font-size: 0.875rem;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .instructor-info {
+            background: linear-gradient(135deg, #F7F9FC 0%, #E8EEF5 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .instructor-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .instructor-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
+        }
+
+        .error-message {
+            color: #E63946;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .btn-start {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--accent) 0%, #E85D2E 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,107,53,0.4);
+        }
+
+        .btn-start:active {
+            transform: translateY(0);
+        }
+
+        /* Test Platform */
+        #testPlatform {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .test-header {
+            background: white;
+            border-bottom: 2px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-small {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .student-name {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .student-name strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .timer {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 0.4rem 0.8rem;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: white;
+            border-bottom: 2px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent);
+            background: rgba(255,107,53,0.05);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Main Content Area */
+        .test-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .passage-panel {
+            flex: 1;
+            background: white;
+            padding: 1rem;
+            overflow-y: auto;
+            border-bottom: 3px solid var(--accent);
+            position: relative;
+        }
+
+        .questions-panel {
+            flex: 1;
+            background: var(--light);
+            padding: 1rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .panel-label {
+            display: none; /* Hide panel labels to save space */
+        }
+
+        /* Passage Styling */
+        .passage-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .passage-subtitle {
+            font-size: 1rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .passage-text {
+            line-height: 1.7;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .passage-text p {
+            margin-bottom: 1rem;
+        }
+
+        /* Questions Styling */
+        .questions-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-group-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .question-instruction {
+            background: #FFF9E6;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .question-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        }
+
+        /* Inline answer boxes for summary questions */
+        .inline-answer {
+            display: inline-block;
+            width: 150px;
+            padding: 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            margin: 0 4px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .inline-answer:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        }
+
+        /* Radio button options for true/false questions */
+        .tf-options {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .tf-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            min-width: 120px;
+        }
+
+        .tf-option:active {
+            transform: scale(0.98);
+        }
+
+        .tf-option:hover {
+            border-color: var(--accent);
+            background: rgba(255,107,53,0.05);
+        }
+
+        .tf-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .tf-option label {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            user-select: none;
+        }
+
+        .tf-option.selected {
+            border-color: var(--accent);
+            background: rgba(255,107,53,0.15);
+            box-shadow: 0 2px 8px rgba(255,107,53,0.2);
+        }
+
+        /* Matching question style */
+        .matching-options {
+            background: #F0F4F8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Highlighting */
+        .highlighted {
+            background-color: var(--highlight);
+            padding: 2px 0;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .selectable {
+            cursor: text;
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+
+        /* Touch feedback */
+        .touch-feedback {
+            position: fixed;
+            pointer-events: none;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            z-index: 9999;
+            animation: fadeOut 1s forwards;
+            box-shadow: 0 4px 12px rgba(255,107,53,0.4);
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Submit Section */
+        .submit-section {
+            display: none; /* Hide fixed submit section */
+        }
+
+        .btn-submit {
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--success) 0%, #05B888 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(6,214,160,0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Proctoring Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .modal-text {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .reactivation-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1.125rem;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 1rem;
+        }
+
+        .btn-reactivate {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reactivate:hover {
+            background: #E85D2E;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C0C9D4;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .test-content {
+                flex-direction: column;
+            }
+
+            .passage-panel {
+                border-right: none;
+                border-bottom: 3px solid var(--accent);
+                max-height: 50vh;
+            }
+
+            .questions-panel {
+                max-height: 50vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px; /* Prevent zoom on input focus */
+            }
+
+            .welcome-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo-text {
+                font-size: 3rem;
+            }
+
+            .test-header {
+                padding: 0.4rem 0.75rem;
+            }
+
+            .header-left {
+                gap: 0.5rem;
+            }
+
+            .logo-small {
+                font-size: 1rem;
+            }
+
+            .student-name {
+                font-size: 0.7rem;
+            }
+
+            .timer {
+                font-size: 0.9rem;
+                padding: 0.35rem 0.6rem;
+            }
+
+            .nav-bar {
+                padding: 0.4rem 0.75rem;
+                overflow-x: auto;
+                gap: 0.4rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                min-width: 80px;
+            }
+
+            .passage-panel, .questions-panel {
+                padding: 0.75rem;
+            }
+
+            .passage-title {
+                font-size: 1.25rem;
+            }
+
+            .passage-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .passage-text {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+
+            .questions-section {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .question-group-title {
+                font-size: 0.9rem;
+            }
+
+            .question-instruction {
+                font-size: 0.8rem;
+                padding: 0.65rem;
+            }
+
+            .answer-input {
+                max-width: 100%;
+                font-size: 16px; /* Prevent zoom */
+                padding: 0.75rem;
+            }
+
+            .inline-answer {
+                width: 120px;
+                font-size: 16px; /* Prevent zoom */
+                padding: 0.6rem 0.5rem;
+                display: block;
+                margin: 0.5rem 0;
+            }
+
+            .tf-options {
+                gap: 0.5rem;
+            }
+
+            .tf-option {
+                flex: 1;
+                min-width: 100px;
+                padding: 0.75rem 0.8rem;
+            }
+
+            .tf-option label {
+                font-size: 0.85rem;
+            }
+
+            .btn-submit {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.9rem;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .modal-title {
+                font-size: 1.25rem;
+            }
+
+            .reactivation-input {
+                font-size: 16px; /* Prevent zoom */
+            }
+
+            /* Better touch targets */
+            button, .tf-option, .nav-btn {
+                min-height: 44px;
+            }
+
+            /* Improve scrolling on mobile */
+            .passage-panel, .questions-panel {
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 2.5rem;
+            }
+
+            .passage-title {
+                font-size: 1.1rem;
+            }
+
+            .tf-option {
+                min-width: 90px;
+                padding: 0.65rem;
+            }
+
+            .tf-option label {
+                font-size: 0.8rem;
+            }
+
+            .tf-option input[type="radio"] {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        /* Landscape mobile optimization */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .passage-panel {
+                max-height: 45vh;
+            }
+
+            .questions-panel {
+                max-height: 45vh;
+            }
+
+            .test-header {
+                padding: 0.35rem 0.75rem;
+            }
+
+            .nav-bar {
+                padding: 0.35rem 0.75rem;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen">
+        <div class="welcome-container">
+            <div class="logo-area">
+                <div class="logo-text">EDUNEST</div>
+                <div class="logo-subtitle">Excellence in Education</div>
+            </div>
+
+            <div class="instructor-info">
+                <div class="instructor-label">Instructor</div>
+                <div class="instructor-name">Jasurbek Abdurakhimov</div>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label class="input-label" for="studentName">Full Name</label>
+                    <input type="text" id="studentName" class="input-field" placeholder="Enter your full name" required>
+                    <div class="error-message" id="nameError">Please enter your name</div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="testPassword">Test Password</label>
+                    <input type="password" id="testPassword" class="input-field" placeholder="Enter test password" required>
+                    <div class="error-message" id="passwordError">Incorrect password</div>
+                </div>
+
+                <button type="submit" class="btn-start">Start Test</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Test Platform -->
+    <div id="testPlatform">
+        <div class="test-header">
+            <div class="header-left">
+                <div class="logo-small">EDUNEST</div>
+                <div class="student-name">Student: <strong id="displayName"></strong></div>
+            </div>
+            <div class="timer" id="timer">60:00</div>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn active" onclick="switchPassage(1)">Passage 1</button>
+            <button class="nav-btn" onclick="switchPassage(2)">Passage 2</button>
+            <button class="nav-btn" onclick="switchPassage(3)">Passage 3</button>
+        </div>
+
+        <div class="test-content">
+            <div class="passage-panel" id="passagePanel">
+                <!-- Passages will be loaded here -->
+            </div>
+
+            <div class="questions-panel" id="questionsPanel">
+                <!-- Questions will be loaded here -->
+            </div>
+        </div>
+
+        <div class="submit-section">
+            <button class="btn-submit" onclick="submitTest()">Submit Test</button>
+        </div>
+    </div>
+
+    <!-- Proctoring Modal -->
+    <div class="modal-overlay" id="proctoringModal">
+        <div class="modal-content">
+            <div class="modal-icon">⚠️</div>
+            <div class="modal-title">Test Violation Detected</div>
+            <div class="modal-text">
+                You have left the test window. Please enter the reactivation code to continue.
+            </div>
+            <div style="font-family: 'Space Mono', monospace; font-size: 2rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem;" id="violationTimer">1:00</div>
+            <input type="password" class="reactivation-input" id="reactivationCode" placeholder="Enter code">
+            <div class="error-message" id="reactivationError" style="margin-top: 0.5rem;">Incorrect code</div>
+            <button class="btn-reactivate" onclick="reactivateTest()">Reactivate Test</button>
+        </div>
+    </div>
+
+    <script>
+        // Test Data
+        const testData = {
+            passage1: {
+                title: "THE STORY OF SILK",
+                subtitle: "The history of the world's most luxurious fabric, from ancient China to the present day",
+                content: `<p>Silk is a fine, smooth material produced from the cocoons - soft protective shells - that are made by mulberry silkworms (insect larvae). Legend has it that it was Lei Tzu, wife of the Yellow Emperor, ruler of China in about 3000 BC, who discovered silkworms. One account of the story goes that as she was taking a walk in her husband's gardens, she discovered that silkworms were responsible for the destruction of several mulberry trees. She collected a number of cocoons and sat down to have a rest. It just so happened that while she was sipping some tea, one of the cocoons that she had collected landed in the hot tea and started to unravel into a fine thread. Lei Tzu found that she could wind this thread around her fingers. Subsequently, she persuaded her husband to allow her to rear silkworms on a grove of mulberry trees. She also devised a special reel to draw the fibres from the cocoon into a single thread so that they would be strong enough to be woven into fabric. While it is unknown just how much of this is true, it is certainly known that silk cultivation has existed in China for several millennia.</p>
+
+<p>Originally, silkworm farming was solely restricted to women, and it was they who were responsible for the growing, harvesting and weaving. Silk quickly grew into a symbol of status, and originally, only royalty were entitled to have clothes made of silk. The rules were gradually relaxed over the years until finally during the Qing Dynasty (1644-1911 AD), even peasants, the lowest caste, were also entitled to wear silk. Sometime during the Han Dynasty (206 BC-220 AD), silk was so prized that it was also used as a unit of currency. Government officials were paid their salary in silk, and farmers paid their taxes in grain and silk. Silk was also used as diplomatic gifts by the emperor. Fishing lines, bowstrings, musical instruments and paper were all made using silk. The earliest indication of silk paper being used was discovered in the tomb of a noble who is estimated to have died around 168 AD.</p>
+
+<p>Demand for this exotic fabric eventually created the lucrative trade route now known as the Silk Road, taking silk westward and bringing gold, silver and wool to the East. It was named the Silk Road after its most precious commodity, which was considered to be worth more than gold. The Silk Road stretched over 6,000 kilometres from Eastern China to the Mediterranean Sea, following the Great Wall of China, climbing the Pamir mountain range, crossing modern-day Afghanistan and going on to the Middle East, with a major trading market in Damascus. From there, the merchandise was shipped across the Mediterranean Sea. Few merchants travelled the entire route; goods were handled mostly by a series of middlemen.</p>
+
+<p>With the mulberry silkworm being native to China, the country was the world's sole producer of silk for many hundreds of years. The secret of silk-making eventually reached the rest of the world via the Byzantine Empire, which ruled over the Mediterranean region of southern Europe, North Africa and the Middle East during the period 330-1453 AD. According to another legend, monks working for the Byzantine emperor Justinian smuggled silkworm eggs to Constantinople (Istanbul in modern-day Turkey) in 550 AD, concealed inside hollow bamboo walking canes. The Byzantines were as secretive as the Chinese, however, and for many centuries the weaving and trading of silk fabric was a strict imperial monopoly. Then in the seventh century, the Arabs conquered Persia, capturing their magnificent silks in the process. Silk production thus spread through Africa, Sicily and Spain as the Arabs swept through these lands. Andalusia in southern Spain was Europe's main silk-producing centre in the tenth century. By the thirteenth century, however, Italy had become Europe's leader in silk production and export. Venetian merchants traded extensively in silk and encouraged silk growers to settle in Italy. Even now, silk processed in the province of Como in northern Italy enjoys an esteemed reputation.</p>
+
+<p>The nineteenth century and industrialisation saw the downfall of the European silk industry. Cheaper Japanese silk, trade in which was greatly facilitated by the opening of the Suez Canal, was one of the many factors driving the trend. Then in the twentieth century, new manmade fibres, such as nylon, started to be used in what had traditionally been silk products, such as stockings and parachutes. The two world wars, which interrupted the supply of raw material from Japan, also stifled the European silk industry. After the Second World War, Japan's silk production was restored, with improved production and quality of raw silk. Japan was to remain the world's biggest producer of raw silk, and practically the only major exporter of raw silk, until the 1970s. However, in more recent decades, China has gradually recaptured its position as the world's biggest producer and exporter of raw silk and silk yarn. Today, around 126,000 metric tons of silk are produced in the world, and almost two thirds of that production takes place in China.</p>`
+            },
+            passage2: {
+                title: "Great Migrations",
+                subtitle: "",
+                content: `<p>Animal migration, however it is defined, is far more than just the movement of animals. It can loosely be described as travel that takes place at regular intervals - often in an annual cycle - that may involve many members of a species, and is rewarded only after a long journey. It suggests inherited instinct. The biologist Hugh Dingle has identified five characteristics that apply, in varying degrees and combinations, to all migrations. They are prolonged movements that carry animals outside familiar habitats; they tend to be linear, not zigzaggy; they involve special behaviours concerning preparation (such as overfeeding) and arrival; they demand special allocations of energy. And one more: migrating animals maintain an intense attentiveness to the greater mission, which keeps them undistracted by temptations and undeterred by challenges that would turn other animals aside.</p>
+
+<p>An arctic tern, on its 20,000 km flight from the extreme south of South America to the Arctic circle, will take no notice of a nice smelly herring offered from a bird-watcher's boat along the way. While local gulls will dive voraciously for such handouts, the tern flies on. Why? The arctic tern resists distraction because it is driven at that moment by an instinctive sense of something we humans find admirable: larger purpose. In other words, it is determined to reach its destination. The bird senses that it can eat, rest and mate later. Right now it is totally focused on the journey; its undivided intent is arrival. Reaching some gravelly coastline in the Arctic, upon which other arctic terns have converged, will serve its larger purpose as shaped by evolution: finding a place, a time, and a set of circumstances in which it can successfully hatch and rear offspring.</p>
+
+<p>But migration is a complex issue, and biologists define it differently, depending in part on what sorts of animals they study. Joel Berger, of the University of Montana, who works on the American pronghorn and other large terrestrial mammals, prefers what he calls a simple, practical definition suited to his beasts: 'movements from a seasonal home area away to another home area and back again'. Generally the reason for such seasonal back-and-forth movement is to seek resources that aren't available within a single area year-round.</p>
+
+<p>But daily vertical movements by zooplankton in the ocean - upward by night to seek food, downward by day to escape predators - can also be considered migration. So can the movement of aphids when, having depleted the young leaves on one food plant, their offspring then fly onward to a different host plant, with no one aphid ever returning to where it started.</p>
+
+<p>Dingle is an evolutionary biologist who studies insects. His definition is more intricate than Berger's, citing those five features that distinguish migration from other forms of movement. They allow for the fact that, for example, aphids will become sensitive to blue light (from the sky) when it's time for takeoff on their big journey, and sensitive to yellow light (reflected from tender young leaves) when it's appropriate to land. Birds will fatten themselves with heavy feeding in advance of a long migrational flight. The value of his definition, Dingle argues, is that it focuses attention on what the phenomenon of wildebeest migration shares with the phenomenon of the aphids, and therefore helps guide researchers towards understanding how evolution has produced them all.</p>
+
+<p>Human behaviour, however, is having a detrimental impact on animal migration. The pronghorn, which resembles an antelope, though they are unrelated, is the fastest land mammal of the New World. One population, which spends the summer in the mountainous Grand Teton National Park of the western USA, follows a narrow route from its summer range in the mountains, across a river, and down onto the plains. Here they wait out the frozen months, feeding mainly on sagebrush blown clear of snow. These pronghorn are notable for the invariance of their migration route and the severity of its constriction at three bottlenecks. If they can't pass through each of the three during their spring migration, they can't reach their bounty of summer grazing; if they can't pass through again in autumn, escaping south onto those windblown plains, they are likely to die trying to overwinter in the deep snow. Pronghorn, dependent on distance vision and speed to keep safe from predators, traverse high, open shoulders of land, where they can see and run. At one of the bottlenecks, forested hills rise to form a V, leaving a corridor of open ground only about 150 metres wide, filled with private homes. Increasing development is leading toward a crisis for the pronghorn, threatening to choke off their passageway.</p>
+
+<p>Conservation scientists, along with some biologists and land managers within the USA's National Park Service and other agencies, are now working to preserve migrational behaviours, not just species and habitats. A National Forest has recognised the path of the pronghorn, much of which passes across its land, as a protected migration corridor. But neither the Forest Service nor the Park Service can control what happens on private land at a bottleneck. And with certain other migrating species, the challenge is complicated further - by vastly greater distances traversed, more jurisdictions, more borders, more dangers along the way. We will require wisdom and resoluteness to ensure that migrating species can continue their journeying a while longer.</p>`
+            },
+            passage3: {
+                title: "Preface to 'How the other half thinks: Adventures in mathematical reasoning'",
+                subtitle: "",
+                content: `<p><strong>A</strong> Occasionally, in some difficult musical compositions, there are beautiful, but easy parts - parts so simple a beginner could play them. So it is with mathematics as well. There are some discoveries in advanced mathematics that do not depend on specialized knowledge, not even on algebra, geometry, or trigonometry. Instead they may involve, at most, a little arithmetic, such as 'the sum of two odd numbers is even', and common sense. Each of the eight chapters in this book illustrates this phenomenon. Anyone can understand every step in the reasoning.</p>
+
+<p>The thinking in each chapter uses at most only elementary arithmetic, and sometimes not even that. Thus all readers will have the chance to participate in a mathematical experience, to appreciate the beauty of mathematics, and to become familiar with its logical, yet intuitive, style of thinking.</p>
+
+<p><strong>B</strong> One of my purposes in writing this book is to give readers who haven't had the opportunity to see and enjoy real mathematics the chance to appreciate the mathematical way of thinking. I want to reveal not only some of the fascinating discoveries, but, more importantly, the reasoning behind them.</p>
+
+<p>In that respect, this book differs from most books on mathematics written for the general public. Some present the lives of colorful mathematicians. Others describe important applications of mathematics. Yet others go into mathematical procedures, but assume that the reader is adept in using algebra.</p>
+
+<p><strong>C</strong> I hope this book will help bridge that notorious gap that separates the two cultures: the humanities and the sciences, or should I say the right brain (intuitive) and the left brain (analytical, numerical). As the chapters will illustrate, mathematics is not restricted to the analytical and numerical; intuition plays a significant role. The alleged gap can be narrowed or completely overcome by anyone, in part because each of us is far from using the full capacity of either side of the brain. To illustrate our human potential, I cite a structural engineer who is an artist, an electrical engineer who is an opera singer, an opera singer who published mathematical research, and a mathematician who publishes short stories.</p>
+
+<p><strong>D</strong> Other scientists have written books to explain their fields to non-scientists, but have necessarily had to omit the mathematics, although it provides the foundation of their theories. The reader must remain a tantalized spectator rather than an involved participant, since the appropriate language for describing the details in much of science is mathematics, whether the subject is expanding universe, subatomic particles, or chromosomes. Though the broad outline of a scientific theory can be sketched intuitively, when a part of the physical universe is finally understood, its description often looks like a page in a mathematics text.</p>
+
+<p><strong>E</strong> Still, the non-mathematical reader can go far in understanding mathematical reasoning. This book presents the details that illustrate the mathematical style of thinking, which involves sustained, step-by-step analysis, experiments, and insights. You will turn these pages much more slowly than when reading a novel or a newspaper. It may help to have a pencil and paper ready to check claims and carry out experiments.</p>
+
+<p><strong>F</strong> As I wrote, I kept in mind two types of readers: those who enjoyed mathematics until they were turned off by an unpleasant episode, usually around fifth grade, and mathematics aficionados, who will find much that is new throughout the book.</p>
+
+<p>This book also serves readers who simply want to sharpen their analytical skills. Many careers, such as law and medicine, require extended, precise analysis. Each chapter offers practice in following a sustained and closely argued line of thought. That mathematics can develop this skill is shown by these two testimonials:</p>
+
+<p><strong>G</strong> A physician wrote, 'The discipline of analytical thought processes [in mathematics] prepared me extremely well for medical school. In medicine one is faced with a problem which must be thoroughly analyzed before a solution can be found. The process is similar to doing mathematics.'</p>
+
+<p>A lawyer made the same point, 'Although I had no background in law - not even one political science course - I did well at one of the best law schools. I attribute much of my success there to having learned, through the study of mathematics, and, in particular, theorems, how to analyze complicated principles. Lawyers who have studied mathematics can master the legal principles in a way that most others cannot.'</p>
+
+<p>I hope you will share my delight in watching as simple, even naïve, questions lead to remarkable solutions and purely theoretical discoveries find unanticipated applications.</p>`
+            },
+            questions1: [
+                {
+                    title: "Questions 1-9",
+                    instruction: "Complete the notes below. Choose ONE WORD ONLY from the passage for each answer.",
+                    questions: [
+                        { num: 1, text: "Around 3000 BC, according to legend: silkworm cocoon fell into emperor's wife's ..................... ." },
+                        { num: 2, text: "emperor's wife invented a ...................... to pull out silk fibres" },
+                        { num: 3, text: "Only ...................... were allowed to produce silk" },
+                        { num: 4, text: "Only ...................... were allowed to wear silk" },
+                        { num: 5, text: "Silk used as a form of ..................... ." },
+                        { num: 6, text: "e.g. evidence found of ...................... made from silk around 168 AD" },
+                        { num: 7, text: "Merchants use Silk Road to take silk westward and bring back ...................... and precious metals" },
+                        { num: 8, text: "550 AD: ...................... hide silkworm eggs in canes and take them to Constantinople" },
+                        { num: 9, text: "20th century: ...................... and other manmade fibres cause decline in silk production" }
+                    ]
+                },
+                {
+                    title: "Questions 10-13",
+                    instruction: "Do the following statements agree with the information in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.",
+                    questions: [
+                        { num: 10, text: "Gold was the most valuable material transported along the Silk Road.", type: "truefalse" },
+                        { num: 11, text: "Most tradesmen only went along certain sections of the Silk Road.", type: "truefalse" },
+                        { num: 12, text: "The Byzantines spread the practice of silk production across the West.", type: "truefalse" },
+                        { num: 13, text: "Silk yarn makes up the majority of silk currently exported from China.", type: "truefalse" }
+                    ]
+                }
+            ],
+            questions2: [
+                {
+                    title: "Questions 14-18",
+                    instruction: "Do the following statements agree with the information given in Reading Passage 2? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.",
+                    questions: [
+                        { num: 14, text: "Local gulls and migrating arctic terns behave in the same way when offered food.", type: "truefalse" },
+                        { num: 15, text: "Experts' definitions of migration tend to vary according to their area of study.", type: "truefalse" },
+                        { num: 16, text: "Very few experts agree that the movement of aphids can be considered migration.", type: "truefalse" },
+                        { num: 17, text: "Aphids' journeys are affected by changes in the light that they perceive.", type: "truefalse" },
+                        { num: 18, text: "Dingle's aim is to distinguish between the migratory behaviours of different species.", type: "truefalse" }
+                    ]
+                },
+                {
+                    title: "Questions 19-22",
+                    instruction: "Complete each sentence with the correct ending, A-G, below.",
+                    questions: [
+                        { num: 19, text: "According to Dingle, migratory routes are likely to", type: "matching" },
+                        { num: 20, text: "To prepare for migration, animals are likely to", type: "matching" },
+                        { num: 21, text: "During migration, animals are unlikely to", type: "matching" },
+                        { num: 22, text: "Arctic terns illustrate migrating animals' ability to", type: "matching" }
+                    ],
+                    options: ["A - be discouraged by difficulties", "B - travel on open land where they can look out for predators", "C - eat more than they need for immediate purposes", "D - be repeated daily", "E - ignore distractions", "F - be governed by the availability of water", "G - follow a straight line"]
+                },
+                {
+                    title: "Questions 23-26",
+                    instruction: "Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.",
+                    questions: [
+                        { num: 23, text: "Pronghorns rely on their eyesight and ...................... to avoid predators." },
+                        { num: 24, text: "One particular population's summer habitat is a national park, and their winter home is on the ...................... ." },
+                        { num: 25, text: "However, their route between these two areas contains three ...................... ." },
+                        { num: 26, text: "One problem is the construction of new homes in a narrow ...................... of land on the pronghorns' route." }
+                    ]
+                }
+            ],
+            questions3: [
+                {
+                    title: "Questions 27-34",
+                    instruction: "Reading Passage 3 has seven sections, A-G. Which section contains the following information? You may use any letter more than once.",
+                    questions: [
+                        { num: 27, text: "a reference to books that assume a lack of mathematical knowledge", type: "section" },
+                        { num: 28, text: "the way in which this is not a typical book about mathematics", type: "section" },
+                        { num: 29, text: "personal examples of being helped by mathematics", type: "section" },
+                        { num: 30, text: "examples of people who each had abilities that seemed incompatible", type: "section" },
+                        { num: 31, text: "mention of different focuses of books about mathematics", type: "section" },
+                        { num: 32, text: "a contrast between reading this book and reading other kinds of publication", type: "section" },
+                        { num: 33, text: "a claim that the whole of the book is accessible to everybody", type: "section" },
+                        { num: 34, text: "a reference to different categories of intended readers of this book", type: "section" }
+                    ]
+                },
+                {
+                    title: "Questions 35-40",
+                    instruction: "Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer.",
+                    questions: [
+                        { num: 35, text: "Some areas of both music and mathematics are suitable for someone who is a ...................... ." },
+                        { num: 36, text: "It is sometimes possible to understand advanced mathematics using no more than a limited knowledge of ...................... ." },
+                        { num: 37, text: "The writer intends to show that mathematics requires ...................... thinking, as well as analytical skills." },
+                        { num: 38, text: "Some books written by ...................... have had to leave out the mathematics that is central to their theories." },
+                        { num: 39, text: "The writer advises non-mathematical readers to perform ...................... while reading the book." },
+                        { num: 40, text: "A lawyer found that studying ...................... helped even more than other areas of mathematics in the study of law." }
+                    ]
+                }
+            ]
+        };
+
+        // State Management
+        let currentPassage = 1;
+        let studentName = '';
+        let testActive = false;
+        let answers = {};
+        let timeRemaining = 3600; // 60 minutes in seconds
+        let timerInterval;
+        let proctoringViolations = 0;
+        let violationTimer = null;
+        let violationTimeRemaining = 60;
+
+        // Initialize answers object
+        for (let i = 1; i <= 40; i++) {
+            answers[i] = '';
+        }
+
+        // Welcome Screen Logic
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('studentName').value.trim();
+            const password = document.getElementById('testPassword').value;
+
+            // Reset errors
+            document.getElementById('nameError').style.display = 'none';
+            document.getElementById('passwordError').style.display = 'none';
+
+            if (!name) {
+                document.getElementById('nameError').style.display = 'block';
+                return;
+            }
+
+            if (password !== '3001') {
+                document.getElementById('passwordError').style.display = 'block';
+                return;
+            }
+
+            // Start test
+            studentName = name;
+            startTest();
+        });
+
+        function startTest() {
+            document.getElementById('displayName').textContent = studentName;
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('testPlatform').style.display = 'flex';
+            testActive = true;
+
+            // Enter fullscreen
+            enterFullscreen();
+
+            // Load first passage
+            loadPassage(1);
+
+            // Start timer
+            startTimer();
+
+            // Setup proctoring
+            setupProctoring();
+        }
+
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Passage Navigation
+        function switchPassage(num) {
+            currentPassage = num;
+            loadPassage(num);
+
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+                if (index + 1 === num) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function loadPassage(num) {
+            const passageKey = `passage${num}`;
+            const questionsKey = `questions${num}`;
+            const passage = testData[passageKey];
+            const questions = testData[questionsKey];
+
+            // Load passage without panel label
+            document.getElementById('passagePanel').innerHTML = `
+                <div class="selectable">
+                    <h1 class="passage-title">${passage.title}</h1>
+                    ${passage.subtitle ? `<div class="passage-subtitle">${passage.subtitle}</div>` : ''}
+                    <div class="passage-text">${passage.content}</div>
+                </div>
+            `;
+
+            // Load questions without panel label
+            let questionsHTML = '';
+            questions.forEach(group => {
+                questionsHTML += `
+                    <div class="questions-section selectable">
+                        <div class="question-group-title">${group.title}</div>
+                        <div class="question-instruction">${group.instruction}</div>
+                `;
+
+                if (group.options) {
+                    questionsHTML += `<div class="matching-options">`;
+                    group.options.forEach(opt => {
+                        questionsHTML += `<div style="margin-bottom: 0.5rem;">${opt}</div>`;
+                    });
+                    questionsHTML += `</div>`;
+                }
+
+                group.questions.forEach(q => {
+                    // Check if this is a summary/fill-in-the-blank question (has .... in text)
+                    const isSummaryQuestion = q.text.includes('......................');
+                    
+                    if (isSummaryQuestion) {
+                        // For summary questions with inline answer boxes
+                        let questionText = q.text.replace(/\.{4,}/g, (match) => {
+                            return `<input type="text" class="inline-answer" id="answer${q.num}" value="${answers[q.num]}" onchange="saveAnswer(${q.num}, this.value)" placeholder="answer">`;
+                        });
+                        
+                        questionsHTML += `
+                            <div class="question-item">
+                                <span class="question-number">${q.num}.</span>
+                                <span>${questionText}</span>
+                            </div>
+                        `;
+                    } else if (q.type === 'truefalse') {
+                        // For TRUE/FALSE/NOT GIVEN questions
+                        questionsHTML += `
+                            <div class="question-item">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <span class="question-number">${q.num}.</span>
+                                    <span>${q.text}</span>
+                                </div>
+                                <div class="tf-options">
+                                    <div class="tf-option ${answers[q.num] === 'TRUE' ? 'selected' : ''}" onclick="selectTFAnswer(${q.num}, 'TRUE')">
+                                        <input type="radio" name="q${q.num}" id="q${q.num}_true" ${answers[q.num] === 'TRUE' ? 'checked' : ''}>
+                                        <label for="q${q.num}_true">TRUE</label>
+                                    </div>
+                                    <div class="tf-option ${answers[q.num] === 'FALSE' ? 'selected' : ''}" onclick="selectTFAnswer(${q.num}, 'FALSE')">
+                                        <input type="radio" name="q${q.num}" id="q${q.num}_false" ${answers[q.num] === 'FALSE' ? 'checked' : ''}>
+                                        <label for="q${q.num}_false">FALSE</label>
+                                    </div>
+                                    <div class="tf-option ${answers[q.num] === 'NOT GIVEN' ? 'selected' : ''}" onclick="selectTFAnswer(${q.num}, 'NOT GIVEN')">
+                                        <input type="radio" name="q${q.num}" id="q${q.num}_ng" ${answers[q.num] === 'NOT GIVEN' ? 'checked' : ''}>
+                                        <label for="q${q.num}_ng">NOT GIVEN</label>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // For regular text input questions (matching, section, etc.)
+                        questionsHTML += `
+                            <div class="question-item">
+                                <span class="question-number">${q.num}.</span>
+                                <span>${q.text}</span>
+                                <input type="text" 
+                                       class="answer-input" 
+                                       id="answer${q.num}" 
+                                       value="${answers[q.num]}"
+                                       onchange="saveAnswer(${q.num}, this.value)"
+                                       placeholder="Your answer">
+                            </div>
+                        `;
+                    }
+                });
+
+                questionsHTML += `</div>`;
+            });
+
+            // Add submit button only after passage 3
+            if (num === 3) {
+                questionsHTML += `
+                    <button class="btn-submit" onclick="submitTest()">Submit Test</button>
+                `;
+            }
+
+            document.getElementById('questionsPanel').innerHTML = questionsHTML;
+
+            // Setup highlighting for both panels
+            setupHighlighting();
+
+            // Scroll to top
+            document.getElementById('passagePanel').scrollTop = 0;
+            document.getElementById('questionsPanel').scrollTop = 0;
+        }
+
+        function selectTFAnswer(num, value) {
+            answers[num] = value;
+            // Update visual selection
+            const options = document.querySelectorAll(`[onclick*="selectTFAnswer(${num}"]`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            // Show touch feedback
+            showTouchFeedback('Answer saved ✓');
+        }
+
+        function saveAnswer(num, value) {
+            answers[num] = value.trim();
+            if (value.trim()) {
+                showTouchFeedback('Answer saved ✓');
+            }
+        }
+
+        // Touch feedback function
+        function showTouchFeedback(message) {
+            const feedback = document.createElement('div');
+            feedback.className = 'touch-feedback';
+            feedback.textContent = message;
+            feedback.style.left = '50%';
+            feedback.style.top = '50%';
+            feedback.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1000);
+        }
+
+        // Simple Highlighting System
+        function setupHighlighting() {
+            const selectableElements = document.querySelectorAll('.selectable');
+            
+            selectableElements.forEach(element => {
+                // Handle both mouse (desktop) and touch (mobile)
+                element.addEventListener('mouseup', handleTextSelection);
+                element.addEventListener('touchend', handleTextSelection);
+                
+                // Handle click on highlighted text to remove
+                element.addEventListener('click', handleHighlightClick);
+            });
+        }
+
+        function handleTextSelection(e) {
+            // Small delay to ensure selection is complete
+            setTimeout(() => {
+                const selection = window.getSelection();
+                const selectedText = selection.toString().trim();
+
+                if (selectedText.length > 0) {
+                    const range = selection.getRangeAt(0);
+                    
+                    try {
+                        // Create highlight span
+                        const span = document.createElement('span');
+                        span.className = 'highlighted';
+                        range.surroundContents(span);
+                        
+                        // Clear selection
+                        selection.removeAllRanges();
+                        
+                        // Optional: vibrate on mobile
+                        if (navigator.vibrate) {
+                            navigator.vibrate(30);
+                        }
+                    } catch (error) {
+                        // If surroundContents fails (e.g., selection crosses elements)
+                        // Try alternative method
+                        try {
+                            const contents = range.extractContents();
+                            const span = document.createElement('span');
+                            span.className = 'highlighted';
+                            span.appendChild(contents);
+                            range.insertNode(span);
+                            
+                            // Clear selection
+                            selection.removeAllRanges();
+                            
+                            if (navigator.vibrate) {
+                                navigator.vibrate(30);
+                            }
+                        } catch (err) {
+                            console.log('Could not highlight selection');
+                        }
+                    }
+                }
+            }, 10);
+        }
+
+        function handleHighlightClick(e) {
+            // Check if clicked element is highlighted
+            if (e.target.classList.contains('highlighted')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remove highlight
+                const text = e.target.textContent;
+                const textNode = document.createTextNode(text);
+                e.target.parentNode.replaceChild(textNode, e.target);
+                
+                // Optional: vibrate on mobile
+                if (navigator.vibrate) {
+                    navigator.vibrate([20, 30, 20]);
+                }
+            }
+        }
+
+        // Proctoring System
+        function setupProctoring() {
+            // Detect window focus loss
+            window.addEventListener('blur', handleViolation);
+
+            // Detect fullscreen exit
+            document.addEventListener('fullscreenchange', checkFullscreen);
+            document.addEventListener('webkitfullscreenchange', checkFullscreen);
+            document.addEventListener('mozfullscreenchange', checkFullscreen);
+
+            // Prevent right-click
+            document.addEventListener('contextmenu', e => e.preventDefault());
+
+            // Detect tab switching
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && testActive) {
+                    handleViolation();
+                }
+            });
+        }
+
+        function checkFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && testActive) {
+                handleViolation();
+            }
+        }
+
+        function handleViolation() {
+            if (!testActive) return;
+
+            proctoringViolations++;
+            testActive = false;
+            clearInterval(timerInterval);
+
+            document.getElementById('proctoringModal').style.display = 'flex';
+            document.getElementById('reactivationCode').value = '';
+            document.getElementById('reactivationError').style.display = 'none';
+            
+            // Start 1-minute violation timer
+            violationTimeRemaining = 60;
+            updateViolationTimer();
+            violationTimer = setInterval(() => {
+                violationTimeRemaining--;
+                updateViolationTimer();
+                
+                if (violationTimeRemaining <= 0) {
+                    clearInterval(violationTimer);
+                    autoSubmitTest();
+                }
+            }, 1000);
+        }
+
+        function updateViolationTimer() {
+            const minutes = Math.floor(violationTimeRemaining / 60);
+            const seconds = violationTimeRemaining % 60;
+            const timerElement = document.getElementById('violationTimer');
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color as time runs out
+            if (violationTimeRemaining <= 10) {
+                timerElement.style.color = '#E63946';
+            } else if (violationTimeRemaining <= 30) {
+                timerElement.style.color = 'var(--accent)';
+            } else {
+                timerElement.style.color = 'var(--accent)';
+            }
+        }
+
+        function reactivateTest() {
+            const code = document.getElementById('reactivationCode').value;
+
+            if (code === '1103') {
+                testActive = true;
+                clearInterval(violationTimer);
+                document.getElementById('proctoringModal').style.display = 'none';
+                enterFullscreen();
+                startTimer();
+            } else {
+                document.getElementById('reactivationError').style.display = 'block';
+            }
+        }
+
+        // Allow Enter key in reactivation
+        document.getElementById('reactivationCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                reactivateTest();
+            }
+        });
+
+        // Submit Test
+        async function submitTest() {
+            if (!confirm('Are you sure you want to submit your test? This action cannot be undone.')) {
+                return;
+            }
+
+            testActive = false;
+            clearInterval(timerInterval);
+
+            // Generate PDF
+            await generatePDF();
+        }
+
+        function autoSubmitTest() {
+            alert('Time is up! Your test will be submitted automatically.');
+            submitTest();
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 20;
+            let yPosition = margin;
+
+            // Header
+            pdf.setFillColor(10, 37, 64);
+            pdf.rect(0, 0, pageWidth, 40, 'F');
+            
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(24);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('EDUNEST', margin, 20);
+            
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'normal');
+            pdf.text('IELTS Reading Test - Answer Sheet', margin, 28);
+
+            yPosition = 50;
+
+            // Student Information
+            pdf.setTextColor(10, 37, 64);
+            pdf.setFontSize(12);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Student Information', margin, yPosition);
+            yPosition += 8;
+
+            pdf.setFontSize(10);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(`Name: ${studentName}`, margin, yPosition);
+            yPosition += 6;
+            
+            const date = new Date().toLocaleString();
+            pdf.text(`Date: ${date}`, margin, yPosition);
+            yPosition += 6;
+            
+            pdf.text(`Instructor: Jasurbek Abdurakhimov`, margin, yPosition);
+            yPosition += 6;
+            
+            pdf.text(`Proctoring Violations: ${proctoringViolations}`, margin, yPosition);
+            yPosition += 12;
+
+            // Answers
+            pdf.setFontSize(12);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Answers', margin, yPosition);
+            yPosition += 8;
+
+            pdf.setFontSize(9);
+            pdf.setFont(undefined, 'normal');
+
+            // Three columns
+            const colWidth = (pageWidth - 2 * margin) / 3;
+            let currentCol = 0;
+            let colYPosition = yPosition;
+
+            for (let i = 1; i <= 40; i++) {
+                const xPos = margin + (currentCol * colWidth);
+                const answer = answers[i] || '(blank)';
+                
+                pdf.text(`${i}. ${answer}`, xPos, colYPosition);
+                
+                currentCol++;
+                if (currentCol === 3) {
+                    currentCol = 0;
+                    colYPosition += 6;
+                    
+                    // Check if we need a new page
+                    if (colYPosition > pageHeight - margin) {
+                        pdf.addPage();
+                        colYPosition = margin;
+                    }
+                }
+            }
+
+            // Footer
+            const totalPages = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(8);
+                pdf.setTextColor(128, 128, 128);
+                pdf.text(
+                    `Page ${i} of ${totalPages} - Generated by EDUNEST Platform`,
+                    pageWidth / 2,
+                    pageHeight - 10,
+                    { align: 'center' }
+                );
+            }
+
+            // Save PDF
+            const filename = `${studentName.replace(/\s+/g, '_')}_IELTS_Reading_Test_${new Date().getTime()}.pdf`;
+            pdf.save(filename);
+
+            // Show completion message
+            setTimeout(() => {
+                alert('Your test has been submitted successfully! The PDF has been downloaded.');
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            }, 500);
+        }
+
+        // Prevent copying
+        document.addEventListener('copy', (e) => {
+            if (testActive) {
+                e.preventDefault();
+            }
+        });
+
+        // Keyboard shortcuts prevention
+        document.addEventListener('keydown', (e) => {
+            if (testActive) {
+                // Prevent F11 (fullscreen toggle)
+                if (e.key === 'F11') {
+                    e.preventDefault();
+                }
+                // Prevent Ctrl/Cmd + various keys
+                if ((e.ctrlKey || e.metaKey) && ['p', 's', 'c', 'v', 'a'].includes(e.key.toLowerCase())) {
+                    if (e.key.toLowerCase() !== 'a' || e.target.tagName !== 'INPUT') {
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
