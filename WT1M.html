@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>EDUNEST - CDI Writing Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Welcome Screen */
+        #welcomeScreen {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .welcome-container {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 3px solid #dc2626;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-section img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 24px;
+        }
+
+        .logo-section h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 8px 0;
+        }
+
+        .logo-section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #dc2626;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #dc2626;
+        }
+
+        .start-button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: #dc2626;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .start-button:hover {
+            background: #b91c1c;
+        }
+
+        .instructions-box {
+            margin-top: 24px;
+            padding: 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #991b1b;
+        }
+
+        .instructions-box p {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+
+        .instructions-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        /* Test Screen */
+        #testScreen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f9fafb;
+            overflow: hidden;
+        }
+
+        .test-header {
+            background: white;
+            border-bottom: 3px solid #dc2626;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-left img {
+            height: 40px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .header-student {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .header-timer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .header-timer.warning {
+            color: #dc2626;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .left-panel {
+            width: 50%;
+            background: white;
+            border-right: 3px solid #dc2626;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .panel-header {
+            padding: 24px;
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1f2937;
+        }
+
+        .image-container {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            position: relative;
+        }
+
+        .image-wrapper {
+            display: inline-block;
+            min-width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container img {
+            display: block;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: transform 0.1s ease;
+            cursor: grab;
+            transform-origin: center center;
+        }
+
+        .image-container img:active {
+            cursor: grabbing;
+        }
+
+        .right-panel {
+            width: 50%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .writing-header {
+            padding: 24px;
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .word-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .word-count-number {
+            font-weight: 600;
+        }
+
+        #writingArea {
+            flex: 1;
+            padding: 24px;
+            font-size: 16px;
+            line-height: 1.8;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1f2937;
+            background: white;
+        }
+
+        .test-footer {
+            background: white;
+            border-top: 3px solid #dc2626;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+
+        .violations-count {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .violations-number {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .submit-button {
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: #dc2626;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .submit-button:hover {
+            background: #b91c1c;
+        }
+
+        /* Violation Screen */
+        #violationScreen {
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .violation-container {
+            background: #1f2937;
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            border: 3px solid #dc2626;
+            box-shadow: 0 0 40px rgba(220, 38, 38, 0.5);
+        }
+
+        .violation-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .violation-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            fill: #dc2626;
+        }
+
+        .violation-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #dc2626;
+            margin: 0 0 16px 0;
+        }
+
+        .violation-message {
+            font-size: 16px;
+            color: #9ca3af;
+            margin: 0;
+        }
+
+        .timer-box {
+            background: #374151;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 2px solid #dc2626;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #10b981;
+        }
+
+        .timer-display.warning {
+            color: #dc2626;
+        }
+
+        .timer-label {
+            font-size: 14px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        .reactivation-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 18px;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            background: #374151;
+            color: white;
+            outline: none;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .reactivation-button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: #dc2626;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reactivation-button:hover {
+            background: #b91c1c;
+        }
+
+        .violation-note {
+            margin-top: 24px;
+            padding: 16px;
+            background: #374151;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        /* Submitted Screen */
+        #submittedScreen {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .submitted-container {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            stroke: #10b981;
+        }
+
+        .submitted-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 16px 0;
+        }
+
+        .submitted-message {
+            font-size: 18px;
+            color: #6b7280;
+            margin: 0 0 32px 0;
+        }
+
+        .summary-box {
+            background: #f3f4f6;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+        }
+
+        .summary-item {
+            margin-bottom: 12px;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .summary-value {
+            color: #6b7280;
+        }
+
+        .telegram-button {
+            display: inline-block;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: #0088cc;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+        }
+
+        .telegram-button:hover {
+            background: #006699;
+        }
+
+        /* Timer Reminder */
+        .timer-reminder {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #dc2626;
+            color: white;
+            padding: 24px 48px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: 0 8px 32px rgba(220, 38, 38, 0.5);
+            z-index: 1000;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Mobile Responsive Styles */
+        @media screen and (max-width: 768px) {
+            /* Welcome Screen Mobile */
+            #welcomeScreen {
+                padding: 16px;
+            }
+
+            .welcome-container {
+                padding: 32px 24px;
+                max-width: 100%;
+            }
+
+            .logo-section img {
+                max-width: 150px;
+                margin-bottom: 16px;
+            }
+
+            .logo-section h1 {
+                font-size: 24px;
+            }
+
+            .logo-section h2 {
+                font-size: 18px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .instructions-box {
+                font-size: 13px;
+                padding: 12px;
+            }
+
+            /* Test Screen Mobile - Vertical Split */
+            #testScreen {
+                flex-direction: column;
+            }
+
+            .test-header {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .header-left {
+                gap: 12px;
+            }
+
+            .header-left img {
+                height: 32px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .header-student {
+                font-size: 12px;
+            }
+
+            .header-timer {
+                font-size: 16px;
+            }
+
+            .main-content {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .left-panel {
+                width: 100%;
+                height: 50vh;
+                min-height: 300px;
+                border-right: none;
+                border-bottom: 3px solid #dc2626;
+            }
+
+            .right-panel {
+                width: 100%;
+                height: 50vh;
+                min-height: 300px;
+            }
+
+            .panel-header {
+                padding: 16px;
+                font-size: 14px;
+            }
+
+            .image-container {
+                padding: 16px;
+            }
+
+            .writing-header {
+                padding: 16px;
+            }
+
+            #writingArea {
+                padding: 16px;
+                font-size: 16px;
+                /* Prevent zoom on focus for iOS */
+                -webkit-text-size-adjust: 100%;
+            }
+
+            .test-footer {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: center;
+            }
+
+            .violations-count {
+                font-size: 13px;
+            }
+
+            .submit-button {
+                padding: 10px 24px;
+                font-size: 15px;
+            }
+
+            /* Violation Screen Mobile */
+            #violationScreen {
+                padding: 16px;
+            }
+
+            .violation-container {
+                padding: 32px 24px;
+                max-width: 100%;
+            }
+
+            .violation-icon {
+                width: 48px;
+                height: 48px;
+            }
+
+            .violation-title {
+                font-size: 22px;
+            }
+
+            .violation-message {
+                font-size: 14px;
+            }
+
+            .timer-box {
+                padding: 20px;
+            }
+
+            .timer-display {
+                font-size: 40px;
+            }
+
+            .violation-note {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            /* Submitted Screen Mobile */
+            #submittedScreen {
+                padding: 16px;
+            }
+
+            .submitted-container {
+                padding: 32px 24px;
+                max-width: 100%;
+            }
+
+            .success-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .submitted-title {
+                font-size: 24px;
+            }
+
+            .submitted-message {
+                font-size: 16px;
+            }
+
+            .summary-box {
+                padding: 20px;
+            }
+
+            .telegram-button {
+                padding: 12px 24px;
+                font-size: 15px;
+                width: 100%;
+            }
+
+            /* Timer Reminder Mobile */
+            .timer-reminder {
+                padding: 20px 32px;
+                font-size: 20px;
+                width: 90%;
+                max-width: 300px;
+            }
+
+            /* Word Count Mobile - Make more visible */
+            .word-count {
+                font-size: 15px;
+                font-weight: 600;
+            }
+
+            /* Mobile Touch Improvements */
+            .start-button,
+            .submit-button,
+            .reactivation-button,
+            .telegram-button {
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            /* Prevent iOS zoom on input focus */
+            input,
+            textarea {
+                font-size: 16px !important;
+            }
+
+            /* Make image wrapper scrollable on mobile */
+            .image-wrapper {
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* Tablet Responsive (portrait) */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .left-panel {
+                width: 100%;
+                height: 45vh;
+                border-right: none;
+                border-bottom: 3px solid #dc2626;
+            }
+
+            .right-panel {
+                width: 100%;
+                height: 55vh;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media screen and (max-width: 480px) {
+            .logo-section h1 {
+                font-size: 20px;
+            }
+
+            .logo-section h2 {
+                font-size: 16px;
+            }
+
+            .header-title {
+                font-size: 16px;
+            }
+
+            .header-timer {
+                font-size: 14px;
+            }
+
+            .left-panel {
+                height: 40vh;
+                min-height: 250px;
+            }
+
+            .right-panel {
+                height: 60vh;
+            }
+
+            #writingArea {
+                font-size: 15px;
+            }
+
+            .word-count {
+                font-size: 14px;
+            }
+        }
+
+        /* Icons */
+        .icon {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen">
+        <div class="welcome-container">
+            <div class="logo-section">
+                <img src="https://i.ibb.co/WWYjsWTh/image.png" alt="EDUNEST Logo">
+                <h1>EDUNEST</h1>
+                <h2>CDI Writing Test</h2>
+            </div>
+
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="studentName" placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label>Test Password</label>
+                <input type="password" id="testPassword" placeholder="Enter test password">
+            </div>
+
+            <button class="start-button" onclick="startTest()">Start Test</button>
+
+            <div class="instructions-box">
+                <p>⚠️ Important Instructions:</p>
+                <ul>
+                    <li>Test duration: 20 minutes</li>
+                    <li>Do not leave fullscreen mode</li>
+                    <li>Do not switch windows or tabs</li>
+                    <li>Violations will be recorded</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Screen -->
+    <div id="testScreen" class="hidden">
+        <div class="test-header">
+            <div class="header-left">
+                <img src="https://i.ibb.co/WWYjsWTh/image.png" alt="EDUNEST">
+                <div>
+                    <div class="header-title">TASK 1</div>
+                    <div class="header-student" id="headerStudent"></div>
+                </div>
+            </div>
+            <div class="header-timer" id="timerDisplay">
+                <span class="icon">🕐</span>
+                <span id="timerText">20:00</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="panel-header">Task 1 - Graph Description</div>
+                <div class="image-container" id="imageContainer">
+                    <div class="image-wrapper" id="imageWrapper">
+                        <img id="taskImage" src="https://i.ibb.co/r29bd8RG/image.png" alt="Task 1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="writing-header">
+                    <div class="panel-header" style="padding: 0; border: none; background: transparent;">Your Response</div>
+                    <div class="word-count">
+                        <span class="icon">📝</span>
+                        <span class="word-count-number" id="wordCount">0</span> words
+                    </div>
+                </div>
+                <textarea id="writingArea" placeholder="Start writing your response here..." spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+            </div>
+        </div>
+
+        <div class="test-footer">
+            <div class="violations-count">
+                Violations: <span class="violations-number" id="violationCount">0</span>
+            </div>
+            <button class="submit-button" onclick="submitTest()">Submit Test</button>
+        </div>
+    </div>
+
+    <!-- Violation Screen -->
+    <div id="violationScreen" class="hidden">
+        <div class="violation-container">
+            <div class="violation-header">
+                <svg class="violation-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <h2 class="violation-title">Security Violation Detected</h2>
+                <p class="violation-message" id="violationMessage"></p>
+            </div>
+
+            <div class="timer-box">
+                <div class="timer-display" id="reactivationTimer">01:00</div>
+                <div class="timer-label">Time remaining to enter reactivation code</div>
+            </div>
+
+            <div class="form-group">
+                <label style="color: #d1d5db;">Reactivation Code (Teacher Only)</label>
+                <input type="password" id="reactivationCode" class="reactivation-input" placeholder="Enter reactivation code">
+            </div>
+
+            <button class="reactivation-button" onclick="reactivateTest()">Resume Test</button>
+
+            <div class="violation-note">
+                🔒<br>Contact your teacher for the reactivation code
+            </div>
+        </div>
+    </div>
+
+    <!-- Submitted Screen -->
+    <div id="submittedScreen" class="hidden">
+        <div class="submitted-container">
+            <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+
+            <h2 class="submitted-title">Test Submitted Successfully!</h2>
+            <p class="submitted-message" id="submittedMessage"></p>
+
+            <div class="summary-box">
+                <div class="summary-item">
+                    <span class="summary-label">Word Count: </span>
+                    <span class="summary-value" id="finalWordCount">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Violations: </span>
+                    <span class="summary-value" id="finalViolations">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Submitted: </span>
+                    <span class="summary-value" id="submittedTime"></span>
+                </div>
+            </div>
+
+            <a href="https://t.me/Jasurbek_Abdurakhimoff" target="_blank" rel="noopener noreferrer" class="telegram-button">
+                Contact Teacher on Telegram
+            </a>
+        </div>
+    </div>
+
+    <!-- Timer Reminder (hidden by default) -->
+    <div id="timerReminder" class="timer-reminder hidden">
+        <div>🕐</div>
+        <div id="reminderText"></div>
+    </div>
+
+    <script>
+        // State variables
+        let studentName = '';
+        let timeLeft = 20 * 60; // 20 minutes
+        let violationCount = 0;
+        let writingContent = '';
+        let timerInterval = null;
+        let reactivationInterval = null;
+        let reactivationTimeLeft = 60;
+
+        // Start test
+        function startTest() {
+            const nameInput = document.getElementById('studentName').value.trim();
+            const passwordInput = document.getElementById('testPassword').value;
+
+            if (!nameInput) {
+                alert('Please enter your name');
+                return;
+            }
+
+            if (passwordInput !== '2026') {
+                alert('Incorrect password');
+                return;
+            }
+
+            studentName = nameInput;
+            document.getElementById('headerStudent').textContent = 'Student: ' + studentName;
+            
+            // Switch screens
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('testScreen').classList.remove('hidden');
+
+            // Enter fullscreen
+            enterFullscreen();
+
+            // Start timer
+            startTimer();
+
+            // Setup proctoring
+            setupProctoring();
+        }
+
+        // Enter fullscreen
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Exit fullscreen
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmit();
+                    return;
+                }
+
+                // Update display
+                updateTimerDisplay();
+
+                // Show reminders
+                if (timeLeft === 10 * 60) {
+                    showReminder('10 minutes remaining');
+                } else if (timeLeft === 5 * 60) {
+                    showReminder('5 minutes remaining');
+                } else if (timeLeft === 2 * 60) {
+                    showReminder('2 minutes remaining');
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            const timeString = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('timerText').textContent = timeString;
+
+            const timerDisplay = document.getElementById('timerDisplay');
+            if (timeLeft < 120) {
+                timerDisplay.classList.add('warning');
+            } else {
+                timerDisplay.classList.remove('warning');
+            }
+        }
+
+        // Show reminder
+        function showReminder(message) {
+            const reminder = document.getElementById('timerReminder');
+            document.getElementById('reminderText').textContent = message;
+            reminder.classList.remove('hidden');
+
+            setTimeout(() => {
+                reminder.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Setup proctoring
+        function setupProctoring() {
+            // Visibility change
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            // Window blur
+            window.addEventListener('blur', handleWindowBlur);
+
+            // Fullscreen change
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden && !document.getElementById('testScreen').classList.contains('hidden')) {
+                triggerViolation();
+            }
+        }
+
+        function handleWindowBlur() {
+            if (!document.getElementById('testScreen').classList.contains('hidden')) {
+                triggerViolation();
+            }
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+            if (!isFullscreen && !document.getElementById('testScreen').classList.contains('hidden')) {
+                triggerViolation();
+            }
+        }
+
+        // Trigger violation
+        function triggerViolation() {
+            violationCount++;
+            document.getElementById('violationCount').textContent = violationCount;
+            
+            // Save current writing
+            writingContent = document.getElementById('writingArea').value;
+
+            // Stop main timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            // Show violation screen
+            document.getElementById('testScreen').classList.add('hidden');
+            document.getElementById('violationScreen').classList.remove('hidden');
+            document.getElementById('violationMessage').textContent = 
+                `Violation #${violationCount}: Window focus lost or fullscreen exited`;
+
+            // Start reactivation timer
+            reactivationTimeLeft = 60;
+            updateReactivationTimer();
+            reactivationInterval = setInterval(() => {
+                reactivationTimeLeft--;
+                updateReactivationTimer();
+
+                if (reactivationTimeLeft <= 0) {
+                    clearInterval(reactivationInterval);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        // Update reactivation timer
+        function updateReactivationTimer() {
+            const mins = Math.floor(reactivationTimeLeft / 60);
+            const secs = reactivationTimeLeft % 60;
+            const timeString = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('reactivationTimer').textContent = timeString;
+
+            const timerDisplay = document.getElementById('reactivationTimer');
+            if (reactivationTimeLeft <= 10) {
+                timerDisplay.classList.add('warning');
+            } else {
+                timerDisplay.classList.remove('warning');
+            }
+        }
+
+        // Reactivate test
+        function reactivateTest() {
+            const code = document.getElementById('reactivationCode').value;
+
+            if (code !== '2211') {
+                alert('Incorrect reactivation code');
+                return;
+            }
+
+            // Clear reactivation timer
+            if (reactivationInterval) {
+                clearInterval(reactivationInterval);
+            }
+
+            // Restore writing
+            document.getElementById('writingArea').value = writingContent;
+
+            // Switch screens
+            document.getElementById('violationScreen').classList.add('hidden');
+            document.getElementById('testScreen').classList.remove('hidden');
+
+            // Re-enter fullscreen
+            enterFullscreen();
+
+            // Restart timer
+            startTimer();
+
+            // Clear reactivation code
+            document.getElementById('reactivationCode').value = '';
+        }
+
+        // Word count
+        document.getElementById('writingArea').addEventListener('input', function() {
+            const text = this.value.trim();
+            const words = text.split(/\s+/).filter(word => word.length > 0);
+            document.getElementById('wordCount').textContent = words.length;
+        });
+
+        // Get word count
+        function getWordCount() {
+            const text = document.getElementById('writingArea').value.trim();
+            const words = text.split(/\s+/).filter(word => word.length > 0);
+            return words.length;
+        }
+
+        // Generate PDF
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            const maxWidth = pageWidth - 2 * margin;
+
+            // Add header
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('EDUNEST - CDI WRITING TEST', pageWidth / 2, 20, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.text('TASK 1', pageWidth / 2, 30, { align: 'center' });
+
+            // Add student info
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Student Name: ${studentName}`, margin, 45);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, 52);
+            doc.text(`Word Count: ${getWordCount()}`, margin, 59);
+            doc.text(`Violations: ${violationCount}`, margin, 66);
+
+            // Add line
+            doc.setLineWidth(0.5);
+            doc.line(margin, 70, pageWidth - margin, 70);
+
+            // Add writing content
+            doc.setFontSize(11);
+            const content = document.getElementById('writingArea').value || 'No content written';
+            const lines = doc.splitTextToSize(content, maxWidth);
+            doc.text(lines, margin, 80);
+
+            // Save PDF
+            const fileName = `${studentName.replace(/\s+/g, '_')}_Task1_${Date.now()}.pdf`;
+            doc.save(fileName);
+        }
+
+        // Submit test
+        function submitTest() {
+            // Stop timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            // Generate PDF
+            generatePDF();
+
+            // Show submitted screen
+            showSubmittedScreen();
+        }
+
+        // Auto submit
+        function autoSubmit() {
+            // Stop all timers
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            if (reactivationInterval) {
+                clearInterval(reactivationInterval);
+            }
+
+            // Generate PDF
+            generatePDF();
+
+            // Show submitted screen
+            showSubmittedScreen();
+        }
+
+        // Show submitted screen
+        function showSubmittedScreen() {
+            // Exit fullscreen
+            exitFullscreen();
+
+            // Update submitted screen
+            document.getElementById('submittedMessage').textContent = `Thank you for your report, ${studentName}`;
+            document.getElementById('finalWordCount').textContent = getWordCount();
+            document.getElementById('finalViolations').textContent = violationCount;
+            document.getElementById('submittedTime').textContent = new Date().toLocaleString();
+
+            // Hide all other screens
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('testScreen').classList.add('hidden');
+            document.getElementById('violationScreen').classList.add('hidden');
+
+            // Show submitted screen
+            document.getElementById('submittedScreen').classList.remove('hidden');
+        }
+
+        // Handle Enter key on password input
+        document.getElementById('testPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startTest();
+            }
+        });
+
+        // Handle Enter key on reactivation code
+        document.getElementById('reactivationCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                reactivateTest();
+            }
+        });
+
+        // Touchpad/Mouse wheel zoom functionality
+        let currentZoom = 1;
+        const minZoom = 0.5;
+        const maxZoom = 3;
+
+        const imageContainer = document.getElementById('imageContainer');
+        const imageWrapper = document.getElementById('imageWrapper');
+        const taskImage = document.getElementById('taskImage');
+
+        // Detect if device is mobile/tablet
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        // Handle wheel event for zooming (desktop)
+        imageContainer.addEventListener('wheel', function(e) {
+            // Check if Ctrl key is pressed (pinch zoom gesture on touchpad)
+            if (e.ctrlKey) {
+                // Prevent default scrolling
+                e.preventDefault();
+
+                // Determine zoom direction
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                
+                // Calculate new zoom level
+                let newZoom = currentZoom + delta;
+                newZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+
+                // Apply zoom
+                currentZoom = newZoom;
+                updateZoom();
+            }
+            // If Ctrl is not pressed, allow normal scrolling in the container
+        }, { passive: false });
+
+        // Mobile pinch-to-zoom support
+        if (isMobile) {
+            let initialDistance = 0;
+            let initialZoom = 1;
+
+            imageContainer.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    initialDistance = getDistance(e.touches[0], e.touches[1]);
+                    initialZoom = currentZoom;
+                }
+            }, { passive: false });
+
+            imageContainer.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    
+                    const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                    const scale = currentDistance / initialDistance;
+                    
+                    let newZoom = initialZoom * scale;
+                    newZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+                    
+                    currentZoom = newZoom;
+                    updateZoom();
+                }
+            }, { passive: false });
+
+            function getDistance(touch1, touch2) {
+                const dx = touch1.clientX - touch2.clientX;
+                const dy = touch1.clientY - touch2.clientY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+        }
+
+        function updateZoom() {
+            // Scale the image
+            taskImage.style.transform = `scale(${currentZoom})`;
+            
+            // Adjust wrapper size to enable scrolling in all directions
+            const scaledWidth = taskImage.naturalWidth * currentZoom;
+            const scaledHeight = taskImage.naturalHeight * currentZoom;
+            imageWrapper.style.width = scaledWidth + 'px';
+            imageWrapper.style.height = scaledHeight + 'px';
+        }
+
+        // Initialize wrapper size once image loads
+        taskImage.addEventListener('load', function() {
+            imageWrapper.style.width = taskImage.naturalWidth + 'px';
+            imageWrapper.style.height = taskImage.naturalHeight + 'px';
+        });
+
+        // If image is already loaded (cached)
+        if (taskImage.complete) {
+            imageWrapper.style.width = taskImage.naturalWidth + 'px';
+            imageWrapper.style.height = taskImage.naturalHeight + 'px';
+        }
+
+        // Optional: Double-click to reset zoom
+        taskImage.addEventListener('dblclick', function() {
+            currentZoom = 1;
+            updateZoom();
+        });
+
+        // Mobile-specific: Prevent iOS Safari from zooming on double-tap
+        if (isMobile) {
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        // Disable fullscreen requirement on mobile devices
+        const originalEnterFullscreen = enterFullscreen;
+        const originalSetupProctoring = setupProctoring;
+
+        if (isMobile) {
+            // Override fullscreen for mobile - not all mobile browsers support it
+            enterFullscreen = function() {
+                // Try to enter fullscreen, but don't fail if not supported
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(() => {
+                        // Fullscreen not supported or denied, continue anyway
+                        console.log('Fullscreen not available on this device');
+                    });
+                }
+            };
+
+            // Modify proctoring for mobile - less strict
+            setupProctoring = function() {
+                // Only track visibility change on mobile (not fullscreen)
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+            };
+        }
+    </script>
+</body>
+</html>
