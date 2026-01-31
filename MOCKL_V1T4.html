@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUNEST - Mock Exam Listening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC2626;
+            --dark-bg: #1F2937;
+            --light-bg: #F9FAFB;
+            --text-dark: #111827;
+            --text-gray: #6B7280;
+            --border-color: #E5E7EB;
+            --success-green: #10B981;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            user-select: text;
+        }
+
+        .welcome-screen, .violation-screen, .thank-you-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.5s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .welcome-screen {
+            background: linear-gradient(135deg, var(--primary-red) 0%, #991B1B 100%);
+        }
+
+        .violation-screen {
+            background: #000000;
+        }
+
+        .thank-you-screen {
+            background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%);
+        }
+
+        .welcome-content, .violation-content, .thank-you-content {
+            background: white;
+            padding: 60px 50px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 3px solid var(--primary-red);
+            animation: scaleIn 0.5s ease;
+        }
+
+        .violation-content {
+            border-color: #DC2626;
+        }
+
+        .thank-you-content {
+            border-color: var(--success-green);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .logo {
+            width: 180px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            color: var(--primary-red);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: var(--text-gray);
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--light-bg);
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #B91C1C;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--success-green);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+        }
+
+        .error-message {
+            color: var(--primary-red);
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .test-container {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .test-header {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary-red);
+            text-align: center;
+        }
+
+        .test-header h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-red);
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            color: var(--text-gray);
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--border-color);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-red);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .question {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .question-number {
+            color: var(--primary-red);
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .inline-input {
+            display: inline-block;
+            width: 110px;
+            padding: 6px 10px;
+            border: 1px solid #B0B0B0;
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            margin: 0 4px;
+            background: #FFFFFF;
+            transition: all 0.3s ease;
+            vertical-align: middle;
+            color: #999999;
+        }
+
+        .answer-input {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            margin: 0 4px;
+            background: white;
+            transition: all 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .answer-input.filled {
+            background: #D1FAE5;
+            border-color: #10B981;
+            color: var(--text-dark);
+        }
+
+        .inline-input:focus {
+            outline: none;
+            border-color: #9CA3AF;
+            background: white;
+            color: var(--text-dark);
+        }
+
+        .inline-input.filled {
+            background: #D1FAE5;
+            border-color: #10B981;
+            color: var(--text-dark);
+        }
+
+        .options {
+            margin-left: 35px;
+        }
+
+        .option {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .option:hover {
+            background: var(--light-bg);
+        }
+
+        .option.selected {
+            background: #D1FAE5;
+            border-color: #10B981;
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #10B981;
+        }
+
+        .option label {
+            cursor: pointer;
+            font-weight: 500;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .map-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .map-container img {
+            max-width: 100%;
+            border: 3px solid var(--primary-red);
+            border-radius: 15px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-questions {
+            margin-top: 25px;
+        }
+
+        .map-question {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+        }
+
+        .map-question-number {
+            font-weight: 700;
+            color: var(--primary-red);
+            min-width: 40px;
+            font-size: 16px;
+        }
+
+        .map-question-text {
+            flex: 1;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        .map-input {
+            width: 110px;
+            padding: 6px 10px;
+            border: 1px solid #B0B0B0;
+            border-radius: 3px;
+            text-align: center;
+            font-weight: 400;
+            font-size: 14px;
+            background: #FFFFFF;
+            color: #999999;
+            transition: all 0.3s ease;
+        }
+
+        .map-input:focus {
+            outline: none;
+            border-color: #9CA3AF;
+            background: white;
+            color: var(--text-dark);
+        }
+
+        .map-input.filled {
+            background: #D1FAE5;
+            border-color: #10B981;
+            color: var(--text-dark);
+        }
+
+        .drag-drop-container {
+            margin: 30px 0;
+        }
+
+        .options-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 25px;
+            background: var(--light-bg);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px dashed var(--primary-red);
+        }
+
+        .draggable-option {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid var(--primary-red);
+            border-radius: 10px;
+            cursor: move;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .draggable-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+        }
+
+        .draggable-option.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .drop-zone {
+            min-width: 100px;
+            min-height: 45px;
+            padding: 10px 15px;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            background: #FAFAFA;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #9CA3AF;
+            background: white;
+        }
+
+        .drop-zone.filled {
+            border-color: #10B981;
+            background: #D1FAE5;
+        }
+
+        .exhibition-question {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+
+        .exhibition-number {
+            font-weight: 700;
+            color: var(--primary-red);
+            min-width: 40px;
+            font-size: 16px;
+        }
+
+        .exhibition-name {
+            flex: 1;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary-red);
+        }
+
+        .timer {
+            display: none;
+        }
+
+        .violation-timer {
+            font-size: 48px;
+            color: var(--primary-red);
+            font-weight: 700;
+            margin: 25px 0;
+        }
+
+        .violation-warning {
+            color: #DC2626;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .highlighted {
+            background-color: #FEF08A;
+            padding: 2px 0;
+        }
+
+        .notes-box {
+            background: #FFFBEB;
+            border: 2px solid #F59E0B;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .notes-title {
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .note-item {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .bold-text {
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .test-container {
+                padding: 20px 10px;
+            }
+
+            .section {
+                padding: 25px 20px;
+            }
+
+            .test-header {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 26px;
+            }
+
+            .inline-input {
+                width: 100px;
+                font-size: 13px;
+                padding: 5px 8px;
+            }
+
+            .map-input {
+                width: 100px;
+                font-size: 13px;
+                padding: 5px 8px;
+            }
+
+            .draggable-option {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+
+            .welcome-content, .violation-content, .thank-you-content {
+                padding: 40px 30px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-content">
+            <img src="https://i.ibb.co/WWYjsWTh/image.png" alt="EDUNEST Logo" class="logo">
+            <h1>MOCK EXAM LISTENING</h1>
+            <p class="subtitle">Welcome to EDUNEST</p>
+            
+            <div class="input-group">
+                <label for="studentName">Your Full Name</label>
+                <input type="text" id="studentName" placeholder="Enter your full name">
+            </div>
+            
+            <div class="input-group">
+                <label for="testPassword">Test Password</label>
+                <input type="password" id="testPassword" placeholder="Enter password">
+            </div>
+            
+            <div class="error-message" id="welcomeError"></div>
+            
+            <button class="btn-primary" onclick="startTest()">Start Test</button>
+        </div>
+    </div>
+
+    <!-- Violation Screen -->
+    <div class="violation-screen hidden" id="violationScreen">
+        <div class="violation-content">
+            <h1 style="color: #DC2626;">⚠️ VIOLATION DETECTED</h1>
+            <p class="violation-warning">You have left the test window or switched applications.</p>
+            <div class="violation-timer" id="violationTimer">60</div>
+            <p style="margin-bottom: 25px; color: var(--text-gray);">Enter reactivation code to continue</p>
+            
+            <div class="input-group">
+                <label for="reactivationCode">Reactivation Code</label>
+                <input type="password" id="reactivationCode" placeholder="Enter code">
+            </div>
+            
+            <div class="error-message" id="violationError"></div>
+            
+            <button class="btn-primary" onclick="checkReactivationCode()">Reactivate Test</button>
+        </div>
+    </div>
+
+    <!-- Thank You Screen -->
+    <div class="thank-you-screen hidden" id="thankYouScreen">
+        <div class="thank-you-content">
+            <h1 style="color: var(--success-green);">✓ Test Completed!</h1>
+            <p class="subtitle" style="color: var(--text-dark);">Thank you for your participation</p>
+            <p style="margin-bottom: 30px; color: var(--text-gray);">Your answers have been recorded and PDF has been downloaded successfully.</p>
+            <p style="margin-bottom: 20px; font-weight: 600; color: var(--text-dark);">Please send your PDF to:</p>
+            <a href="https://t.me/Jasurbek_Abdurakhimoff" target="_blank" style="display: inline-block; padding: 16px 40px; background: #0088cc; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 18px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 136, 204, 0.3);" onmouseover="this.style.background='#0077b3'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 136, 204, 0.4)'" onmouseout="this.style.background='#0088cc'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 136, 204, 0.3)'">
+                📱 @Jasurbek_Abdurakhimoff
+            </a>
+        </div>
+    </div>
+
+    <!-- Test Container -->
+    <div class="test-container" id="testContainer">
+        <div class="timer" id="timer">Time: 40:00</div>
+        
+        <div class="test-header">
+            <h1>MOCK EXAM LISTENING</h1>
+            <p class="student-info">Student: <span id="displayName"></span></p>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="section">
+            <h2 class="section-title">SECTION 1 - Questions 1-10</h2>
+            <p style="margin-bottom: 20px; font-weight: 500;">Complete the notes below.</p>
+            <p style="margin-bottom: 30px; font-weight: 500;">Write <span class="bold-text">ONE WORD AND/OR A NUMBER</span> for each answer.</p>
+            
+            <div class="notes-box">
+                <div class="notes-title">Music Alive Agency</div>
+                
+                <div class="note-item">
+                    <span class="bold-text">Example</span><br>
+                    Contact person: <em>Jim Granley</em>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Members' details are on a <span class="question-number">1</span><input type="text" class="answer-input" data-question="1" placeholder="Answer 1" style="width: 150px;">
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Type of music represented: modern music (<span class="question-number">2</span><input type="text" class="answer-input" data-question="2" placeholder="Answer 2" style="width: 150px;"> and jazz)</span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Newsletter comes out once a <span class="question-number">3</span><input type="text" class="answer-input" data-question="3" placeholder="Answer 3" style="width: 150px;"></span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Cost of adult membership: <span class="question-number">4</span> £ <input type="text" class="answer-input" data-question="4" placeholder="Answer 4" style="width: 150px;"></span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Current number of member: <span class="question-number">5</span><input type="text" class="answer-input" data-question="5" placeholder="Answer 5" style="width: 150px;"></span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Facilities include: rehearsal rooms and a <span class="question-number">6</span><input type="text" class="answer-input" data-question="6" placeholder="Answer 6" style="width: 150px;"></span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">There is no charge for <span class="question-number">7</span><input type="text" class="answer-input" data-question="7" placeholder="Answer 7" style="width: 150px;"> advice</span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">To become a member, send - a letter with contact details</span><br>
+                    <span style="margin-left: 140px;">- a recent <span class="question-number">8</span><input type="text" class="answer-input" data-question="8" placeholder="Answer 8" style="width: 150px;"></span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Address: 707, <span class="question-number">9</span><input type="text" class="answer-input" data-question="9" placeholder="Answer 9" style="width: 150px;"> Street, Marbury</span>
+                </div>
+                
+                <div class="note-item">
+                    <span class="question-text">Contact email: music. <span class="question-number">10</span><input type="text" class="answer-input" data-question="10" placeholder="Answer 10" style="width: 150px;">@bsu.co.uk</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 Part 1 -->
+        <div class="section">
+            <h2 class="section-title">SECTION 2 - Questions 11-20</h2>
+            
+            <h3 style="font-weight: 600; margin-bottom: 20px;">Questions 11-14</h3>
+            <p style="margin-bottom: 25px; font-weight: 500;">Choose the correct letter, <span class="bold-text">A, B</span> or <span class="bold-text">C</span>.</p>
+            <p style="font-weight: 600; margin-bottom: 20px;">Information for participants in the Albany fishing competition</p>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">11</span>What do participants need to take to the registration desk?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11a" value="A">
+                        <label for="q11a"><span class="bold-text">A</span> a form of identification</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11b" value="B">
+                        <label for="q11b"><span class="bold-text">B</span> a competitor number</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11c" value="C">
+                        <label for="q11c"><span class="bold-text">C</span> cash for the entrance fee</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">12</span>What does the entrance fee to the competition include?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12a" value="A">
+                        <label for="q12a"><span class="bold-text">A</span> equipment for fishing</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12b" value="B">
+                        <label for="q12b"><span class="bold-text">B</span> all food for both days</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12c" value="C">
+                        <label for="q12c"><span class="bold-text">C</span> fuel for the fishing</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">13</span>Participants without a fishing license are recommended to apply for one
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13a" value="A">
+                        <label for="q13a"><span class="bold-text">A</span> at the registration desk.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13b" value="B">
+                        <label for="q13b"><span class="bold-text">B</span> over the phone.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13c" value="C">
+                        <label for="q13c"><span class="bold-text">C</span> on the internet.</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">14</span>What will happen at 6pm on Sunday?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14a" value="A">
+                        <label for="q14a"><span class="bold-text">A</span> The time allocated for fishing will end.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14b" value="B">
+                        <label for="q14b"><span class="bold-text">B</span> The fish caught will be judged.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14c" value="C">
+                        <label for="q14c"><span class="bold-text">C</span> The prizes will be awarded to the winners.</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 Part 2 -->
+        <div class="section">
+            <h3 style="font-weight: 600; margin-bottom: 20px;">Questions 15-20</h3>
+            <p style="margin-bottom: 25px; font-weight: 500;">Label the map below.</p>
+            <p style="margin-bottom: 25px; font-weight: 500;">Write the correct letter, <span class="bold-text">A-I</span>, next to questions 15-20.</p>
+            
+            <div class="map-container">
+                <p style="font-weight: 600; margin-bottom: 20px; font-size: 18px;">Albany Fishing Competition Map</p>
+                <img src="https://i.ibb.co/S7HHyCTB/image.png" alt="Albany Fishing Competition Map">
+            </div>
+            
+            <div class="map-questions">
+                <div class="map-question">
+                    <span class="map-question-number">15</span>
+                    <span class="map-question-text">Registration area</span>
+                    <input type="text" class="map-input" data-question="15" maxlength="1" placeholder="answer">
+                </div>
+                <div class="map-question">
+                    <span class="map-question-number">16</span>
+                    <span class="map-question-text">Shore fishing area</span>
+                    <input type="text" class="map-input" data-question="16" maxlength="1" placeholder="answer">
+                </div>
+                <div class="map-question">
+                    <span class="map-question-number">17</span>
+                    <span class="map-question-text">Boat launching area</span>
+                    <input type="text" class="map-input" data-question="17" maxlength="1" placeholder="answer">
+                </div>
+                <div class="map-question">
+                    <span class="map-question-number">18</span>
+                    <span class="map-question-text">Judging area</span>
+                    <input type="text" class="map-input" data-question="18" maxlength="1" placeholder="answer">
+                </div>
+                <div class="map-question">
+                    <span class="map-question-number">19</span>
+                    <span class="map-question-text">Dining area</span>
+                    <input type="text" class="map-input" data-question="19" maxlength="1" placeholder="answer">
+                </div>
+                <div class="map-question">
+                    <span class="map-question-number">20</span>
+                    <span class="map-question-text">Prize-giving area</span>
+                    <input type="text" class="map-input" data-question="20" maxlength="1" placeholder="answer">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 Part 1 -->
+        <div class="section">
+            <h2 class="section-title">SECTION 3 - Questions 21-30</h2>
+            
+            <h3 style="font-weight: 600; margin-bottom: 20px;">Questions 21-26</h3>
+            <p style="margin-bottom: 25px; font-weight: 500;">Choose the correct letter, <span class="bold-text">A, B</span> or <span class="bold-text">C</span>.</p>
+            <p style="font-weight: 600; margin-bottom: 20px;">Preparing for the end-of-year art exhibition</p>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">21</span>Max and Abby agree that in the art exhibition they are looking forward to
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q21" id="q21a" value="A">
+                        <label for="q21a"><span class="bold-text">A</span> showing people their work.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q21" id="q21b" value="B">
+                        <label for="q21b"><span class="bold-text">B</span> getting feedback from their tutor.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q21" id="q21c" value="C">
+                        <label for="q21c"><span class="bold-text">C</span> talking to other students about their displays.</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">22</span>In last years exhibition, both students were impressed by
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q22" id="q22a" value="A">
+                        <label for="q22a"><span class="bold-text">A</span> a set of metal sculptures.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q22" id="q22b" value="B">
+                        <label for="q22b"><span class="bold-text">B</span> a series of wooden models.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q22" id="q22c" value="C">
+                        <label for="q22c"><span class="bold-text">C</span> a collection of textile designs.</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">23</span>What has Max decided to call his display?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q23" id="q23a" value="A">
+                        <label for="q23a"><span class="bold-text">A</span> Mother Nature</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q23" id="q23b" value="B">
+                        <label for="q23b"><span class="bold-text">B</span> Views of Farmland</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q23" id="q23c" value="C">
+                        <label for="q23c"><span class="bold-text">C</span> Seasons</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">24</span>What does Abby think will be difficult about preparing for their displays
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q24" id="q24a" value="A">
+                        <label for="q24a"><span class="bold-text">A</span> having enough time to set it up</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q24" id="q24b" value="B">
+                        <label for="q24b"><span class="bold-text">B</span> choosing which pieces to show</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q24" id="q24c" value="C">
+                        <label for="q24c"><span class="bold-text">C</span> filling up all the available space</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">25</span>What does Abby say about the summary they have to write?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q25" id="q25a" value="A">
+                        <label for="q25a"><span class="bold-text">A</span> She isn't sure whether people will read it.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q25" id="q25b" value="B">
+                        <label for="q25b"><span class="bold-text">B</span> It will be difficult to keep it short enough.</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q25" id="q25c" value="C">
+                        <label for="q25c"><span class="bold-text">C</span> It will be hard to clarify the reasons for her work.</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">26</span>What aspect of the display will the students organise themselves?
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q26" id="q26a" value="A">
+                        <label for="q26a"><span class="bold-text">A</span> arranging the lighting</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q26" id="q26b" value="B">
+                        <label for="q26b"><span class="bold-text">B</span> inviting local journalists</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q26" id="q26c" value="C">
+                        <label for="q26c"><span class="bold-text">C</span> providing comment forms</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 Part 2 -->
+        <div class="section">
+            <h3 style="font-weight: 600; margin-bottom: 20px;">Questions 27-30</h3>
+            <p style="margin-bottom: 25px; font-weight: 500;">Which feature do the speakers identify as particularly interesting for each of the following exhibitions they saw?</p>
+            <p style="margin-bottom: 25px; font-weight: 500;">Choose <span class="bold-text">FOUR</span> answers from the box and write the correct letter, <span class="bold-text">A-F</span>, next to questions 27-30</p>
+            
+            <div class="drag-drop-container">
+                <div class="notes-box" style="border-color: var(--primary-red); background: white;">
+                    <div style="font-weight: 600; margin-bottom: 15px; font-size: 18px;">Interesting features</div>
+                    <div style="line-height: 2;">
+                        <div><span class="bold-text">A</span> the realistic colours</div>
+                        <div><span class="bold-text">B</span> the sense of space</div>
+                        <div><span class="bold-text">C</span> the unusual interpretation of the theme</div>
+                        <div><span class="bold-text">D</span> the painting technique</div>
+                        <div><span class="bold-text">E</span> the variety of materials use</div>
+                        <div><span class="bold-text">F</span> the use of light and shade</div>
+                    </div>
+                </div>
+
+                <div class="options-box">
+                    <div class="draggable-option" draggable="true" data-value="A">A</div>
+                    <div class="draggable-option" draggable="true" data-value="B">B</div>
+                    <div class="draggable-option" draggable="true" data-value="C">C</div>
+                    <div class="draggable-option" draggable="true" data-value="D">D</div>
+                    <div class="draggable-option" draggable="true" data-value="E">E</div>
+                    <div class="draggable-option" draggable="true" data-value="F">F</div>
+                </div>
+
+                <div style="font-weight: 600; margin-bottom: 20px; font-size: 18px;">Exhibitions</div>
+
+                <div class="exhibition-question">
+                    <span class="exhibition-number">27</span>
+                    <span class="exhibition-name">On the Water</span>
+                    <div class="drop-zone" data-question="q27"></div>
+                </div>
+
+                <div class="exhibition-question">
+                    <span class="exhibition-number">28</span>
+                    <span class="exhibition-name">City Life</span>
+                    <div class="drop-zone" data-question="q28"></div>
+                </div>
+
+                <div class="exhibition-question">
+                    <span class="exhibition-number">29</span>
+                    <span class="exhibition-name">Faces</span>
+                    <div class="drop-zone" data-question="q29"></div>
+                </div>
+
+                <div class="exhibition-question">
+                    <span class="exhibition-number">30</span>
+                    <span class="exhibition-name">Moods</span>
+                    <div class="drop-zone" data-question="q30"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="section">
+            <h2 class="section-title">Questions 31-40</h2>
+            <p style="margin-bottom: 20px; font-weight: 500;">Complete the notes below</p>
+            <p style="margin-bottom: 30px; font-weight: 500;">Write <span class="bold-text">NO MORE THAN TWO WORDS</span> for each answer.</p>
+            
+            <div class="notes-box">
+                <div class="notes-title">The Mangrove Regeneration Project</div>
+                
+                <div class="bold-text" style="margin-top: 20px; margin-bottom: 10px;">Background:</div>
+                
+                <div class="bold-text">Mangrove forests:</div>
+                <div class="note-item">
+                    • protect coastal areas from <span class="question-number">31</span><input type="text" class="answer-input" data-question="31" placeholder="Answer 31" style="width: 150px;"> by the sea
+                </div>
+                <div class="note-item">
+                    • are an important habitat for wildlife
+                </div>
+                
+                <div class="bold-text" style="margin-top: 15px;">Problems:</div>
+                <div class="note-item">
+                    • mangroves had been used by farmers as <span class="question-number">32</span><input type="text" class="answer-input" data-question="32" placeholder="Answer 32" style="width: 150px;">
+                </div>
+                <div class="note-item">
+                    • mangroves were poisoned by the use of <span class="question-number">33</span><input type="text" class="answer-input" data-question="33" placeholder="Answer 33" style="width: 150px;">
+                </div>
+                <div class="note-item">
+                    • Local people used the mangroves as a place to put their <span class="question-number">34</span><input type="text" class="answer-input" data-question="34" placeholder="Answer 34" style="width: 150px;">
+                </div>
+                
+                <div class="bold-text" style="margin-top: 15px;">Actions taken to protect the mangroves:</div>
+                <div class="note-item">
+                    • a barrier which was made of <span class="question-number">35</span><input type="text" class="answer-input" data-question="35" placeholder="Answer 35" style="width: 150px;"> was constructed – but it failed
+                </div>
+                <div class="note-item">
+                    • new mangroves had to be grown from seed
+                </div>
+                <div class="note-item">
+                    • the seeds of the <span class="question-number">36</span><input type="text" class="answer-input" data-question="36" placeholder="Answer 36" style="width: 150px;"> mangrove were used
+                </div>
+                
+                <div class="bold-text" style="margin-top: 15px;">First set of seedlings:</div>
+                <div class="note-item">
+                    • kept in small pots in a <span class="question-number">37</span><input type="text" class="answer-input" data-question="37" placeholder="Answer 37" style="width: 150px;">
+                </div>
+                <div class="note-item">
+                    • Watered with <span class="question-number">38</span><input type="text" class="answer-input" data-question="38" placeholder="Answer 38" style="width: 150px;"> water
+                </div>
+                <div class="note-item">
+                    • planted out on south side of a small island
+                </div>
+                <div class="note-item">
+                    • at risk from the large <span class="question-number">39</span><input type="text" class="answer-input" data-question="39" placeholder="Answer 39" style="width: 150px;"> population
+                </div>
+                
+                <div class="bold-text" style="margin-top: 15px;">Second set of seedlings:</div>
+                <div class="note-item">
+                    • planted in the seabed near established mangrove roots
+                </div>
+                <div class="note-item">
+                    • the young plants were destroyed in a <span class="question-number">40</span><input type="text" class="answer-input" data-question="40" placeholder="Answer 40" style="width: 150px;">
+                </div>
+                
+                <div class="bold-text" style="margin-top: 15px;">Results:</div>
+                <div class="note-item">
+                    The first set of seedlings was successful
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <h2 style="color: var(--primary-red); margin-bottom: 20px;">Ready to Submit?</h2>
+            <p style="margin-bottom: 30px; color: var(--text-gray);">Please review your answers before submitting.</p>
+            <button class="btn-primary" style="font-size: 20px; padding: 18px 50px;" onclick="submitTest()">Submit Test</button>
+        </div>
+    </div>
+
+    <script>
+        let studentName = '';
+        let isTestActive = false;
+        let draggedElement = null;
+        let generatedPDF = null;
+        let violationTimerInterval;
+        let violationTimeLeft = 60;
+
+        // Test password
+        const TEST_PASSWORD = '0303';
+        const REACTIVATION_CODE = 'V04';
+
+        // Start test function
+        function startTest() {
+            const name = document.getElementById('studentName').value.trim();
+            const password = document.getElementById('testPassword').value;
+            const errorDiv = document.getElementById('welcomeError');
+
+            if (!name) {
+                errorDiv.textContent = 'Please enter your full name';
+                return;
+            }
+
+            if (password !== TEST_PASSWORD) {
+                errorDiv.textContent = 'Incorrect password';
+                return;
+            }
+
+            studentName = name;
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('testContainer').style.display = 'block';
+            
+            isTestActive = true;
+            enableFullScreen();
+            setupProctoring();
+            setupHighlighting();
+            setupDragAndDrop();
+            setupVisualFeedback();
+        }
+
+        // Visual feedback for completed answers
+        function setupVisualFeedback() {
+            // For text inputs (gap filling and map questions)
+            const textInputs = document.querySelectorAll('.answer-input, .map-input');
+            textInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.value.trim().length > 0) {
+                        this.classList.add('filled');
+                        this.style.backgroundColor = '#D1FAE5';
+                        this.style.borderColor = '#10B981';
+                    } else {
+                        this.classList.remove('filled');
+                        this.style.backgroundColor = 'white';
+                        this.style.borderColor = '#d1d5db';
+                    }
+                });
+            });
+
+            // For radio buttons (multiple choice)
+            const radioInputs = document.querySelectorAll('input[type="radio"]');
+            radioInputs.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Remove selected class from all options in this question
+                    const questionName = this.name;
+                    const allOptions = document.querySelectorAll(`input[name="${questionName}"]`);
+                    allOptions.forEach(opt => {
+                        opt.closest('.option').classList.remove('selected');
+                    });
+                    // Add selected class to chosen option
+                    this.closest('.option').classList.add('selected');
+                });
+            });
+        }
+
+        // Fullscreen
+        function enableFullScreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Proctoring system
+        function setupProctoring() {
+            // Detect window focus loss
+            window.addEventListener('blur', handleViolation);
+            
+            // Detect fullscreen exit
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement && isTestActive) {
+                    handleViolation();
+                }
+            });
+            
+            document.addEventListener('webkitfullscreenchange', () => {
+                if (!document.webkitFullscreenElement && isTestActive) {
+                    handleViolation();
+                }
+            });
+
+            // Detect visibility change
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && isTestActive) {
+                    handleViolation();
+                }
+            });
+        }
+
+        function handleViolation() {
+            if (!isTestActive) return;
+            
+            document.getElementById('violationScreen').classList.remove('hidden');
+            violationTimeLeft = 60;
+            document.getElementById('violationTimer').textContent = violationTimeLeft;
+            document.getElementById('reactivationCode').value = '';
+            document.getElementById('violationError').textContent = '';
+            
+            violationTimerInterval = setInterval(() => {
+                violationTimeLeft--;
+                document.getElementById('violationTimer').textContent = violationTimeLeft;
+                
+                if (violationTimeLeft <= 0) {
+                    clearInterval(violationTimerInterval);
+                    alert('Time expired. Test will be submitted automatically.');
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function checkReactivationCode() {
+            const code = document.getElementById('reactivationCode').value;
+            const errorDiv = document.getElementById('violationError');
+            
+            if (code === REACTIVATION_CODE) {
+                clearInterval(violationTimerInterval);
+                document.getElementById('violationScreen').classList.add('hidden');
+                enableFullScreen();
+            } else {
+                errorDiv.textContent = 'Incorrect reactivation code';
+            }
+        }
+
+        // Highlighting functionality
+        function setupHighlighting() {
+            document.addEventListener('mouseup', () => {
+                const selection = window.getSelection();
+                if (selection.toString().length > 0) {
+                    const range = selection.getRangeAt(0);
+                    const span = document.createElement('span');
+                    span.className = 'highlighted';
+                    try {
+                        range.surroundContents(span);
+                    } catch (e) {
+                        // If can't wrap (e.g., crosses element boundaries), ignore
+                    }
+                    selection.removeAllRanges();
+                }
+            });
+        }
+
+        // Drag and drop functionality
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable-option');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', (e) => {
+                    draggedElement = draggable;
+                    draggable.classList.add('dragging');
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    
+                    if (draggedElement) {
+                        // Return previous element to options box if exists
+                        const existingElement = zone.querySelector('.draggable-option');
+                        if (existingElement) {
+                            document.querySelector('.options-box').appendChild(existingElement);
+                        }
+                        
+                        // Clone and add to drop zone
+                        const clone = draggedElement.cloneNode(true);
+                        clone.style.margin = '0';
+                        zone.appendChild(clone);
+                        zone.classList.add('filled');
+                        
+                        // Make the cloned element draggable
+                        clone.addEventListener('dragstart', (e) => {
+                            draggedElement = clone;
+                        });
+                    }
+                });
+            });
+        }
+
+        // Collect answers
+        function collectAnswers() {
+            const answers = {
+                studentName: studentName,
+                timestamp: new Date().toLocaleString(),
+                section1: {},
+                section2: {},
+                section3: {},
+                section4: {}
+            };
+
+            // Section 1 (Q1-10)
+            for (let i = 1; i <= 10; i++) {
+                const input = document.querySelector(`[data-question="${i}"]`);
+                answers.section1[`q${i}`] = input ? input.value || '' : '';
+            }
+
+            // Section 2 (Q11-20)
+            for (let i = 11; i <= 14; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.section2[`q${i}`] = selected ? selected.value : '';
+            }
+            for (let i = 15; i <= 20; i++) {
+                const input = document.querySelector(`[data-question="${i}"]`);
+                answers.section2[`q${i}`] = input ? input.value || '' : '';
+            }
+
+            // Section 3 (Q21-30)
+            for (let i = 21; i <= 26; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.section3[`q${i}`] = selected ? selected.value : '';
+            }
+            
+            // Drag and drop (Q27-30)
+            for (let i = 27; i <= 30; i++) {
+                const dropZone = document.querySelector(`[data-question="q${i}"]`);
+                const answer = dropZone ? dropZone.querySelector('.draggable-option') : null;
+                answers.section3[`q${i}`] = answer ? answer.dataset.value : '';
+            }
+
+            // Section 4 (Q31-40)
+            for (let i = 31; i <= 40; i++) {
+                const input = document.querySelector(`[data-question="${i}"]`);
+                answers.section4[`q${i}`] = input ? input.value || '' : '';
+            }
+
+            return answers;
+        }
+
+        // Submit test
+        async function submitTest() {
+            isTestActive = false;
+            
+            const answers = collectAnswers();
+            
+            // Hide test container
+            document.getElementById('testContainer').style.display = 'none';
+            
+            // Generate and download PDF
+            await generateAndDownloadPDF(answers);
+            
+            // Send to Telegram
+            await sendToTelegram(answers);
+            
+            // Show thank you screen
+            document.getElementById('thankYouScreen').classList.remove('hidden');
+        }
+
+        // Generate and Download PDF
+        async function generateAndDownloadPDF(answers) {
+            const pdfContent = `
+                <div style="font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #DC2626; padding-bottom: 20px;">
+                        <h1 style="color: #DC2626; font-size: 36px; margin-bottom: 10px;">EDUNEST</h1>
+                        <h2 style="color: #1F2937; font-size: 24px;">MOCK EXAM LISTENING - TEST 4</h2>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px; padding: 20px; background: #F9FAFB; border-radius: 10px;">
+                        <p style="font-size: 18px; margin: 5px 0;"><strong>Student Name:</strong> ${answers.studentName}</p>
+                        <p style="font-size: 18px; margin: 5px 0;"><strong>Date & Time:</strong> ${answers.timestamp}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #DC2626; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">SECTION 1 (Questions 1-10)</h3>
+                        ${Object.entries(answers.section1).map(([q, a]) => 
+                            `<p style="margin: 8px 0; font-size: 16px;"><strong>${q.toUpperCase()}:</strong> ${a || '(No answer)'}</p>`
+                        ).join('')}
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #DC2626; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">SECTION 2 (Questions 11-20)</h3>
+                        ${Object.entries(answers.section2).map(([q, a]) => 
+                            `<p style="margin: 8px 0; font-size: 16px;"><strong>${q.toUpperCase()}:</strong> ${a || '(No answer)'}</p>`
+                        ).join('')}
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #DC2626; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">SECTION 3 (Questions 21-30)</h3>
+                        ${Object.entries(answers.section3).map(([q, a]) => 
+                            `<p style="margin: 8px 0; font-size: 16px;"><strong>${q.toUpperCase()}:</strong> ${a || '(No answer)'}</p>`
+                        ).join('')}
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #DC2626; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">SECTION 4 (Questions 31-40)</h3>
+                        ${Object.entries(answers.section4).map(([q, a]) => 
+                            `<p style="margin: 8px 0; font-size: 16px;"><strong>${q.toUpperCase()}:</strong> ${a || '(No answer)'}</p>`
+                        ).join('')}
+                    </div>
+                    
+                    <div style="margin-top: 50px; text-align: center; padding-top: 20px; border-top: 2px solid #E5E7EB;">
+                        <p style="color: #6B7280; font-size: 14px;">Generated by EDUNEST Mock Exam System</p>
+                    </div>
+                </div>
+            `;
+            
+            const element = document.createElement('div');
+            element.innerHTML = pdfContent;
+            
+            const opt = {
+                margin: 10,
+                filename: `${studentName.replace(/\s+/g, '_')}_Test4_Listening.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            generatedPDF = await html2pdf().set(opt).from(element).toPdf().output('blob');
+            
+            // Automatically download the PDF
+            const url = URL.createObjectURL(generatedPDF);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${studentName.replace(/\s+/g, '_')}_Test4_Listening.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Send to Telegram
+        async function sendToTelegram(answers) {
+            const answersText = `
+📝 EDUNEST MOCK EXAM LISTENING - TEST 4
+
+👤 Student: ${answers.studentName}
+📅 Date & Time: ${answers.timestamp}
+
+━━━━━━━━━━━━━━━━━━━━━━
+📋 SECTION 1 (Questions 1-10)
+${Object.entries(answers.section1).map(([q, a]) => `${q.toUpperCase()}: ${a || '(No answer)'}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+📋 SECTION 2 (Questions 11-20)
+${Object.entries(answers.section2).map(([q, a]) => `${q.toUpperCase()}: ${a || '(No answer)'}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+📋 SECTION 3 (Questions 21-30)
+${Object.entries(answers.section3).map(([q, a]) => `${q.toUpperCase()}: ${a || '(No answer)'}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━
+📋 SECTION 4 (Questions 31-40)
+${Object.entries(answers.section4).map(([q, a]) => `${q.toUpperCase()}: ${a || '(No answer)'}`).join('\n')}
+            `;
+
+            try {
+                await fetch('https://mdrx18.pythonanywhere.com/api/telegram/send/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: answersText,
+                        send_to_all_admins: true,
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+            }
+        }
+    </script>
+</body>
+</html>
